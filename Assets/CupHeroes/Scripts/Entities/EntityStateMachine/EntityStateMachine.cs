@@ -15,6 +15,9 @@ public class EntityStateMachine : MonoBehaviour, IEntityStateMachine
 
     private void Update()
     {
+        if (_currentState == null)
+            return;
+
         _currentState.Update();
     }
 }

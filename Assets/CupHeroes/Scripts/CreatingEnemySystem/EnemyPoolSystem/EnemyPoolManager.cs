@@ -72,7 +72,8 @@ public class EnemyPoolManager : IEnemyPoolManager
         for (int i = 0; i < _enemyLibraryConfigs.EnemyConfigs.Count; i++)
         {
             var config = _enemyLibraryConfigs.EnemyConfigs[i];
-            var pool = _enemyPoolsFactory.CreatePool(_enemyPoolsConfig.Pools[i]);
+
+            var pool = _enemyPoolsFactory.CreatePool(_enemyLibraryConfigs.EnemyConfigs[i].Prefab, _enemyPoolsConfig.Pools[i]);
 
             if (pool == null)
             {
