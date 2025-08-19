@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 3177546607688252617}
   - component: {fileID: 4373347519562906712}
   - component: {fileID: 2211773642694177239}
+  - component: {fileID: 8634982810591567564}
   m_Layer: 0
   m_Name: Character
   m_TagString: Untagged
@@ -51,7 +52,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -62,7 +63,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!70 &3210799876665696666
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -187,5 +188,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f9f6fae90142d134d9ac8cb10738fdd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8634982810591567564
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8946283988408273110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fee72c9ac52528f498721f9f2615c79b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

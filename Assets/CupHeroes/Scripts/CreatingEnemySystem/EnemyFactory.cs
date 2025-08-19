@@ -1,7 +1,7 @@
 using UnityEngine;
 using Zenject;
 
-public class EnemyFactory : IEntityFactory
+public class EnemyFactory : IEnemyFactory
 {
     private DiContainer _container;
     private IEnemyPoolManager _poolManager;
@@ -12,12 +12,16 @@ public class EnemyFactory : IEntityFactory
         _poolManager = poolManager;
     }
 
-    public GameObject CreateEntity()
+    public Enemy CreateEnemy()
     {
         ObjectPool<Enemy> pool = _poolManager.GetRandomPool();
 
+        Debug.Log($"EnemyFactory pool = {pool}");
+
         Enemy enemy = (Enemy)pool.GetObjectFromPool();
-        
+
+        Debug.Log($"EnemyFactory enemy = {enemy}");
+
         if (enemy == null)
             return null;
 
@@ -28,6 +32,6 @@ public class EnemyFactory : IEntityFactory
         enemy.SetConfig(config);
         enemy.Initialize();
 
-        return enemy.gameObject;
+        return enemy;
     }
 }

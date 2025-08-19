@@ -13,9 +13,10 @@ public class Character : MonoBehaviour, IEntity
     private CharacterConfig _config;
 
     [Inject]
-    private void Construct(IEntityHealth health)
+    private void Construct(IEntityHealth health, CharacterConfig config)
     {
         _health = health;
+        _config = config;
     }
 
     public Collider2D Collider => _collider;
@@ -24,6 +25,11 @@ public class Character : MonoBehaviour, IEntity
     public IEntityHealth Health => _health;
     public IEntityStateMachine StateMachine => _stateMachine;
     public EntityConfig Config => _config;
+
+    private void Awake()
+    {
+        Initialize();
+    }
 
     public void Initialize()
     {
@@ -41,6 +47,4 @@ public class Character : MonoBehaviour, IEntity
         else
             Debug.LogError("Invalid config type for Character");
     }
-
-
 }

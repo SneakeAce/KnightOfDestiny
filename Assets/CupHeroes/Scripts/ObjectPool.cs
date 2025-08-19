@@ -5,13 +5,15 @@ using Object = UnityEngine.Object;
 
 public struct PoolCreatingArguments
 {
-    public PoolCreatingArguments(int poolSize, bool canExpandPool, Transform container)
+    public PoolCreatingArguments(GameObject prefab, int poolSize, bool canExpandPool, Transform container)
     {
+        Prefab = prefab;
         PoolSize = poolSize;
         CanExpandPool = canExpandPool;
         Container = container;
     }
 
+    public GameObject Prefab { get; }
     public int PoolSize { get; }
     public bool CanExpandPool { get; }
     public Transform Container { get; }
@@ -36,6 +38,7 @@ public class ObjectPool<TObject>
 
     public ObjectPool(PoolCreatingArguments poolArguments)
     {
+        _prefab = poolArguments.Prefab;
         _poolSize = poolArguments.PoolSize;
         _canExpandPool = poolArguments.CanExpandPool;
         _container = poolArguments.Container;
@@ -86,6 +89,8 @@ public class ObjectPool<TObject>
 
     private TObject CreatePoolObject(bool isActiveByDefault = false)
     {
+        Debug.Log($"Prefab = {_prefab}");
+
         var instancePoolObject = Object.Instantiate(_prefab, _container);
         var poolObject = instancePoolObject.GetComponent<TObject>();
 
