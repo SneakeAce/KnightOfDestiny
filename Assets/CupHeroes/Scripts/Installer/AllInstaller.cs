@@ -74,7 +74,6 @@ public class AllInstaller : MonoInstaller
 
     private void BindCharacter()
     {
-
         Container.Bind<CharacterConfig>().AsSingle();
 
         Character character = Container
@@ -87,5 +86,8 @@ public class AllInstaller : MonoInstaller
         if (character == null)
             Debug.LogError("Character is null!");
 
+        Container.BindInterfacesAndSelfTo<Character>()
+            .FromInstance(character)
+            .AsSingle();
     }
 }

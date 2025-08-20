@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class CollectingCurrencyHandler
 {
     private CurrencyCounter _currencyCounter;
@@ -9,6 +11,8 @@ public class CollectingCurrencyHandler
 
     public void GetCurrency(int receivedCurrency)
     {
+        Debug.Log($"GetCurrency in CollectinCurrencyHandler = {receivedCurrency}");
+
         _currencyCounter.GetCurrency(receivedCurrency);
     }
 }

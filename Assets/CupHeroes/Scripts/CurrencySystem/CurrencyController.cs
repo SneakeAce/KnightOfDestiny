@@ -1,18 +1,12 @@
 using System;
-using UnityEngine;
 
 public class CurrencyController : ICurrencyController, IDisposable
 {
-    private IEntity _entity;
-
     private CurrencyCounter _currencyCounter;
-    private CollectingCurrencyHandler _collectingCurrency;
 
-    public CurrencyController(IEntity entity, CurrencyCounter currencyCounter, CollectingCurrencyHandler collectingCurrency)
+    public CurrencyController(CurrencyCounter currencyCounter)
     {
-        _entity = entity;
         _currencyCounter = currencyCounter;
-        _collectingCurrency = collectingCurrency;
     }
 
     public event Action<int> OnCurrencyChanged;
@@ -31,6 +25,4 @@ public class CurrencyController : ICurrencyController, IDisposable
     { 
         OnCurrencyChanged?.Invoke(receivedCurrency);
     }
-
-
 }

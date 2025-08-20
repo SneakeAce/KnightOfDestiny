@@ -16,6 +16,8 @@ public class CurrencyCounter : IDisposable
 
     public void GetCurrency(int receivedCurrency)
     {
+        Debug.Log($"GetCurrency in CurrencyCounter = {receivedCurrency}");
+
         _currentCurrencyAmount += receivedCurrency;
 
         CurrentCurrencyAmountChanged?.Invoke(_currentCurrencyAmount);

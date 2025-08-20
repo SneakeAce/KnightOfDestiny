@@ -29,14 +29,11 @@ public class EnemyWaveController
 
     public void Initialize()
     {
-        Debug.Log("WaveController Initialize");
         SetParameters();
     }
 
     public void StartWave()
     {
-        Debug.Log("WaveController. StartWave!");
-
         _currentWave++;
 
         if (_currentWave == _maxWaves)
@@ -62,8 +59,6 @@ public class EnemyWaveController
 
     private void WaveDone()
     {
-        Debug.Log("WaveController. WaveDone");
-
         _maxEnemyOnWave = _maxEnemyOnWave + _amountEnemyMultiplier;
 
         if (_startWaveCoroutine != null)
@@ -86,8 +81,6 @@ public class EnemyWaveController
 
     private IEnumerator StartWaveJob()
     {
-        Debug.Log("WaveController. StartWaveJob");
-
         while (_currentEnemyOnWave < _maxEnemyOnWave)
         {
             var tempStartPosition = new Vector2((Random.Range(1.5f, 5f) * OffsetSpawnByAxes), 0f);
