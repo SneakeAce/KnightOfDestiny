@@ -89,8 +89,6 @@ public class ObjectPool<TObject>
 
     private TObject CreatePoolObject(bool isActiveByDefault = false)
     {
-        Debug.Log($"Prefab = {_prefab}");
-
         var instancePoolObject = Object.Instantiate(_prefab, _container);
         var poolObject = instancePoolObject.GetComponent<TObject>();
 

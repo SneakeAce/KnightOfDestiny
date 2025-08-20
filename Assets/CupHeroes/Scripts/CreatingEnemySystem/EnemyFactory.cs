@@ -16,11 +16,7 @@ public class EnemyFactory : IEnemyFactory
     {
         ObjectPool<Enemy> pool = _poolManager.GetRandomPool();
 
-        Debug.Log($"EnemyFactory pool = {pool}");
-
         Enemy enemy = (Enemy)pool.GetObjectFromPool();
-
-        Debug.Log($"EnemyFactory enemy = {enemy}");
 
         if (enemy == null)
             return null;

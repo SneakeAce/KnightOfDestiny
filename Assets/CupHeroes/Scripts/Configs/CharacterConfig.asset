@@ -15,8 +15,8 @@ MonoBehaviour:
   <EntityType>k__BackingField: 1
   <Prefab>k__BackingField: {fileID: 8946283988408273110, guid: 8324cd9f1411a824f862361bace8dcee, type: 3}
   <MainStats>k__BackingField:
-    <MoveSpeed>k__BackingField: 0
-    <BaseValueHealth>k__BackingField: 0
-    <BaseDamage>k__BackingField: 0
-    <BaseAttackSpeed>k__BackingField: 0
-    <AttackType>k__BackingField: 0
+    <MoveSpeed>k__BackingField: 2
+    <BaseValueHealth>k__BackingField: 100
+    <BaseDamage>k__BackingField: 10
+    <BaseAttackSpeed>k__BackingField: 1
+    <AttackType>k__BackingField: 2

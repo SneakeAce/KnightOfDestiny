@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: EnemyPoolsConfig
   m_EditorClassIdentifier: 
   <Pools>k__BackingField:
-  - <MaxCountEntitiesInPool>k__BackingField: 20
+  - <Container>k__BackingField: {fileID: 2126404670904637711, guid: 2b73ff769fb33ee4bbf1d2c5500630ed, type: 3}
+    <MaxCountEntitiesInPool>k__BackingField: 20
     <PoolCanExpand>k__BackingField: 1
-  - <MaxCountEntitiesInPool>k__BackingField: 10
+  - <Container>k__BackingField: {fileID: 2126404670904637711, guid: 2b73ff769fb33ee4bbf1d2c5500630ed, type: 3}
+    <MaxCountEntitiesInPool>k__BackingField: 10
     <PoolCanExpand>k__BackingField: 1

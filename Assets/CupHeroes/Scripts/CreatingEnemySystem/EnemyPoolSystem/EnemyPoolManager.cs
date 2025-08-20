@@ -23,7 +23,6 @@ public class EnemyPoolManager : IEnemyPoolManager
     public void Initialize()
     {
         CreatePools();
-        Debug.Log($"EnemyPoolManager initialized with {_enemiesPools.Count} pools");
     }
 
     public ObjectPool<Enemy> GetPool(EntityAttackType attackType)
