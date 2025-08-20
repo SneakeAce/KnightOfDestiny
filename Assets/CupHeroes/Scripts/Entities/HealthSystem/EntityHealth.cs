@@ -10,8 +10,11 @@ public class EntityHealth : IEntityHealth
 
     private IEntity _entity;
 
-    public event Action<float> CurrentHealthChanged;
-    public event Action<float> MaxHealthChanged;
+    public float CurrentHealth => _currentHealth;
+    public float MaxHealth => _maxHealth;
+
+    public event Action<float, float> CurrentHealthChanged;
+    public event Action<float> OnTakingDamage;
     public event Action<IEntity> EntityDied;
 
     public void Initialize(IEntity entity, float initialHealth)
@@ -21,15 +24,17 @@ public class EntityHealth : IEntityHealth
         _maxHealth = initialHealth;
         _currentHealth = _maxHealth;
 
-        CurrentHealthChanged?.Invoke(_currentHealth);
-        MaxHealthChanged?.Invoke(_maxHealth);
+        CurrentHealthChanged?.Invoke(_currentHealth, _maxHealth);
     }
 
     public void TakeDamage(DamageData damageData)
     {
         _currentHealth = _currentHealth - damageData.Damage;
 
-        CurrentHealthChanged?.Invoke(_currentHealth);
+        CurrentHealthChanged?.Invoke(_currentHealth, _maxHealth);
+        OnTakingDamage?.Invoke(damageData.Damage);
+
+        Debug.Log("TakeDamage in Health");
 
         if (_currentHealth <= MinHealthValue)
         {

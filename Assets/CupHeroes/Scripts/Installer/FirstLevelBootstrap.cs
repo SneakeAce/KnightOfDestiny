@@ -1,6 +1,5 @@
 public class FirstLevelBootstrap
 {
-    //Test
     private EnemyWaveController _waveController;
     private IEnemyPoolManager _poolManager;
 
@@ -8,19 +7,18 @@ public class FirstLevelBootstrap
     private PlayerHUD _playerHUD;
     private ICurrencyController _currencyController;
 
-    CollectingCurrencyHandler _currencyHandler;
+    private HealthBarController _healthBarController;
 
     public FirstLevelBootstrap(EnemyWaveController waveController, IEnemyPoolManager poolManager, 
-        CameraController cameraController, PlayerHUD playerHUD, CollectingCurrencyHandler currencyHandler,
-        ICurrencyController currencyController)
+        CameraController cameraController, PlayerHUD playerHUD, ICurrencyController currencyController, HealthBarController healthBarController)
     {
         _waveController = waveController;
         _poolManager = poolManager;
         _cameraController = cameraController;
         _playerHUD = playerHUD;
 
-        _currencyHandler = currencyHandler;
         _currencyController = currencyController;
+        _healthBarController = healthBarController;
 
         Initialize();
     }
@@ -35,6 +33,8 @@ public class FirstLevelBootstrap
 
         _poolManager.Initialize(); 
 
+        _healthBarController.Initialize();
+
         StartWaveController();
     }
 
@@ -44,8 +44,5 @@ public class FirstLevelBootstrap
 
         _waveController.StartWave();
 
-        int cur = 10;
-
-        _currencyHandler.GetCurrency(cur);
     }
 }

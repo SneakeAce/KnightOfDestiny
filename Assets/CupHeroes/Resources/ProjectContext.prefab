@@ -79,3 +79,5 @@ MonoBehaviour:
   _waveControllerConfig: {fileID: 11400000, guid: d6cb312391c5010478b8df3539cce0cc, type: 2}
   _characterConfig: {fileID: 11400000, guid: a9d8d65515cfd2e45ad1d1563304de6e, type: 2}
   _performerPrefab: {fileID: 233034101428583534, guid: fcb2b9e2072d2b44b93599780fa5df10, type: 3}
+  _healthBarViewPrefab: {fileID: 1667220775915779500, guid: f1d5253fb99577f498def1bbb141e4de, type: 3}
+  _damagePopupControllerPrefab: {fileID: 8395558213632162255, guid: a8bb0960fa8c32647b7bbcaf527002be, type: 3}

@@ -83,7 +83,7 @@ public class EnemyWaveController
     {
         while (_currentEnemyOnWave < _maxEnemyOnWave)
         {
-            var tempStartPosition = new Vector2((Random.Range(1.5f, 5f) * OffsetSpawnByAxes), 0f);
+            var tempStartPosition = new Vector2(100f, 0f);
 
             var tempStartRotation = Quaternion.Euler(0f, 180f, 0f);
 

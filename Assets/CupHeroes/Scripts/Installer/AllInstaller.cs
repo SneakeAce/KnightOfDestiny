@@ -7,7 +7,10 @@ public class AllInstaller : MonoInstaller
     [SerializeField] private EnemyPoolsConfig _enemyPoolsConfig;
     [SerializeField] private WaveControllerConfig _waveControllerConfig;
     [SerializeField] private CharacterConfig _characterConfig;
+
     [SerializeField] private CoroutinePerformer _performerPrefab;
+
+    [SerializeField] private HealthBarView _healthBarViewPrefab;
 
     public override void InstallBindings()
     {
@@ -74,7 +77,9 @@ public class AllInstaller : MonoInstaller
 
     private void BindCharacter()
     {
-        Container.Bind<CharacterConfig>().AsSingle();
+        Container.Bind<CharacterConfig>()
+            .FromInstance(_characterConfig)
+            .AsSingle();
 
         Character character = Container
             .InstantiatePrefabForComponent<Character>(
@@ -89,5 +94,22 @@ public class AllInstaller : MonoInstaller
         Container.BindInterfacesAndSelfTo<Character>()
             .FromInstance(character)
             .AsSingle();
+
+        BindHealthBar(character);
+    }
+
+    private void BindHealthBar(Character character)
+    {
+        HealthBarView bar = Container.InstantiatePrefabForComponent<HealthBarView>(_healthBarViewPrefab);
+
+        bar.transform.SetParent(character.transform);
+        bar.transform.position = new Vector3(character.transform.position.x - 1f, character.transform.position.y + 3f, 0f);
+
+        Container.Bind<HealthBarView>()
+            .FromInstance(bar)
+            .AsTransient();
+
+        Container.Bind<HealthBarController>()
+            .AsTransient();
     }
 }
