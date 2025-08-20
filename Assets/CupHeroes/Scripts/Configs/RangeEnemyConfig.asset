@@ -19,6 +19,6 @@ MonoBehaviour:
     <BaseValueHealth>k__BackingField: 109.25
     <BaseDamage>k__BackingField: 3.44
     <BaseAttackSpeed>k__BackingField: 2.87
-    <AttackType>k__BackingField: -1
+    <AttackType>k__BackingField: 2
   <MinAmountCurrencyDropped>k__BackingField: 1
   <MaxAmountCurrencyDropped>k__BackingField: 5

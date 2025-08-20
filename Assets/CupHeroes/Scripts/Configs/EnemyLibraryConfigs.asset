@@ -14,4 +14,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <EnemyConfigs>k__BackingField:
   - {fileID: 11400000, guid: 49419eb2f897df44ea7ff4bb9a5e4bd6, type: 2}
-  - {fileID: 11400000, guid: c3c0390fbe82f7c4d9bcad396c21d347, type: 2}
