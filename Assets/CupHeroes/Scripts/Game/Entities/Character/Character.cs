@@ -15,16 +15,9 @@ public class Character : MonoBehaviour, IEntity
     private CharacterConfig _config;
 
     [Inject]
-    private void Construct(IEntityHealth health, CharacterConfig config)
+    private void Construct(IEntityHealth health)
     {
         _health = health;
-        _config = config;
-
-        if (_config != null)
-        {
-            Debug.Log($"Character Initialize config.MainStats = {_config.MainStats}");
-        }
-        Debug.Log($"Character health = {_health}");
     }
 
     public Transform Transform => transform;
@@ -71,6 +64,10 @@ public class Character : MonoBehaviour, IEntity
 
         float dm = 10f;
         DamageData d = new DamageData(dm);
+
+        _health.TakeDamage(d);
+
+        yield return new WaitForSeconds(30f);
 
         _health.TakeDamage(d);
     }

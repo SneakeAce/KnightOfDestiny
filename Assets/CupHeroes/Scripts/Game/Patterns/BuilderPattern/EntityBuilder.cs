@@ -6,14 +6,19 @@ public class EntityBuilder : IEntityBuilder
     private const float OffsetPositionHealthBarByY = 2f;
 
     private IUISpawner _uiSpawner;
-    //private IConfigsProivder _configsProvider;
+    private IConfigsProvider _configsProvider;
 
-    public EntityBuilder(IUISpawner uiSpawner)
+    private HealthBarConfig _healthBarConfig;
+
+    public EntityBuilder(IUISpawner uiSpawner, IConfigsProvider configsProvider)
     {
         _uiSpawner = uiSpawner;
+        _configsProvider = configsProvider;
+
+        _healthBarConfig = _configsProvider.GetSingleConfig<HealthBarConfig>().GetConfig<HealthBarConfig>();
     }
 
-    public IEntity BuildEntity(IEntity baseEntity)
+    public IEntity BuildEntity(ref IEntity baseEntity)
     {
         IEntity entityInstance = baseEntity;
 
@@ -29,7 +34,7 @@ public class EntityBuilder : IEntityBuilder
 
     private HealthBarView GetHealthBar(IEntity entity)
     {
-        UISPawnerData data = new UISPawnerData();
+        UISPawnerData data = new UISPawnerData(_healthBarConfig.Prefab, Vector2.zero, Quaternion.identity);
 
         HealthBarView view = _uiSpawner.SpawnObject<HealthBarView>(data);
 
@@ -37,6 +42,7 @@ public class EntityBuilder : IEntityBuilder
             throw new ArgumentNullException("healthBar in EntityBuilder is null!");
 
         HealthBarController barController = new HealthBarController(entity, view);
+
         barController.Initialize();
 
         return view;

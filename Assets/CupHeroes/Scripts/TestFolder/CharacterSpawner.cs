@@ -5,14 +5,16 @@ public class CharacterSpawner
 {
     private DiContainer _container;
     private IConfigsProvider _configsProvider;
+    private IEntityBuilder _entityBuilder;
 
-    public CharacterSpawner(DiContainer container, IConfigsProvider configsProvider)
+    public CharacterSpawner(DiContainer container, IConfigsProvider configsProvider, IEntityBuilder entityBuilder)
     {
         _container = container;
         _configsProvider = configsProvider;
+        _entityBuilder = entityBuilder;
     }
 
-    public void CreateCharacter()
+    public Character CreateCharacter()
     {
         CharacterConfig config = GetCharacterConfig();
 
@@ -25,15 +27,23 @@ public class CharacterSpawner
             config.SpawnRotation,
             null);
 
+        IEntity charEntity = character.GetComponent<IEntity>();
+
+        _entityBuilder.BuildEntity(ref charEntity);
+
         if (character == null)
             throw new ArgumentNullException("Character in CharacterSpawner is null!");
 
         BindCharacter(character);
+
+        charEntity.SetConfig(config);
+
+        return (Character)charEntity;
     }
 
     private CharacterConfig GetCharacterConfig()
     {
-        return (CharacterConfig)_configsProvider.GetSingleConfig<CharacterConfig>();
+        return _configsProvider.GetSingleConfig<CharacterConfig>().GetConfig<CharacterConfig>();
     }
 
     private void BindCharacter(Character character)

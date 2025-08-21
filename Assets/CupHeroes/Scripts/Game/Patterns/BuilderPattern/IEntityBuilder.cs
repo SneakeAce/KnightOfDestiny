@@ -1,4 +1,4 @@
 public interface IEntityBuilder
 {
-    IEntity BuildEntity(IEntity baseEntity);
+    IEntity BuildEntity(ref IEntity baseEntity);
 }

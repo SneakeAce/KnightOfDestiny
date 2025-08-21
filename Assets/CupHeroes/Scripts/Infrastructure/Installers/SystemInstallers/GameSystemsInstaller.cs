@@ -19,23 +19,23 @@ public class GameSystemsInstaller : MonoInstaller
 
     private void BindEnemySpawnerSystem()
     {
-        Container.Bind<IEnemyPoolsFactory>()
-            .To<EnemyPoolsFactory>()
-            .AsSingle();
+        //Container.Bind<IEnemyPoolsFactory>()
+        //.To<EnemyPoolsFactory>()
+        //.AsSingle();
 
-        Container.Bind<IEnemyPoolManager>()
-            .To<EnemyPoolManager>()
-            .AsSingle();
+        //Container.Bind<IEnemyPoolManager>()
+        //    .To<EnemyPoolManager>()
+        //    .AsSingle();
 
-        Container.Bind<IEnemyFactory>()
-            .To<EnemyFactory>()
-            .AsSingle();
+        //Container.Bind<IEnemyFactory>()
+        //    .To<EnemyFactory>()
+        //    .AsSingle();
 
-        Container.Bind<EnemySpawner>()
-            .AsSingle();
+        //Container.Bind<EnemySpawner>()
+        //.AsSingle();
 
-        Container.Bind<EnemyWaveController>()
-            .AsSingle();
+        //Container.Bind<EnemyWaveController>()
+        //.AsSingle();
     }
 
     private void BindCurrencySystem()
@@ -57,10 +57,10 @@ public class GameSystemsInstaller : MonoInstaller
     private void BindCameraSpawner()
     {
         Container.Bind<ICameraSpawner>()
-            .To<CameraSpawner>()
+            .To<CamerasSpawner>()
             .AsSingle();
 
-        Container.Bind<CameraController>()
-            .AsSingle().WithArguments(_cinemachineCameraPrefab, _cameraPrefab);
+        Container.Bind<CamerasController>()
+            .AsSingle();
     }
 }

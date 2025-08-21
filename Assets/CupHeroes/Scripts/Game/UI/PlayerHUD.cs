@@ -8,10 +8,10 @@ public class PlayerHUD : MonoBehaviour
     [SerializeField] private Canvas _hudCanvas;
 
     private CurrencyDisplayController _currencyDisplayController;
-    private CameraController _cameraController;
+    private CamerasController _cameraController;
 
     [Inject]
-    private void Construct(CurrencyDisplayController currencyDisplayController, CameraController cameraController)
+    private void Construct(CurrencyDisplayController currencyDisplayController, CamerasController cameraController)
     {
         _currencyDisplayController = currencyDisplayController;
         _cameraController = cameraController;

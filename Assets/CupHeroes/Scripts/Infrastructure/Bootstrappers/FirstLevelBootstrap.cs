@@ -3,25 +3,22 @@ public class FirstLevelBootstrap
     private EnemyWaveController _waveController;
     private IEnemyPoolManager _poolManager;
 
-    private CameraController _cameraController;
+    private CamerasController _camerasController;
     
     private CharacterSpawner _characterSpawner;
     private PlayerHUD _playerHUD;
     private ICurrencyController _currencyController;
 
-    private HealthBarController _healthBarController;
-
-    public FirstLevelBootstrap(EnemyWaveController waveController, IEnemyPoolManager poolManager, 
-        CameraController cameraController, PlayerHUD playerHUD, ICurrencyController currencyController,
-        HealthBarController healthBarController, CharacterSpawner characterSpawner)
+    public FirstLevelBootstrap(
+        CamerasController camerasController, PlayerHUD playerHUD, ICurrencyController currencyController, 
+        CharacterSpawner characterSpawner)
     {
-        _waveController = waveController;
-        _poolManager = poolManager;
-        _cameraController = cameraController;
+        //_waveController = waveController;
+        //_poolManager = poolManager;
+        _camerasController = camerasController;
         _playerHUD = playerHUD;
 
         _currencyController = currencyController;
-        _healthBarController = healthBarController;
         _characterSpawner = characterSpawner;
 
         Initialize();
@@ -29,26 +26,25 @@ public class FirstLevelBootstrap
 
     private void Initialize()
     {
-        _characterSpawner.CreateCharacter();
+        Character character = _characterSpawner.CreateCharacter();
 
-        _cameraController.Initialize();
+        _camerasController.Initialize();
+        _camerasController.SetTargetForCamera(character);
 
         _playerHUD.Initialize();
 
         _currencyController.Initialize();
 
-        _poolManager.Initialize(); 
+        //_poolManager.Initialize(); 
 
-        _healthBarController.Initialize();
-
-        StartWaveController();
+        //StartWaveController();
     }
 
     private void StartWaveController()
     {
-        _waveController.Initialize();
-
-        _waveController.StartWave();
+        //_waveController.Initialize();
+        //
+        //_waveController.StartWave();
 
     }
 }

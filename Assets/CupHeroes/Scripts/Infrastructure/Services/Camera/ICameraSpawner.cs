@@ -2,8 +2,7 @@ using Unity.Cinemachine;
 using UnityEngine;
 
 public interface ICameraSpawner
-{
-    void Initialize(CinemachineCamera cinemachineCameraPrefab, Camera cameraPrefab);
-    CinemachineCamera GetCinemachineCamera();
-    Camera GetWorldCamera();
+{ 
+    Camera SpawnWorldCamera(CameraSpawnData cameraData);
+    CinemachineCamera SpawnCinemachineCamera(CinemachineCameraSpawnData cmCameraData);
 }
