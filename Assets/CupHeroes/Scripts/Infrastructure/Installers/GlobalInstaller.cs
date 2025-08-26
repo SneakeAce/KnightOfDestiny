@@ -9,6 +9,8 @@ public class GlobalInstaller : MonoInstaller
     {
         BindConfigsProvider();
 
+        BindPoolsManager();
+
         BindGlobalBootstrapper();
     }
 
@@ -18,6 +20,17 @@ public class GlobalInstaller : MonoInstaller
             .To<ConfigsProvider>()
             .AsSingle()
             .WithArguments(_configsContainer);
+    }
+
+    private void BindPoolsManager()
+    {
+        Container.Bind<IPoolsFactory>()
+            .To<EnemyPoolsFactory>()
+            .AsSingle();
+
+        Container.Bind<IPoolsManager>()
+            .To<PoolsManager>()
+            .AsSingle();
     }
 
     private void BindGlobalBootstrapper()

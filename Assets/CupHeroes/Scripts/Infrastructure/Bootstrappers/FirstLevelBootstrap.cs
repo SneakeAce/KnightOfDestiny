@@ -1,7 +1,7 @@
 public class FirstLevelBootstrap
 {
     private EnemyWaveController _waveController;
-    private IEnemyPoolManager _poolManager;
+    private IPoolsManager _poolsManager;
 
     private CamerasController _camerasController;
     
@@ -9,12 +9,12 @@ public class FirstLevelBootstrap
     private PlayerHUD _playerHUD;
     private ICurrencyController _currencyController;
 
-    public FirstLevelBootstrap(
+    public FirstLevelBootstrap(IPoolsManager poolsManager, EnemyWaveController waveController,
         CamerasController camerasController, PlayerHUD playerHUD, ICurrencyController currencyController, 
         CharacterSpawner characterSpawner)
     {
-        //_waveController = waveController;
-        //_poolManager = poolManager;
+        _waveController = waveController;
+        _poolsManager = poolsManager;
         _camerasController = camerasController;
         _playerHUD = playerHUD;
 
@@ -26,6 +26,8 @@ public class FirstLevelBootstrap
 
     private void Initialize()
     {
+        _poolsManager.Initialize();
+
         Character character = _characterSpawner.CreateCharacter();
 
         _camerasController.Initialize();
@@ -35,16 +37,13 @@ public class FirstLevelBootstrap
 
         _currencyController.Initialize();
 
-        //_poolManager.Initialize(); 
-
-        //StartWaveController();
+        StartWaveController();
     }
 
     private void StartWaveController()
     {
-        //_waveController.Initialize();
-        //
-        //_waveController.StartWave();
-
+        _waveController.Initialize();
+        
+        _waveController.StartWave();
     }
 }

@@ -41,9 +41,6 @@ public class Character : MonoBehaviour, IEntity
 
         _stateMachine = GetComponent<IEntityStateMachine>();
 
-        Debug.Log($"Character Initialize health = {_health}");
-        Debug.Log($"Character Initialize config = {_config.MainStats}");
-
         _health.Initialize(this, _config.MainStats.BaseValueHealth);
 
         StartCoroutine(TakeDamage());

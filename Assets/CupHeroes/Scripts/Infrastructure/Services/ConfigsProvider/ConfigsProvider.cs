@@ -8,6 +8,7 @@ public class ConfigsProvider : IConfigsProvider
 
     private Dictionary<Type, object> _librariesConfigs = new Dictionary<Type, object>();
     private Dictionary<Type, object> _singleConfigs = new Dictionary<Type, object>();
+    private Dictionary<Type, object> _poolsConfigs = new Dictionary<Type, object>();
 
     public ConfigsProvider(IConfigsContainer configsContainer)
     {
@@ -20,6 +21,7 @@ public class ConfigsProvider : IConfigsProvider
 
         _librariesConfigs = LibraryConfigsCaching();
         _singleConfigs = SingleConfigsCaching();
+        _poolsConfigs = PoolsConfigsCaching();
     }
 
     public LibraryConfigsBase GetLibraryConfig<T>() where T : ScriptableObject
@@ -48,6 +50,19 @@ public class ConfigsProvider : IConfigsProvider
         throw new KeyNotFoundException($"No Config found for type {typeof(T)}.");
     }
 
+    public PoolsConfigBase GetPoolsConfig<T>() where T : ScriptableObject
+    {
+        if (_poolsConfigs.TryGetValue(typeof(T), out var poolsConfig))
+        {
+            if (poolsConfig is PoolsConfigBase poolConfig)
+                return poolConfig;
+
+            throw new InvalidCastException($"Library for type {typeof(T)} does not implement ILibraryConfigs.");
+        }
+
+        throw new KeyNotFoundException($"No config library found for type {typeof(T)}.");
+    }
+
     private Dictionary<Type, object> LibraryConfigsCaching()
     {
         Dictionary<Type, object> tempDict = new Dictionary<Type, object>();
@@ -60,7 +75,7 @@ public class ConfigsProvider : IConfigsProvider
             if (currentLib is not LibraryConfigsBase)
                 throw new InvalidCastException("Object is not LibraryConfigsBase!");
 
-            if (_librariesConfigs.ContainsKey(currentLibType))
+            if (tempDict.ContainsKey(currentLibType))
                 continue;
 
             tempDict[currentLibType] = currentLib;
@@ -81,7 +96,28 @@ public class ConfigsProvider : IConfigsProvider
             if (typeof(SingleConfigBase).IsAssignableFrom(currentConfigType) == false)
                 throw new InvalidCastException("Object is not SingleConfigBase!");
 
-            if (_singleConfigs.ContainsKey(currentConfigType))
+            if (tempDict.ContainsKey(currentConfigType))
+                continue;
+
+            tempDict[currentConfigType] = currentConfig;
+        }
+
+        return tempDict;
+    }
+
+    private Dictionary<Type, object> PoolsConfigsCaching()
+    {
+        Dictionary<Type, object> tempDict = new Dictionary<Type, object>();
+
+        for (int i = 0; i < _configsContainer.PoolsConfigs.Count; i++)
+        {
+            var currentConfig = _configsContainer.PoolsConfigs[i];
+            var currentConfigType = currentConfig.GetType();
+
+            if (typeof(PoolsConfigBase).IsAssignableFrom(currentConfigType) == false)
+                throw new InvalidCastException("Object is not SingleConfigBase!");
+
+            if (tempDict.ContainsKey(currentConfigType))
                 continue;
 
             tempDict[currentConfigType] = currentConfig;

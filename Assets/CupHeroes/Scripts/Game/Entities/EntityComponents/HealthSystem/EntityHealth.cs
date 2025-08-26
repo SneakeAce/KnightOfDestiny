@@ -29,12 +29,15 @@ public class EntityHealth : IEntityHealth
 
     public void TakeDamage(DamageData damageData)
     {
-        _currentHealth = _currentHealth - damageData.Damage;
+        if (damageData.Damage > 0)
+            _currentHealth = _currentHealth - damageData.Damage;
+        else
+            Debug.Log($"Damage is 0 or negative damage = {damageData.Damage}");
 
         CurrentHealthChanged?.Invoke(_currentHealth, _maxHealth);
         OnTakingDamage?.Invoke(damageData.Damage);
 
-        Debug.Log("TakeDamage in Health");
+        Debug.Log($"TakeDamage in Health. damage = {damageData.Damage}");
 
         if (_currentHealth <= MinHealthValue)
         {

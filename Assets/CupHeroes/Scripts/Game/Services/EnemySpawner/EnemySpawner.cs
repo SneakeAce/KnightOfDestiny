@@ -3,21 +3,22 @@ using UnityEngine;
 public class EnemySpawner
 {
     private IEnemyFactory _enemyFactory;
+    private IEntityBuilder _entityBuilder;
 
-    public EnemySpawner(IEnemyFactory enemyFactory)
+    public EnemySpawner(IEnemyFactory enemyFactory, IEntityBuilder entityBuilder)
     {
         _enemyFactory = enemyFactory;
     }
 
-    public Enemy SpawnEnemy(Vector2 spawnPosition, Quaternion spawnRotation)
+    public IEnemy SpawnEnemy(Vector2 spawnPosition, Quaternion spawnRotation)
     {
-        Enemy enemy = _enemyFactory.CreateEnemy();
+        IEnemy enemy = _enemyFactory.CreateEnemy();
 
         if (enemy == null)
             return null;
 
-        enemy.transform.position = spawnPosition;
-        enemy.transform.rotation = spawnRotation;
+        enemy.Transform.position = spawnPosition;
+        enemy.Transform.rotation = spawnRotation;
 
         return enemy;
     }

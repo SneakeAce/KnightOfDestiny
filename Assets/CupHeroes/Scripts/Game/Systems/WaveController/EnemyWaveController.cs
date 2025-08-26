@@ -16,14 +16,16 @@ public class EnemyWaveController
     private int _maxEnemyOnWave;
     private int _amountEnemyMultiplier;
 
-    private int _currentEnemyOnWave;
+    private int _currentCountEnemyOnWave;
     private int _currentWave;
 
-    public EnemyWaveController(EnemySpawner spawner, WaveControllerConfig config, 
+    public EnemyWaveController(EnemySpawner spawner, IConfigsProvider configsProvider,
         CoroutinePerformer coroutinePerformer)
     {
         _spawner = spawner;
-        _config = config;
+
+        _config = configsProvider.GetSingleConfig<WaveControllerConfig>().GetConfig<WaveControllerConfig>();
+
         _coroutinePerformer = coroutinePerformer;
     }
 
@@ -46,7 +48,7 @@ public class EnemyWaveController
             return;
         }
 
-        _currentEnemyOnWave = 0;
+        _currentCountEnemyOnWave = 0;
 
         if (_startWaveCoroutine != null)
         {
@@ -81,13 +83,13 @@ public class EnemyWaveController
 
     private IEnumerator StartWaveJob()
     {
-        while (_currentEnemyOnWave < _maxEnemyOnWave)
+        while (_currentCountEnemyOnWave < _maxEnemyOnWave)
         {
             var tempStartPosition = new Vector2(100f, 0f);
 
             var tempStartRotation = Quaternion.Euler(0f, 180f, 0f);
 
-            Enemy enemy = _spawner.SpawnEnemy(tempStartPosition, tempStartRotation);
+            IEnemy enemy = _spawner.SpawnEnemy(tempStartPosition, tempStartRotation);
 
             if (enemy == null)
             {
@@ -96,7 +98,7 @@ public class EnemyWaveController
                 continue;
             }
 
-            _currentEnemyOnWave++;
+            _currentCountEnemyOnWave++;
 
             yield return null;
         }

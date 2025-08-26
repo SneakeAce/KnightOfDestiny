@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe88fee74cf5a9d4a9f595c60456b58d, type: 3}
   m_Name: MeleeEnemyConfig
   m_EditorClassIdentifier: 
-  <EntityType>k__BackingField: 2
   <Prefab>k__BackingField: {fileID: 5821485525167215844, guid: 1c0aed218db09eb4abd9502119d6981d, type: 3}
   <MainStats>k__BackingField:
     <MoveSpeed>k__BackingField: 0.96
@@ -20,5 +19,6 @@ MonoBehaviour:
     <BaseDamage>k__BackingField: 6.04
     <BaseAttackSpeed>k__BackingField: 2.79
     <AttackType>k__BackingField: 1
+  <EnemyType>k__BackingField: 1
   <MinAmountCurrencyDropped>k__BackingField: 1
   <MaxAmountCurrencyDropped>k__BackingField: 5

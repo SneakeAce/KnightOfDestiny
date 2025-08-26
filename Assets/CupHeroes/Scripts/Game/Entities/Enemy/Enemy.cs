@@ -1,6 +1,7 @@
 using UnityEngine;
+using Zenject;
 
-public class Enemy : MonoBehaviour, IEntity
+public class Enemy : MonoBehaviour, IEnemy
 {
     private Collider2D _collider;
     private Rigidbody2D _rigidbody;
@@ -10,7 +11,9 @@ public class Enemy : MonoBehaviour, IEntity
     private IEntityStateMachine _stateMachine;
 
     private EnemyConfig _config;
+    private IObjectPool _currentPool;
 
+    [Inject]
     private void Construct(IEntityHealth health)
     {
         _health = health;
@@ -31,6 +34,8 @@ public class Enemy : MonoBehaviour, IEntity
         _animator = GetComponent<Animator>();
 
         _stateMachine = GetComponent<IEntityStateMachine>();
+
+        _health.Initialize(this, _config.MainStats.BaseValueHealth);
     }
 
     public void SetConfig(EntityConfig config)
@@ -41,6 +46,17 @@ public class Enemy : MonoBehaviour, IEntity
             Debug.LogError("Invalid config type for Character");
     }
 
+    public void SetPool(IObjectPool currentPool)
+    {
+        _currentPool = currentPool;
+        _health.EntityDied += ReturnInPool;
+    }
+
+    private void ReturnInPool(IEntity entity)
+    {
+        _currentPool.ReturnPoolObject(entity as Enemy);
+    }
+
     private void OnDisable()
     {
         _health = null;
@@ -49,5 +65,8 @@ public class Enemy : MonoBehaviour, IEntity
         _rigidbody = null;
         _animator = null;
         _stateMachine = null;
+
+        if (_health != null)
+            _health.EntityDied -= ReturnInPool;
     }
 }

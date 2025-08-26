@@ -19,7 +19,7 @@ public struct PoolCreatingArguments
     public Transform Container { get; }
 }
 
-public class ObjectPool<TObject>
+public class ObjectPool<TObject> : IObjectPool
     where TObject : MonoBehaviour
 {
     private const int CountPerSpawn = 1;

@@ -12,7 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b29336bbb9c0e84bbf20cbbd564a7ca, type: 3}
   m_Name: EnemyPoolsConfig
   m_EditorClassIdentifier: 
-  <Pools>k__BackingField:
+  <PoolType>k__BackingField: 1
+  <PoolsStats>k__BackingField:
   - <Container>k__BackingField: {fileID: 2126404670904637711, guid: 2b73ff769fb33ee4bbf1d2c5500630ed, type: 3}
     <MaxCountEntitiesInPool>k__BackingField: 10
-    <PoolCanExpand>k__BackingField: 1
+    <PoolCanExpand>k__BackingField: 0
+    <Type>k__BackingField: 1
+  - <Container>k__BackingField: {fileID: 2126404670904637711, guid: 2b73ff769fb33ee4bbf1d2c5500630ed, type: 3}
+    <MaxCountEntitiesInPool>k__BackingField: 1
+    <PoolCanExpand>k__BackingField: 0
+    <Type>k__BackingField: 2

@@ -4,10 +4,6 @@ using Zenject;
 
 public class GameSystemsInstaller : MonoInstaller
 {
-    [Header("CameraPrefabs")]
-    [SerializeField] private Camera _cameraPrefab;
-    [SerializeField] private CinemachineCamera _cinemachineCameraPrefab;
-
     public override void InstallBindings()
     {
         BindCameraSpawner();
@@ -19,23 +15,15 @@ public class GameSystemsInstaller : MonoInstaller
 
     private void BindEnemySpawnerSystem()
     {
-        //Container.Bind<IEnemyPoolsFactory>()
-        //.To<EnemyPoolsFactory>()
-        //.AsSingle();
+        Container.Bind<IEnemyFactory>()
+            .To<EnemyFactory>()
+            .AsSingle();
 
-        //Container.Bind<IEnemyPoolManager>()
-        //    .To<EnemyPoolManager>()
-        //    .AsSingle();
+        Container.Bind<EnemySpawner>()
+        .AsSingle();
 
-        //Container.Bind<IEnemyFactory>()
-        //    .To<EnemyFactory>()
-        //    .AsSingle();
-
-        //Container.Bind<EnemySpawner>()
-        //.AsSingle();
-
-        //Container.Bind<EnemyWaveController>()
-        //.AsSingle();
+        Container.Bind<EnemyWaveController>()
+        .AsSingle();
     }
 
     private void BindCurrencySystem()

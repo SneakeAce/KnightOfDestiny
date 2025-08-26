@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <CamerasStats>k__BackingField:
     <CameraStats>k__BackingField:
-      <CameraPrefab>k__BackingField: {fileID: 0}
+      <CameraPrefab>k__BackingField: {fileID: 2532724661543692221, guid: 812f13fd87bf5874a9f6b66bbdc0a218, type: 3}
       <CameraSpawnPosition>k__BackingField: {x: 0, y: 0}
       <CameraSpawnRotation>k__BackingField: {x: 0, y: 0, z: 0, w: 0}
     <CmCameraStats>k__BackingField:
-      <CmCameraPrefab>k__BackingField: {fileID: 0}
+      <CmCameraPrefab>k__BackingField: {fileID: 5466324620894297170, guid: be51fa8ab77a3884e9070923ae910838, type: 3}
       <CmCameraSpawnPosition>k__BackingField: {x: 0, y: 0}
       <CmCameraSpawnRotation>k__BackingField: {x: 0, y: 0, z: 0, w: 0}
