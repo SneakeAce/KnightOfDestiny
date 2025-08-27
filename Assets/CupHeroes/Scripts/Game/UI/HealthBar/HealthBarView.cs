@@ -1,18 +1,25 @@
 using System;
+using DG.Tweening;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HealthBarView : MonoBehaviour
+public class HealthBarView : UIElement
 {
     [SerializeField] private Image _filledImage;
     [SerializeField] private TextMeshProUGUI _healthAmountText;
 
+    private Tween _currentTween;
+
     public void SetHealth(float receivedCurrentHealth, float receivedMaxHealth)
     {
-        _filledImage.fillAmount = (float)receivedCurrentHealth / receivedMaxHealth;
+        float currentHealth = (float)receivedCurrentHealth / receivedMaxHealth;
 
         _healthAmountText.text = $"{receivedCurrentHealth.ConvertTo<Int32>()} / {receivedMaxHealth.ConvertTo<Int32>()}";
+
+        _currentTween?.Kill();
+
+        _currentTween = _filledImage.DOFillAmount(currentHealth, 0.5f);
     }
 }

@@ -32,28 +32,33 @@ public class EnemyPoolsFactory : IPoolsFactory
             EnemyPoolStats poolStats = _poolsConfig.PoolsStats[i]; 
 
             EnemyConfig currentConfig = _libraryConfig.EnemyConfigs[i];
-            int currentEntityType = (int)currentConfig.EnemyType;
+            EnemyType currentEnemyType = currentConfig.EnemyType;
 
-            if (poolStats.Type != (EnemyType)currentEntityType)
+            if (poolStats.Type != currentEnemyType)
             {
-                Debug.Log($"poolStats.{poolStats.Type} != currentEntityType.{currentEntityType}");
+                Debug.Log($"poolStats.{poolStats.Type} != currentEnemyType.{currentEnemyType}");
                 continue;
             }
 
-            IObjectPool pool = CreatePool(poolStats, currentConfig.Prefab);
+            IObjectPool pool = CreatePool(currentEnemyType, poolStats, currentConfig.Prefab);
 
-            tempDict[currentEntityType] = pool;
+            if (tempDict.ContainsKey((int)currentEnemyType))
+                continue;
+
+            tempDict[(int)currentEnemyType] = pool;
         }
 
         return tempDict;
     }
 
-    private ObjectPool<Enemy> CreatePool(PoolStats poolStats, GameObject prefab)
+    private ObjectPool<Enemy> CreatePool(Enum type, PoolStats poolStats, GameObject prefab)
     {
         GameObject container = GameObject.Instantiate(
             poolStats.Container.gameObject,
             new Vector3(0f, 0f, 0f),
             Quaternion.identity);
+
+        container.name = "Container " + type.ToString() + prefab.name;
 
         PoolCreatingArguments poolArgs = new PoolCreatingArguments(
             prefab, 

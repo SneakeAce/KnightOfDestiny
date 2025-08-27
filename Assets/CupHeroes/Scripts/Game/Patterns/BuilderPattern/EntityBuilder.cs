@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class EntityBuilder : IEntityBuilder
@@ -6,17 +7,15 @@ public class EntityBuilder : IEntityBuilder
     private const float OffsetPositionHealthBarByY = -0.5f;
     private const float MinValueByAxes = 0f;
 
+    private const UIElementType HealthBarType = UIElementType.HealthBar; 
+
     private IUISpawner _uiSpawner;
-    private IConfigsProvider _configsProvider;
 
-    private HealthBarConfig _healthBarConfig;
+    private Dictionary<Transform, HealthBarView> _parentsHealthBars = new();
 
-    public EntityBuilder(IUISpawner uiSpawner, IConfigsProvider configsProvider)
+    public EntityBuilder(IUISpawner uiSpawner)
     {
         _uiSpawner = uiSpawner;
-        _configsProvider = configsProvider;
-
-        _healthBarConfig = _configsProvider.GetSingleConfig<HealthBarConfig>().GetConfig<HealthBarConfig>();
     }
 
     public IEntity BuildEntity(ref IEntity baseEntity)
@@ -32,9 +31,9 @@ public class EntityBuilder : IEntityBuilder
 
     private HealthBarView GetHealthBar(IEntity entity)
     {
-        UISpawnerData data = new UISpawnerData(_healthBarConfig.Prefab, Vector2.zero, Quaternion.identity);
+        UISpawnerData data = new UISpawnerData(HealthBarType, Vector2.zero, Quaternion.identity);
 
-        HealthBarView view = _uiSpawner.SpawnObject<HealthBarView>(data);
+        HealthBarView view = (HealthBarView)_uiSpawner.SpawnObject(data);
 
         if (view == null)
             throw new ArgumentNullException("healthBar in EntityBuilder is null!");

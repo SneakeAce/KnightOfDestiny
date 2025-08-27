@@ -1,21 +1,64 @@
-using System;
+using System.Collections.Generic;
 using UnityEngine;
-using Zenject;
 
 public class UIFactory : IUIFactory
 {
-    public T CreateObject<T>(GameObject prefab) where T : MonoBehaviour
+    private IConfigsProvider _configsProvider;
+    private IPoolsManager _poolsManager;
+
+    private List<UIConfig> _libraryConfigs;
+    private PoolType _poolType;
+
+    public UIFactory(IConfigsProvider configsProvider, IPoolsManager poolsManager)
     {
-        T objInstance = prefab.GetComponent<T>();
+        _configsProvider = configsProvider;
+        _poolsManager = poolsManager;
 
-        if (objInstance == null)
-            throw new ArgumentNullException("objInstance T is null in UIFactory");
+        _libraryConfigs = _configsProvider.GetLibraryConfig<UILibraryConfigs>().GetConfigs<UIConfig>();
+        _poolType = _configsProvider.GetPoolsConfig<UIPoolsConfig>().PoolType;
+    }
 
-        T obj = GameObject.Instantiate(objInstance);
+    public UIElement CreateObject(UIElementType elementType)
+    {
+        UIConfig currentConfig = null;
 
-        if (obj == null)
-            throw new ArgumentNullException("obj T is null in UIFactory");
+        foreach (var config in _libraryConfigs)
+        {
+            if (config.GetTypeId() == (int)elementType)
+            {
+                currentConfig = config;
+                break;
+            }
+            else
+            {
+                continue;
+            }
+        }
 
-        return obj;
+        if (currentConfig == null)
+        {
+            Debug.Log($"CurrentConfig in UIFactory is null!");
+            return null;
+        }
+
+        var pool = _poolsManager.GetPool<UIElementType>(_poolType, elementType);
+
+        if (pool == null)
+        {
+            Debug.Log("Pool in UIFactory is null!");
+            return null;
+        }
+
+        UIElement element = (UIElement)pool.GetObjectFromPool();
+
+        if (element == null)
+        {
+            Debug.Log("Element in UIFactory is null!");
+            return null;
+        }
+
+        element.SetPool(pool);
+
+        return element;
     }
 }
