@@ -48,7 +48,7 @@ public class EnemyWaveController
             return;
         }
 
-        _currentCountEnemyOnWave = 0;
+        //_currentCountEnemyOnWave = 0;
 
         if (_startWaveCoroutine != null)
         {
@@ -78,14 +78,15 @@ public class EnemyWaveController
         _maxWaves = _config.MaxWaveOnLevel;
         _amountEnemyMultiplier = _config.MultiplierAmounEnemyOnWave;
 
-        _currentWave = 0; 
+        _currentWave = 0;
+        _currentCountEnemyOnWave = 0;
     }
 
     private IEnumerator StartWaveJob()
     {
         while (_currentCountEnemyOnWave < _maxEnemyOnWave)
         {
-            var tempStartPosition = new Vector2(100f, 0f);
+            var tempStartPosition = new Vector2(100f, -0.5f);
 
             var tempStartRotation = Quaternion.Euler(0f, 180f, 0f);
 

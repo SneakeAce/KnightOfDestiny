@@ -30,6 +30,8 @@ public class Enemy : MonoBehaviour, IEnemy
     public void Initialize()
     {
         _collider = GetComponent<Collider2D>();
+        Debug.Log($"Enemy Initialize. Collider = {Collider}");
+
         _rigidbody = GetComponent<Rigidbody2D>();
         _animator = GetComponent<Animator>();
 

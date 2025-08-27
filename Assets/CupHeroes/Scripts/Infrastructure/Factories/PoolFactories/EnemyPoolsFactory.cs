@@ -50,7 +50,10 @@ public class EnemyPoolsFactory : IPoolsFactory
 
     private ObjectPool<Enemy> CreatePool(PoolStats poolStats, GameObject prefab)
     {
-        GameObject container = GameObject.Instantiate(poolStats.Container.gameObject);
+        GameObject container = GameObject.Instantiate(
+            poolStats.Container.gameObject,
+            new Vector3(0f, 0f, 0f),
+            Quaternion.identity);
 
         PoolCreatingArguments poolArgs = new PoolCreatingArguments(
             prefab, 

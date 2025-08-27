@@ -8,11 +8,12 @@ public class EnemySpawner
     public EnemySpawner(IEnemyFactory enemyFactory, IEntityBuilder entityBuilder)
     {
         _enemyFactory = enemyFactory;
+        _entityBuilder = entityBuilder;
     }
 
     public IEnemy SpawnEnemy(Vector2 spawnPosition, Quaternion spawnRotation)
     {
-        IEnemy enemy = _enemyFactory.CreateEnemy();
+        IEntity enemy = _enemyFactory.CreateEnemy();
 
         if (enemy == null)
             return null;
@@ -20,6 +21,8 @@ public class EnemySpawner
         enemy.Transform.position = spawnPosition;
         enemy.Transform.rotation = spawnRotation;
 
-        return enemy;
+        _entityBuilder.BuildEntity(ref enemy);
+
+        return (IEnemy)enemy;
     }
 }

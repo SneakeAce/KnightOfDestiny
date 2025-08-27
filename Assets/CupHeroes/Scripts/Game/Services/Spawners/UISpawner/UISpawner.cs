@@ -1,9 +1,9 @@
 using System;
 using UnityEngine;
 
-public struct UISPawnerData
+public struct UISpawnerData
 {
-    public UISPawnerData(GameObject prefab, Vector2 spawnPosition, Quaternion spawnRotation)
+    public UISpawnerData(GameObject prefab, Vector2 spawnPosition, Quaternion spawnRotation)
     {
         Prefab = prefab;
         SpawnPosition = spawnPosition;
@@ -24,7 +24,7 @@ public class UISpawner : IUISpawner
         _factory = factory;
     }
 
-    public T SpawnObject<T>(UISPawnerData spawnerData) where T : MonoBehaviour
+    public T SpawnObject<T>(UISpawnerData spawnerData) where T : MonoBehaviour
     {
         T obj = _factory.CreateObject<T>(spawnerData.Prefab);
 

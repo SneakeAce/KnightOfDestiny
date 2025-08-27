@@ -28,11 +28,6 @@ public class Character : MonoBehaviour, IEntity
     public IEntityHealth Health => _health;
     public IEntityStateMachine StateMachine => _stateMachine;
 
-    private void Start()
-    {
-        Initialize();
-    }
-
     public void Initialize()
     {
         _collider = GetComponent<Collider2D>();

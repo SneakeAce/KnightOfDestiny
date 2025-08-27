@@ -29,14 +29,15 @@ public class CharacterSpawner
 
         IEntity charEntity = character.GetComponent<IEntity>();
 
+        charEntity.SetConfig(config);
+        charEntity.Initialize();
+
         _entityBuilder.BuildEntity(ref charEntity);
 
         if (character == null)
             throw new ArgumentNullException("Character in CharacterSpawner is null!");
 
         BindCharacter(character);
-
-        charEntity.SetConfig(config);
 
         return (Character)charEntity;
     }

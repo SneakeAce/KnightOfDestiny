@@ -3,7 +3,8 @@ using UnityEngine;
 
 public class EntityBuilder : IEntityBuilder
 {
-    private const float OffsetPositionHealthBarByY = 2f;
+    private const float OffsetPositionHealthBarByY = -0.5f;
+    private const float MinValueByAxes = 0f;
 
     private IUISpawner _uiSpawner;
     private IConfigsProvider _configsProvider;
@@ -24,17 +25,14 @@ public class EntityBuilder : IEntityBuilder
 
         HealthBarView bar = GetHealthBar(entityInstance);
 
-        bar.transform.SetParent(entityInstance.Transform);
-        bar.transform.position = new Vector2(entityInstance.Transform.position.x, entityInstance.Transform.position.y + OffsetPositionHealthBarByY);
-
         var result = entityInstance;
-
+        
         return result;
     }
 
     private HealthBarView GetHealthBar(IEntity entity)
     {
-        UISPawnerData data = new UISPawnerData(_healthBarConfig.Prefab, Vector2.zero, Quaternion.identity);
+        UISpawnerData data = new UISpawnerData(_healthBarConfig.Prefab, Vector2.zero, Quaternion.identity);
 
         HealthBarView view = _uiSpawner.SpawnObject<HealthBarView>(data);
 
@@ -44,6 +42,17 @@ public class EntityBuilder : IEntityBuilder
         HealthBarController barController = new HealthBarController(entity, view);
 
         barController.Initialize();
+
+        view.transform.SetParent(entity.Transform);
+
+        float heightEntity = entity.Collider.bounds.size.y;
+
+        view.transform.position = new Vector2(
+            entity.Transform.position.x, 
+            entity.Transform.position.y + OffsetPositionHealthBarByY + heightEntity
+            );
+
+        view.transform.eulerAngles = new Vector3(MinValueByAxes, entity.Transform.rotation.y, MinValueByAxes);
 
         return view;
     }
