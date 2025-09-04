@@ -12,5 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08ebed025ad4b3a45a40ca12b1c1feec, type: 3}
   m_Name: UIPoolsConfig
   m_EditorClassIdentifier: 
-  <PoolType>k__BackingField: 0
-  <PoolStats>k__BackingField: []
+  <PoolType>k__BackingField: 2
+  <PoolStats>k__BackingField:
+  - <Container>k__BackingField: {fileID: 2126404670904637711, guid: 2b73ff769fb33ee4bbf1d2c5500630ed, type: 3}
+    <MaxCountEntitiesInPool>k__BackingField: 30
+    <PoolCanExpand>k__BackingField: 1
+    <Type>k__BackingField: 1
+  - <Container>k__BackingField: {fileID: 2126404670904637711, guid: 2b73ff769fb33ee4bbf1d2c5500630ed, type: 3}
+    <MaxCountEntitiesInPool>k__BackingField: 100
+    <PoolCanExpand>k__BackingField: 1
+    <Type>k__BackingField: 2

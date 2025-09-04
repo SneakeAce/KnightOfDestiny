@@ -9,9 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 558a7b967d4076b4f953d02ed67dc2a1, type: 3}
-  m_Name: UILibraryConfigs
+  m_Script: {fileID: 11500000, guid: 1cc3833bf6bde81499b928b3698da847, type: 3}
+  m_Name: DamagePopupConfig
   m_EditorClassIdentifier: 
-  <Configs>k__BackingField:
-  - {fileID: 11400000, guid: a677b9571a5d1644e84106d8fe59b9ab, type: 2}
-  - {fileID: 11400000, guid: 895b12c85efd7dc4789c06377ac2756b, type: 2}
+  <Prefab>k__BackingField: {fileID: 5724076453942556250, guid: e239f8757aa3752468efdbaaa50b059a, type: 3}
+  <Type>k__BackingField: 2

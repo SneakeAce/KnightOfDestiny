@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class EntityBuilder : IEntityBuilder
@@ -11,8 +10,6 @@ public class EntityBuilder : IEntityBuilder
 
     private IUISpawner _uiSpawner;
 
-    private Dictionary<Transform, HealthBarView> _parentsHealthBars = new();
-
     public EntityBuilder(IUISpawner uiSpawner)
     {
         _uiSpawner = uiSpawner;
@@ -20,13 +17,11 @@ public class EntityBuilder : IEntityBuilder
 
     public IEntity BuildEntity(ref IEntity baseEntity)
     {
-        IEntity entityInstance = baseEntity;
+        HealthBarView bar = GetHealthBar(baseEntity);
 
-        HealthBarView bar = GetHealthBar(entityInstance);
+        CreatePopupController(baseEntity, bar.transform);
 
-        var result = entityInstance;
-        
-        return result;
+        return baseEntity;
     }
 
     private HealthBarView GetHealthBar(IEntity entity)
@@ -56,4 +51,9 @@ public class EntityBuilder : IEntityBuilder
         return view;
     }
 
+    private void CreatePopupController(IEntity entity, Transform transform)
+    {
+        PopupController popupController = new PopupController(entity, _uiSpawner, transform);
+        popupController.Initialize();
+    }
 }

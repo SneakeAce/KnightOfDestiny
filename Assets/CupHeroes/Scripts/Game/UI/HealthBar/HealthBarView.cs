@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class HealthBarView : UIElement
 {
+    [SerializeField] private Canvas _canvas; 
     [SerializeField] private Image _filledImage;
     [SerializeField] private TextMeshProUGUI _healthAmountText;
 
@@ -21,5 +22,10 @@ public class HealthBarView : UIElement
         _currentTween?.Kill();
 
         _currentTween = _filledImage.DOFillAmount(currentHealth, 0.5f);
+    }
+
+    private void OnEnable()
+    {
+        _canvas.worldCamera = Camera.main;
     }
 }
