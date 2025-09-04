@@ -3,14 +3,14 @@ using UnityEngine;
 
 public struct UISpawnerData
 {
-    public UISpawnerData(GameObject prefab, Vector2 spawnPosition, Quaternion spawnRotation)
+    public UISpawnerData(UIElementType elementType, Vector2 spawnPosition, Quaternion spawnRotation)
     {
-        Prefab = prefab;
+        ElementType = elementType;
         SpawnPosition = spawnPosition;
         SpawnRotation = spawnRotation;
     }
 
-    public GameObject Prefab { get; }
+    public UIElementType ElementType { get; }
     public Vector2 SpawnPosition { get; }
     public Quaternion SpawnRotation { get; }
 }
@@ -24,17 +24,17 @@ public class UISpawner : IUISpawner
         _factory = factory;
     }
 
-    public T SpawnObject<T>(UISpawnerData spawnerData) where T : MonoBehaviour
+    public UIElement SpawnObject(UISpawnerData spawnerData)
     {
-        T obj = _factory.CreateObject<T>(spawnerData.Prefab);
+        UIElement element = _factory.CreateObject(spawnerData.ElementType);
 
-        if (obj == null)
+        if (element == null)
             throw new ArgumentNullException("obj in UISpawner is null!");
 
-        obj.transform.position = spawnerData.SpawnPosition;
-        obj.transform.rotation = spawnerData.SpawnRotation;
+        element.transform.position = spawnerData.SpawnPosition;
+        element.transform.rotation = spawnerData.SpawnRotation;
 
-        return obj;
+        return element;
     }
 
 }

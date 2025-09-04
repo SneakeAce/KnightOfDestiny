@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <LibraryConfigs>k__BackingField:
   - {fileID: 11400000, guid: 390411c98b0d26b4d941b68000b6b683, type: 2}
+  - {fileID: 11400000, guid: 7a0163b72bb3bed46bdf5d64a7ba0828, type: 2}
   <SingleConfigs>k__BackingField:
   - {fileID: 11400000, guid: a9d8d65515cfd2e45ad1d1563304de6e, type: 2}
-  - {fileID: 11400000, guid: a677b9571a5d1644e84106d8fe59b9ab, type: 2}
   - {fileID: 11400000, guid: 993cbc031b82102468a6b049ff48994d, type: 2}
   - {fileID: 11400000, guid: d6cb312391c5010478b8df3539cce0cc, type: 2}
   <PoolsConfigs>k__BackingField:
   - {fileID: 11400000, guid: 19b5f0c6c90880a489a707c52d8d3de8, type: 2}
+  - {fileID: 11400000, guid: 27a0bb68d085d554fb3635093ddb02a7, type: 2}

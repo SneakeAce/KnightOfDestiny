@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using Zenject;
 
@@ -38,6 +39,8 @@ public class Enemy : MonoBehaviour, IEnemy
         _stateMachine = GetComponent<IEntityStateMachine>();
 
         _health.Initialize(this, _config.MainStats.BaseValueHealth);
+
+        StartCoroutine(TakeDamage());
     }
 
     public void SetConfig(EntityConfig config)
@@ -57,6 +60,26 @@ public class Enemy : MonoBehaviour, IEnemy
     private void ReturnInPool(IEntity entity)
     {
         _currentPool.ReturnPoolObject(entity as Enemy);
+    }
+
+    //TEST
+    private IEnumerator TakeDamage()
+    {
+        yield return new WaitForSeconds(20f);
+
+        float d = 50f;
+
+        DamageData damageData = new DamageData(d);
+
+        _health.TakeDamage(damageData);
+
+        yield return new WaitForSeconds(10f);
+
+        _health.TakeDamage(damageData);
+
+        yield return new WaitForSeconds(10f); 
+
+        _health.TakeDamage(damageData);
     }
 
     private void OnDisable()

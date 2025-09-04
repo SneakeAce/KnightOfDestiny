@@ -9,7 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 577289c2e9349f14ea073496da0738c3, type: 3}
-  m_Name: HealthBarConfig
+  m_Script: {fileID: 11500000, guid: 1cc3833bf6bde81499b928b3698da847, type: 3}
+  m_Name: DamagePopupConfig
   m_EditorClassIdentifier: 
-  <Prefab>k__BackingField: {fileID: 6779707632373938037, guid: f1d5253fb99577f498def1bbb141e4de, type: 3}
+  <Prefab>k__BackingField: {fileID: 5724076453942556250, guid: e239f8757aa3752468efdbaaa50b059a, type: 3}
+  <Type>k__BackingField: 2

@@ -49,11 +49,7 @@ public class EnemyFactory : IEnemyFactory
 
         var pool = _poolsManager.GetPool<EnemyType>(PoolType.EnemyEntityPool, currentEnemyType);
 
-        Debug.Log($"pool in EnemyFactory = {pool}");
-
         Enemy enemy = (Enemy)pool.GetObjectFromPool();
-
-        Debug.Log($"enemy in EnemyFactory = {enemy}");
 
         if (enemy == null)
             return null;
