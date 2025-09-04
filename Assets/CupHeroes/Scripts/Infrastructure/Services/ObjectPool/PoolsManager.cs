@@ -22,13 +22,8 @@ public class PoolsManager : IPoolsManager
         {
             int key = Convert.ToInt32(type);
 
-            Debug.Log($"int key = {key}");
-
             if (dictionaryPools.TryGetValue(key, out var pool))
-            {
-                Debug.Log($"pool in PoolsManager = {pool.GetType()}");
                 return pool;
-            }
 
             Debug.LogWarning($"This pool not found!");
             return null;

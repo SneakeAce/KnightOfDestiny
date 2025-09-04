@@ -8,9 +8,11 @@ public class FirstLevelBootstrap
     private CharacterSpawner _characterSpawner;
     private PlayerHUD _playerHUD;
     private ICurrencyController _currencyController;
+    private CurrencyDisplayController _currencyDisplayController;
 
     public FirstLevelBootstrap(IPoolsManager poolsManager, EnemyWaveController waveController,
-        CamerasController camerasController, PlayerHUD playerHUD, ICurrencyController currencyController, 
+        CamerasController camerasController, PlayerHUD playerHUD, 
+        ICurrencyController currencyController, CurrencyDisplayController currencyDisplayController,
         CharacterSpawner characterSpawner)
     {
         _waveController = waveController;
@@ -19,6 +21,8 @@ public class FirstLevelBootstrap
         _playerHUD = playerHUD;
 
         _currencyController = currencyController;
+        _currencyDisplayController = currencyDisplayController;
+
         _characterSpawner = characterSpawner;
 
         Initialize();
@@ -36,6 +40,7 @@ public class FirstLevelBootstrap
         _playerHUD.Initialize();
 
         _currencyController.Initialize();
+        _currencyDisplayController.Initialize();
 
         StartWaveController();
     }

@@ -9,7 +9,6 @@ public interface IEntity
     EntityConfig Config { get; }
     IEntityStateMachine StateMachine { get; }
     IEntityHealth Health { get; }
-
     void Initialize();
     void SetConfig(EntityConfig config);
 

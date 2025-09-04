@@ -11,8 +11,6 @@ public class CollectingCurrencyHandler
 
     public void GetCurrency(int receivedCurrency)
     {
-        Debug.Log($"GetCurrency in CollectinCurrencyHandler = {receivedCurrency}");
-
         _currencyCounter.GetCurrency(receivedCurrency);
     }
 }
