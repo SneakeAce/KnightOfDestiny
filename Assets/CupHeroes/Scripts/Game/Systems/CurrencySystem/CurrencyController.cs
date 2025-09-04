@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 public class CurrencyController : ICurrencyController, IDisposable
 {
@@ -22,7 +23,7 @@ public class CurrencyController : ICurrencyController, IDisposable
     }
 
     private void GetCurrentCurrencyAmount(int receivedCurrency) 
-    { 
+    {
         OnCurrencyChanged?.Invoke(receivedCurrency);
     }
 }

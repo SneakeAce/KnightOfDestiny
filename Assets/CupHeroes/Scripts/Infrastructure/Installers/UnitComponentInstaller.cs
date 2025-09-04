@@ -4,14 +4,22 @@ public class UnitComponentInstaller : MonoInstaller
 {
     public override void InstallBindings()
     {
-        BindEntityComponents();
+        BindCharacterHealth();
+        BindEnemyHealth();
     }
 
-    private void BindEntityComponents()
+
+    private void BindEnemyHealth()
     {
-        Container.Bind<IEntityHealth>()
-            .To<EntityHealth>()
+        Container.Bind<IEnemyHealth>()
+            .To<EnemyHealth>()
             .AsTransient();
     }
 
+    private void BindCharacterHealth()
+    {
+        Container.Bind<ICharacterHealth>()
+            .To<CharacterHealth>()
+            .AsTransient();
+    }
 }

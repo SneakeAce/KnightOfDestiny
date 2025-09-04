@@ -9,13 +9,13 @@ public class Character : MonoBehaviour, IEntity
     private Rigidbody2D _rigidbody;
     private Animator _animator;
 
-    private IEntityHealth _health;
+    private ICharacterHealth _health;
     private IEntityStateMachine _stateMachine;
 
     private CharacterConfig _config;
 
     [Inject]
-    private void Construct(IEntityHealth health)
+    private void Construct(ICharacterHealth health)
     {
         _health = health;
     }
@@ -25,8 +25,13 @@ public class Character : MonoBehaviour, IEntity
     public Rigidbody2D Rigidbody => _rigidbody;
     public Animator Animator => _animator;
     public EntityConfig Config => _config;
-    public IEntityHealth Health => _health;
     public IEntityStateMachine StateMachine => _stateMachine;
+
+    /// <summary>
+    /// If you need to access CharacterHealth specific methods, you can cast it like this: 
+    /// (ICharacterHealth)Health or health = entity.Health as ICharacterHealth.
+    /// </summary>
+    public IEntityHealth Health => _health; 
 
     public void Initialize()
     {

@@ -8,14 +8,14 @@ public class Enemy : MonoBehaviour, IEnemy
     private Rigidbody2D _rigidbody;
     private Animator _animator;
 
-    private IEntityHealth _health;
+    private IEnemyHealth _health;
     private IEntityStateMachine _stateMachine;
 
     private EnemyConfig _config;
     private IObjectPool _currentPool;
 
     [Inject]
-    private void Construct(IEntityHealth health)
+    private void Construct(IEnemyHealth health)
     {
         _health = health;
     }
@@ -25,8 +25,13 @@ public class Enemy : MonoBehaviour, IEnemy
     public Rigidbody2D Rigidbody => _rigidbody;
     public Animator Animator => _animator;
     public EntityConfig Config => _config;
-    public IEntityHealth Health => _health;
     public IEntityStateMachine StateMachine => _stateMachine;
+
+    /// <summary>
+    /// If you need to access EnemyHealth specific methods, you can cast it like this: 
+    /// (IEnemyHealth)Health or health = entity.Health as IEnemyHealth.
+    /// </summary>
+    public IEntityHealth Health => _health;
 
     public void Initialize()
     {
@@ -46,9 +51,15 @@ public class Enemy : MonoBehaviour, IEnemy
     public void SetConfig(EntityConfig config)
     {
         if (config is EnemyConfig enemyConfig)
+        {
             _config = enemyConfig;
+
+            _health.SetConfig(enemyConfig);
+        }
         else
+        {
             Debug.LogError("Invalid config type for Character");
+        }
     }
 
     public void SetPool(IObjectPool currentPool)

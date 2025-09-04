@@ -1,35 +1,29 @@
 using System;
-using TMPro;
 using UnityEngine;
 
 public class CurrencyDisplayController : IDisposable
 {
-    private TextMeshProUGUI _amountText;
-
+    private PlayerHUD _playerHUD;
     private ICurrencyController _currencyController;
 
-    public CurrencyDisplayController(ICurrencyController currencyController)
+    public CurrencyDisplayController(PlayerHUD playerHUD, ICurrencyController currencyController)
     {
+        _playerHUD = playerHUD;
         _currencyController = currencyController;
-    }
-
-    public void Initialize(TextMeshProUGUI amountText)
-    {
-        _amountText = amountText;
-        _currencyController.OnCurrencyChanged += UpdateDisplay;
-
-        Debug.Log($"Initialize in CurrencyDisplay amounText = {amountText}");
-    }
-
-    private void UpdateDisplay(int amountCurrency)
-    {
-        Debug.Log($"UdpateDisplay in CurrencyDisplay amountCurrency = {amountCurrency}");
-
-        _amountText.text = amountCurrency.ToString();
     }
 
     public void Dispose()
     {
-        _currencyController.OnCurrencyChanged -= UpdateDisplay;
+        _currencyController.OnCurrencyChanged -= UpdateAmountCurrency;
+    }
+
+    public void Initialize()
+    {
+        _currencyController.OnCurrencyChanged += UpdateAmountCurrency;
+    }
+
+    private void UpdateAmountCurrency(int amountCurrency)
+    {
+        _playerHUD.UpdateCurrencyDisplay(amountCurrency);
     }
 }
