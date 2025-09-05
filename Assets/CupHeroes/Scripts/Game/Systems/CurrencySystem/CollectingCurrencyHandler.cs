@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class CollectingCurrencyHandler
 {
     private CurrencyCounter _currencyCounter;

@@ -94,7 +94,6 @@ public class EnemyWaveController
 
             if (enemy == null)
             {
-                Debug.LogError("Enemy in WaveController is null!");
                 yield return null;
                 continue;
             }

@@ -13,6 +13,13 @@ public class EntityStateMachine : MonoBehaviour, IEntityStateMachine
         _currentState?.Enter();
     }
 
+    public void RemoveState()
+    {
+        _currentState?.Exit();
+
+        _currentState = null;
+    }
+
     private void Update()
     {
         if (_currentState == null)
