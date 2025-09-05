@@ -12,6 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b55400915bcda764d9858c63134ec38f, type: 3}
   m_Name: WaveControllerConfig
   m_EditorClassIdentifier: 
-  <MaxWaveOnLevel>k__BackingField: 10
-  <StartAmountEnemyOnWave>k__BackingField: 1
-  <MultiplierAmounEnemyOnWave>k__BackingField: 1
+  <WaveControllerStats>k__BackingField:
+    <MaxWaveOnLevel>k__BackingField: 3
+    <StartAmountEnemyOnWave>k__BackingField: 1
+    <MultiplierAmounEnemyOnWave>k__BackingField: 1
+  <StartPositionStats>k__BackingField:
+    <StartPositionByX>k__BackingField: 30
+    <MinStartPositionOffsetByX>k__BackingField: -5
+    <MaxStartPositionOffsetByX>k__BackingField: 10
+    <StartPositionByY>k__BackingField: 0
+    <MinStartPositionOffsetByY>k__BackingField: -3
+    <MaxStartPositionOffsetByY>k__BackingField: 3
+    <StartPositionRotation>k__BackingField: {x: 0, y: 1, z: 0, w: -0.00000004371139}

@@ -4,9 +4,8 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Configs/WaveControllerConfig", fileName = "WaveControllerConfig")]
 public class WaveControllerConfig : SingleConfigBase
 {
-    [field: SerializeField] public int MaxWaveOnLevel { get; private set; }
-    [field: SerializeField] public int StartAmountEnemyOnWave { get; private set; }
-    [field: SerializeField] public int MultiplierAmounEnemyOnWave { get; private set; }
+    [field: SerializeField] public WaveControllerStats WaveControllerStats { get; private set; }
+    [field: SerializeField] public StartPositionStats StartPositionStats { get; private set; }
 
     public override T GetConfig<T>()
     {
