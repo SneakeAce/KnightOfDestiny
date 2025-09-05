@@ -12,6 +12,7 @@ public class Enemy : MonoBehaviour, IEnemy
     private IEntityStateMachine _stateMachine;
 
     private EnemyConfig _config;
+    private EnemyController _controller;
     private IObjectPool _currentPool;
 
     [Inject]
@@ -25,6 +26,7 @@ public class Enemy : MonoBehaviour, IEnemy
     public Rigidbody2D Rigidbody => _rigidbody;
     public Animator Animator => _animator;
     public EntityConfig Config => _config;
+    public EnemyController Controller => _controller;
     public IEntityStateMachine StateMachine => _stateMachine;
 
     /// <summary>
@@ -35,18 +37,14 @@ public class Enemy : MonoBehaviour, IEnemy
 
     public void Initialize()
     {
-        _collider = GetComponent<Collider2D>();
-        Debug.Log($"Enemy Initialize. Collider = {Collider}");
+        SetComponents();
 
-        _rigidbody = GetComponent<Rigidbody2D>();
-        _animator = GetComponent<Animator>();
-
-        _stateMachine = GetComponent<IEntityStateMachine>();
-
-        _health.Initialize(this, _config.MainStats.BaseValueHealth);
+        InitializeHealth();
 
         StartCoroutine(TakeDamage());
     }
+
+    public void SetController(EnemyController controller) => _controller = controller;
 
     public void SetConfig(EntityConfig config)
     {
@@ -65,12 +63,37 @@ public class Enemy : MonoBehaviour, IEnemy
     public void SetPool(IObjectPool currentPool)
     {
         _currentPool = currentPool;
-        _health.EntityDied += ReturnInPool;
     }
 
     private void ReturnInPool(IEntity entity)
     {
         _currentPool.ReturnPoolObject(entity as Enemy);
+    }
+
+    private void SetComponents()
+    {
+        if (_collider != null)
+            return;
+        _collider = GetComponent<Collider2D>();
+
+        if (_rigidbody != null)
+            return;
+        _rigidbody = GetComponent<Rigidbody2D>();
+
+        if (_animator != null) 
+            return;
+        _animator = GetComponent<Animator>();
+
+        if (_stateMachine != null)
+            return;
+        _stateMachine = GetComponent<IEntityStateMachine>();
+    }
+
+    private void InitializeHealth()
+    {
+        _health.Initialize(this, _config.MainStats.BaseValueHealth);
+
+        _health.EntityDied += ReturnInPool;
     }
 
     //TEST
@@ -95,12 +118,8 @@ public class Enemy : MonoBehaviour, IEnemy
 
     private void OnDisable()
     {
-        _health = null;
-        _config = null;
-        _collider = null;
-        _rigidbody = null;
-        _animator = null;
-        _stateMachine = null;
+        if (_stateMachine != null)
+            _stateMachine.RemoveState();
 
         if (_health != null)
             _health.EntityDied -= ReturnInPool;

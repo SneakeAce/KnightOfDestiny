@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 577289c2e9349f14ea073496da0738c3, type: 3}
   m_Name: HealthBarConfig
   m_EditorClassIdentifier: 
-  <Prefab>k__BackingField: {fileID: 6779707632373938037, guid: f1d5253fb99577f498def1bbb141e4de, type: 3}
+  <Prefab>k__BackingField: {fileID: 6685917140912066584, guid: 58868ddbc7b69284fafb6a345a0fdc19, type: 3}
   <Type>k__BackingField: 1

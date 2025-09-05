@@ -3,8 +3,6 @@ using UnityEngine;
 
 public class EnemyWaveController
 {
-    private const float OffsetSpawnByAxes = 1.5f;
-
     private EnemySpawner _spawner;
     private WaveControllerConfig _config;
 
@@ -18,6 +16,16 @@ public class EnemyWaveController
 
     private int _currentCountEnemyOnWave;
     private int _currentWave;
+
+    private Quaternion _startRotation;
+    private float _startPositionByX;
+    private float _startPositionByY;
+
+    private float _minStartPositionOffsetByX;
+    private float _maxStartPositionOffsetByX;
+    private float _minStartPositionOffsetByY;
+    private float _maxStartPositionOffsetByY;
+
 
     public EnemyWaveController(EnemySpawner spawner, IConfigsProvider configsProvider,
         CoroutinePerformer coroutinePerformer)
@@ -74,9 +82,19 @@ public class EnemyWaveController
 
     private void SetParameters()
     {
-        _maxEnemyOnWave = _config.StartAmountEnemyOnWave;
-        _maxWaves = _config.MaxWaveOnLevel;
-        _amountEnemyMultiplier = _config.MultiplierAmounEnemyOnWave;
+        _maxEnemyOnWave = _config.WaveControllerStats.StartAmountEnemyOnWave;
+        _maxWaves = _config.WaveControllerStats.MaxWaveOnLevel;
+        _amountEnemyMultiplier = _config.WaveControllerStats.MultiplierAmounEnemyOnWave;
+
+        _startPositionByX = _config.StartPositionStats.StartPositionByX;
+        _startPositionByY = _config.StartPositionStats.StartPositionByY;
+
+        _minStartPositionOffsetByX = _config.StartPositionStats.MinStartPositionOffsetByX;
+        _maxStartPositionOffsetByX = _config.StartPositionStats.MaxStartPositionOffsetByX;
+        _minStartPositionOffsetByY = _config.StartPositionStats.MinStartPositionOffsetByY;
+        _maxStartPositionOffsetByY = _config.StartPositionStats.MaxStartPositionOffsetByY;
+
+        _startRotation = _config.StartPositionStats.StartPositionRotation;
 
         _currentWave = 0;
         _currentCountEnemyOnWave = 0;
@@ -86,15 +104,12 @@ public class EnemyWaveController
     {
         while (_currentCountEnemyOnWave < _maxEnemyOnWave)
         {
-            var tempStartPosition = new Vector2(100f, -0.5f);
+            Vector2 startPosition = GetStartPosition();
 
-            var tempStartRotation = Quaternion.Euler(0f, 180f, 0f);
-
-            IEnemy enemy = _spawner.SpawnEnemy(tempStartPosition, tempStartRotation);
+            IEnemy enemy = _spawner.SpawnEnemy(startPosition, _startRotation);
 
             if (enemy == null)
             {
-                Debug.LogError("Enemy in WaveController is null!");
                 yield return null;
                 continue;
             }
@@ -109,4 +124,28 @@ public class EnemyWaveController
         WaveDone();
     }
 
+    private Vector2 GetStartPosition()
+    {
+        Vector2 startPosition = Vector2.zero;
+
+        float startPositionByX = _startPositionByX + Random.Range(
+            _minStartPositionOffsetByX, 
+            _maxStartPositionOffsetByX
+            );
+
+        float startPositionByY = _startPositionByY + Random.Range(
+            _minStartPositionOffsetByY, 
+            _maxStartPositionOffsetByY
+            );
+
+        startPosition = new Vector2(startPositionByX, startPositionByY);
+
+        if (startPosition == Vector2.zero)
+        {
+            Debug.Log("EnemyWaveController. Enemy StartPosition is Vector2.zero!");
+            return Vector2.zero;
+        }
+
+        return startPosition;
+    }
 }

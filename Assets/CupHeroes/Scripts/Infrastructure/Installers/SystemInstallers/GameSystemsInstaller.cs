@@ -1,5 +1,3 @@
-using Unity.Cinemachine;
-using UnityEngine;
 using Zenject;
 
 public class GameSystemsInstaller : MonoInstaller
@@ -11,10 +9,26 @@ public class GameSystemsInstaller : MonoInstaller
         BindEnemySpawnerSystem();
 
         BindCurrencySystem();
+
+        BindTickUpdater();
+    }
+
+    private void BindCameraSpawner()
+    {
+        Container.Bind<ICameraSpawner>()
+            .To<CamerasSpawner>()
+            .AsSingle();
+
+        Container.Bind<CamerasController>()
+            .AsSingle();
     }
 
     private void BindEnemySpawnerSystem()
     {
+        Container.Bind<IEnemyControllersFactory>()
+            .To<EnemyControllersFactory>()
+            .AsSingle();
+
         Container.Bind<IEnemyFactory>()
             .To<EnemyFactory>()
             .AsSingle();
@@ -42,13 +56,9 @@ public class GameSystemsInstaller : MonoInstaller
             .AsSingle();
     }
 
-    private void BindCameraSpawner()
+    private void BindTickUpdater()
     {
-        Container.Bind<ICameraSpawner>()
-            .To<CamerasSpawner>()
-            .AsSingle();
-
-        Container.Bind<CamerasController>()
+        Container.BindInterfacesAndSelfTo<TickUpdater>()
             .AsSingle();
     }
 }

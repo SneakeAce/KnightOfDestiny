@@ -1,32 +1,19 @@
-using System;
-using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
-public class EnemySpawner : IDisposable
+public class EnemySpawner
 {
     private IEnemyFactory _enemyFactory;
     private IEntityBuilder _entityBuilder;
 
-    private CollectingCurrencyHandler _currencyHandler;
+    private IEnemyControllersFactory _enemyControllersFactory;
 
-    private List<IEnemyHealth> _enemiesHealthList = new();
-
-    public EnemySpawner(IEnemyFactory enemyFactory, IEntityBuilder entityBuilder, CollectingCurrencyHandler currencyHandler)
+    public EnemySpawner(IEnemyFactory enemyFactory, IEntityBuilder entityBuilder,
+        IEnemyControllersFactory enemyControllersFactory)
     {
         _enemyFactory = enemyFactory;
         _entityBuilder = entityBuilder;
-        _currencyHandler = currencyHandler;
-    }
-
-    public void Dispose()
-    {
-        if (_enemiesHealthList.Count == 0)
-            return;
-
-        foreach (IEnemyHealth enemyHealth in _enemiesHealthList)
-        {
-            enemyHealth.OnGiveAwayCurrency -= _currencyHandler.GetCurrency;
-        }
+        _enemyControllersFactory = enemyControllersFactory;
     }
 
     public IEnemy SpawnEnemy(Vector2 spawnPosition, Quaternion spawnRotation)
@@ -41,20 +28,22 @@ public class EnemySpawner : IDisposable
 
         _entityBuilder.BuildEntity(ref enemy);
 
-        SubscribingCurrencyHandler(enemy);
+        CreateEnemyController((IEnemy)enemy);
 
         return (IEnemy)enemy;
     }
 
-    private void SubscribingCurrencyHandler(IEntity enemy) 
+    private void CreateEnemyController(IEnemy enemy)
     {
-        IEnemyHealth enemyHealth = enemy.Health as IEnemyHealth;
+        EnemyController controller = _enemyControllersFactory.CreateEnemyController(enemy);
 
-        if (enemyHealth == null)
-            throw new InvalidCastException("Invalid cast to IEnemyHealth in EnemySpawner");
+        if (controller == null)
+        {
+            Debug.Log("EnemySpawner. enemyController = null!");
+            return;
+        }
 
-        _enemiesHealthList.Add(enemyHealth);
-
-        enemyHealth.OnGiveAwayCurrency += _currencyHandler.GetCurrency;
+        enemy.SetController(controller);
     }
+
 }
