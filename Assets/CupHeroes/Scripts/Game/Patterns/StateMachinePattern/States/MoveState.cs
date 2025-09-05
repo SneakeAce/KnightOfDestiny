@@ -21,7 +21,7 @@ public class MoveState : IEntityState
         _entity?.Rigidbody.MovePosition(Vector2.MoveTowards(
             _entity.Rigidbody.position,
             _pointToMove,
-            _entity.Config.MainStats.MoveSpeed * Time.fixedDeltaTime));
+            _entity.Config.MoveStats.MoveSpeed * Time.fixedDeltaTime));
     }
 
     public void Exit()

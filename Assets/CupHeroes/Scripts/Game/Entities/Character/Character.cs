@@ -41,9 +41,7 @@ public class Character : MonoBehaviour, IEntity
 
         _stateMachine = GetComponent<IEntityStateMachine>();
 
-        _health.Initialize(this, _config.MainStats.BaseValueHealth);
-
-        StartCoroutine(TakeDamage());
+        _health.Initialize(this, _config.HealthStats.BaseValueHealth);
     }
 
     public void SetConfig(EntityConfig config)
@@ -52,20 +50,5 @@ public class Character : MonoBehaviour, IEntity
             _config = characterConfig;
         else
             Debug.LogError("Invalid config type for Character");
-    }
-
-    private IEnumerator TakeDamage()
-    {
-        Debug.Log("TakeDamage Coroutine start");
-        yield return new WaitForSeconds(20f);
-
-        float dm = 10f;
-        DamageData d = new DamageData(dm);
-
-        _health.TakeDamage(d);
-
-        yield return new WaitForSeconds(30f);
-
-        _health.TakeDamage(d);
     }
 }

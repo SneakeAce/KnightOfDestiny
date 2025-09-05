@@ -40,8 +40,6 @@ public class Enemy : MonoBehaviour, IEnemy
         SetComponents();
 
         InitializeHealth();
-
-        StartCoroutine(TakeDamage());
     }
 
     public void SetController(EnemyController controller) => _controller = controller;
@@ -91,29 +89,9 @@ public class Enemy : MonoBehaviour, IEnemy
 
     private void InitializeHealth()
     {
-        _health.Initialize(this, _config.MainStats.BaseValueHealth);
+        _health.Initialize(this, _config.HealthStats.BaseValueHealth);
 
         _health.EntityDied += ReturnInPool;
-    }
-
-    //TEST
-    private IEnumerator TakeDamage()
-    {
-        yield return new WaitForSeconds(20f);
-
-        float d = 50f;
-
-        DamageData damageData = new DamageData(d);
-
-        _health.TakeDamage(damageData);
-
-        yield return new WaitForSeconds(10f);
-
-        _health.TakeDamage(damageData);
-
-        yield return new WaitForSeconds(10f); 
-
-        _health.TakeDamage(damageData);
     }
 
     private void OnDisable()

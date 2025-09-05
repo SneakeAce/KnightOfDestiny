@@ -13,12 +13,15 @@ MonoBehaviour:
   m_Name: MeleeEnemyConfig
   m_EditorClassIdentifier: 
   <Prefab>k__BackingField: {fileID: 5419496087572186541, guid: 1c0aed218db09eb4abd9502119d6981d, type: 3}
-  <MainStats>k__BackingField:
-    <MoveSpeed>k__BackingField: 3
-    <BaseValueHealth>k__BackingField: 147.9
-    <BaseDamage>k__BackingField: 6.04
-    <BaseAttackSpeed>k__BackingField: 2.79
+  <MoveStats>k__BackingField:
+    <MoveSpeed>k__BackingField: 5
+  <HealthStats>k__BackingField:
+    <BaseValueHealth>k__BackingField: 100
+  <AttackStats>k__BackingField:
     <AttackType>k__BackingField: 1
+    <BaseDamage>k__BackingField: 12
+    <BaseAttackSpeed>k__BackingField: 2
+    <AttackRange>k__BackingField: 2
   <EnemyType>k__BackingField: 1
   <MinAmountCurrencyDropped>k__BackingField: 1
   <MaxAmountCurrencyDropped>k__BackingField: 5
