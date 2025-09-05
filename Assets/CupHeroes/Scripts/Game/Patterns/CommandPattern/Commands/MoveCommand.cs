@@ -15,4 +15,9 @@ public class MoveCommand : ICommand
     {
         _entity.StateMachine.SetState(new MoveState(_entity, _pointToMove));
     }
+
+    public void CancelCommand()
+    {
+        _entity.StateMachine.RemoveState();
+    }
 }

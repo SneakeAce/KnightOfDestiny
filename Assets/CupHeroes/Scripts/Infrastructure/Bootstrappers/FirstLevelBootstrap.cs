@@ -1,3 +1,5 @@
+using Unity.VisualScripting;
+
 public class FirstLevelBootstrap
 {
     private EnemyWaveController _waveController;
@@ -10,10 +12,12 @@ public class FirstLevelBootstrap
     private ICurrencyController _currencyController;
     private CurrencyDisplayController _currencyDisplayController;
 
+    private TickUpdater _tickUpdater;
+
     public FirstLevelBootstrap(IPoolsManager poolsManager, EnemyWaveController waveController,
         CamerasController camerasController, PlayerHUD playerHUD, 
         ICurrencyController currencyController, CurrencyDisplayController currencyDisplayController,
-        CharacterSpawner characterSpawner)
+        CharacterSpawner characterSpawner, TickUpdater tickUpdater)
     {
         _waveController = waveController;
         _poolsManager = poolsManager;
@@ -24,6 +28,8 @@ public class FirstLevelBootstrap
         _currencyDisplayController = currencyDisplayController;
 
         _characterSpawner = characterSpawner;
+
+        _tickUpdater = tickUpdater;
 
         Initialize();
     }
@@ -41,6 +47,8 @@ public class FirstLevelBootstrap
 
         _currencyController.Initialize();
         _currencyDisplayController.Initialize();
+
+        _tickUpdater.Initialize();
 
         StartWaveController();
     }

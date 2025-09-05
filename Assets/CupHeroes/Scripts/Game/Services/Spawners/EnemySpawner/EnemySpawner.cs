@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
@@ -7,13 +6,14 @@ public class EnemySpawner
     private IEnemyFactory _enemyFactory;
     private IEntityBuilder _entityBuilder;
 
-    private IInstantiator _container;
+    private IEnemyControllersFactory _enemyControllersFactory;
 
-    public EnemySpawner(IEnemyFactory enemyFactory, IEntityBuilder entityBuilder, IInstantiator container)
+    public EnemySpawner(IEnemyFactory enemyFactory, IEntityBuilder entityBuilder,
+        IEnemyControllersFactory enemyControllersFactory)
     {
         _enemyFactory = enemyFactory;
         _entityBuilder = entityBuilder;
-        _container = container;
+        _enemyControllersFactory = enemyControllersFactory;
     }
 
     public IEnemy SpawnEnemy(Vector2 spawnPosition, Quaternion spawnRotation)
@@ -35,9 +35,15 @@ public class EnemySpawner
 
     private void CreateEnemyController(IEnemy enemy)
     {
-        EnemyController controller = _container.Instantiate<EnemyController>(new object[] { enemy });
-        controller?.Initialize();
+        EnemyController controller = _enemyControllersFactory.CreateEnemyController(enemy);
 
-        enemy?.SetController(controller);
+        if (controller == null)
+        {
+            Debug.Log("EnemySpawner. enemyController = null!");
+            return;
+        }
+
+        enemy.SetController(controller);
     }
+
 }
