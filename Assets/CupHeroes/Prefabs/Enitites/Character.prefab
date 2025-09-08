@@ -9,13 +9,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7733775014298036675}
+  - component: {fileID: 2211773642694177239}
+  - component: {fileID: 8634982810591567564}
+  - component: {fileID: 600177885833683052}
   - component: {fileID: 3805157052967521754}
   - component: {fileID: 3210799876665696666}
   - component: {fileID: 3177546607688252617}
   - component: {fileID: 4373347519562906712}
-  - component: {fileID: 2211773642694177239}
-  - component: {fileID: 8634982810591567564}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Character
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -37,6 +38,42 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2211773642694177239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8946283988408273110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9f6fae90142d134d9ac8cb10738fdd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8634982810591567564
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8946283988408273110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fee72c9ac52528f498721f9f2615c79b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &600177885833683052
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8946283988408273110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 649d2f2d91ab05f4ea6f221d08ee50ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!50 &3805157052967521754
 Rigidbody2D:
   serializedVersion: 5
@@ -178,27 +215,3 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &2211773642694177239
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8946283988408273110}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9f6fae90142d134d9ac8cb10738fdd8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &8634982810591567564
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8946283988408273110}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fee72c9ac52528f498721f9f2615c79b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

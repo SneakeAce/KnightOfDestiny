@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 using Zenject;
 
@@ -8,8 +7,10 @@ public class Enemy : MonoBehaviour, IEnemy
     private Rigidbody2D _rigidbody;
     private Animator _animator;
 
+    private IAnimationEventReceiver _animationEventReceiver;
     private IEnemyHealth _health;
     private IEntityStateMachine _stateMachine;
+    private IEntityController _entityController;
 
     private EnemyConfig _config;
     private EnemyController _controller;
@@ -27,6 +28,7 @@ public class Enemy : MonoBehaviour, IEnemy
     public Animator Animator => _animator;
     public EntityConfig Config => _config;
     public EnemyController Controller => _controller;
+    public IAnimationEventReceiver AnimationEventReceiver => _animationEventReceiver;
     public IEntityStateMachine StateMachine => _stateMachine;
 
     /// <summary>
@@ -34,6 +36,8 @@ public class Enemy : MonoBehaviour, IEnemy
     /// (IEnemyHealth)Health or health = entity.Health as IEnemyHealth.
     /// </summary>
     public IEntityHealth Health => _health;
+    public IEntityController EntityController => _entityController;
+
 
     public void Initialize()
     {
@@ -63,6 +67,11 @@ public class Enemy : MonoBehaviour, IEnemy
         _currentPool = currentPool;
     }
 
+    public void SetController(IEntityController controller)
+    {
+        _entityController = controller;
+    }
+
     private void ReturnInPool(IEntity entity)
     {
         _currentPool.ReturnPoolObject(entity as Enemy);
@@ -70,21 +79,20 @@ public class Enemy : MonoBehaviour, IEnemy
 
     private void SetComponents()
     {
-        if (_collider != null)
-            return;
-        _collider = GetComponent<Collider2D>();
+        if (_collider == null)
+            _collider = GetComponent<Collider2D>();
 
-        if (_rigidbody != null)
-            return;
-        _rigidbody = GetComponent<Rigidbody2D>();
+        if (_rigidbody == null)
+            _rigidbody = GetComponent<Rigidbody2D>();
 
-        if (_animator != null) 
-            return;
-        _animator = GetComponent<Animator>();
+        if (_animator == null) 
+            _animator = GetComponent<Animator>();
 
-        if (_stateMachine != null)
-            return;
-        _stateMachine = GetComponent<IEntityStateMachine>();
+        if (_animationEventReceiver == null)
+            _animationEventReceiver = GetComponent<AnimationEventReceiver>();
+
+        if (_stateMachine == null)
+            _stateMachine = GetComponent<IEntityStateMachine>();
     }
 
     private void InitializeHealth()
@@ -102,4 +110,5 @@ public class Enemy : MonoBehaviour, IEnemy
         if (_health != null)
             _health.EntityDied -= ReturnInPool;
     }
+
 }

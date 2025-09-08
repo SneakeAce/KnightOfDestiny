@@ -4,12 +4,15 @@ using Zenject;
 public class CharacterSpawner
 {
     private DiContainer _container;
+    private CharacterController _controller;
     private IConfigsProvider _configsProvider;
     private IEntityBuilder _entityBuilder;
 
-    public CharacterSpawner(DiContainer container, IConfigsProvider configsProvider, IEntityBuilder entityBuilder)
+    public CharacterSpawner(DiContainer container, CharacterController controller, 
+        IConfigsProvider configsProvider, IEntityBuilder entityBuilder)
     {
         _container = container;
+        _controller = controller;
         _configsProvider = configsProvider;
         _entityBuilder = entityBuilder;
     }
@@ -27,15 +30,18 @@ public class CharacterSpawner
             config.SpawnRotation,
             null);
 
+        if (character == null)
+            throw new ArgumentNullException("Character in CharacterSpawner is null!");
+
         IEntity charEntity = character.GetComponent<IEntity>();
 
         charEntity.SetConfig(config);
         charEntity.Initialize();
+        charEntity.SetController(_controller);
 
         _entityBuilder.BuildEntity(ref charEntity);
 
-        if (character == null)
-            throw new ArgumentNullException("Character in CharacterSpawner is null!");
+        _controller.Initialize(charEntity);
 
         BindCharacter(character);
 

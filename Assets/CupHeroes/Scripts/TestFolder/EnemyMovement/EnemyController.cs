@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using Zenject;
 
-public class EnemyController : ITickable, IDisposable
+public class EnemyController : IEntityController, ITickable, IDisposable
 {
     private IEnemy _enemy;
     private IEnemyHealth _enemyHealth;
@@ -18,10 +18,9 @@ public class EnemyController : ITickable, IDisposable
 
     private bool _enemyNearTarget;
 
-    public EnemyController(IEnemy enemy, ICommandInvoker commandInvoker, 
-        Character target, CollectingCurrencyHandler currencyHandler, CoroutinePerformer coroutinePerformer)
+    public EnemyController(ICommandInvoker commandInvoker, Character target, 
+        CollectingCurrencyHandler currencyHandler, CoroutinePerformer coroutinePerformer)
     {
-        _enemy = enemy;
         _commandInvoker = commandInvoker;
         _target = target;
         _currencyHandler = currencyHandler;
@@ -33,8 +32,10 @@ public class EnemyController : ITickable, IDisposable
         _enemyHealth.OnGiveAwayCurrency -= _currencyHandler.GetCurrency;
     }
 
-    public void Initialize()
+    public void Initialize(IEntity entity)
     {
+        _enemy = (IEnemy)entity;
+
         _minDistanceToTarget = _enemy.Config.AttackStats.AttackRange;
 
         SubcrubingEvents();

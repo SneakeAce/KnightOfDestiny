@@ -1,18 +1,26 @@
 using System;
 using System.Collections;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class AttackState : IEntityState, IDisposable
 {
+    private const float MinDelayBeforeAttack = 0.001f;
+
     private IEntity _entity;
     private IEntity _target;
 
     private CoroutinePerformer _performer;
     private Coroutine _attackCoroutine;
 
+    private AnimationClip _attackClip;
+
     private float _damage;
     private float _delayBetweenAttack;
     private float _attackRange;
+
+    private float _baseAnimationSpeed = 1f;
+
     private bool _canAttack = false;
 
     public AttackState(IEntity entity, IEntity target, CoroutinePerformer performer)
@@ -24,14 +32,16 @@ public class AttackState : IEntityState, IDisposable
 
     public void Dispose()
     {
-        _target.Health.EntityDied -= OnTargetDestroyed;
+        UnsubsrubingEvents();
     }
 
     public void Enter()
     {
+        Debug.Log($"Enter AttackState at {_entity}");
+
         SetParameters();
 
-        _target.Health.EntityDied += OnTargetDestroyed;
+        SubsrubingEvents();
 
         _canAttack = true;
         _attackCoroutine = _performer.StartCoroutine(AttackJob());
@@ -39,13 +49,15 @@ public class AttackState : IEntityState, IDisposable
 
     public void Exit()
     {
-        _target.Health.EntityDied -= OnTargetDestroyed;
+        Debug.Log($"Exit AttackState at {_entity}");
 
-        if (_attackCoroutine != null)
+        if (_attackCoroutine != null && _performer != null)
         {
             _performer.StopCoroutine(_attackCoroutine);
             _attackCoroutine = null;
         }
+
+        UnsubsrubingEvents();
 
         _canAttack = false;
     }
@@ -55,8 +67,25 @@ public class AttackState : IEntityState, IDisposable
         return;
     }
 
-    private void SetParameters()
+    private void SubsrubingEvents()
     {
+        _entity.AnimationEventReceiver.OnFrameAttack += DamageDeal;
+
+        _entity.Health.EntityDied += OnTargetDestroyed;
+        _target.Health.EntityDied += OnTargetDestroyed;
+    }    
+    
+    private void UnsubsrubingEvents()
+    {
+        _entity.AnimationEventReceiver.OnFrameAttack -= DamageDeal;
+
+        _entity.Health.EntityDied -= OnTargetDestroyed;
+        _target.Health.EntityDied -= OnTargetDestroyed;
+    }
+
+    private void SetParameters()
+    { 
+        _attackClip = _entity.Config.AttackStats.AttackClip;
         _damage = _entity.Config.AttackStats.BaseDamage;
         _delayBetweenAttack = _entity.Config.AttackStats.BaseAttackSpeed;
         _attackRange = _entity.Config.AttackStats.AttackRange;
@@ -66,15 +95,36 @@ public class AttackState : IEntityState, IDisposable
     {
         while (_canAttack && _target != null)
         {
+            SetAnimationSpeed();
+
             if (CheckDistanceToTarget() == false)
-                yield break;
+            {
+                yield return null;
+                continue;
+            }
 
-            DamageData data = new DamageData(_damage);
-
-            _target.Health.TakeDamage(data);
+            _entity.Animator.SetTrigger("Attack");
 
             yield return new WaitForSeconds(_delayBetweenAttack);
         }
+    }
+
+    private void SetAnimationSpeed()
+    {
+        _delayBetweenAttack = _entity.Config.AttackStats.BaseAttackSpeed;
+
+        float clipDuration = _attackClip.length;
+        float desiredDuration = _baseAnimationSpeed / Mathf.Max(MinDelayBeforeAttack, _delayBetweenAttack);
+        float animationSpeed = clipDuration / desiredDuration;
+
+        _entity.Animator.SetFloat("AttackMultiplierSpeed", animationSpeed);
+    }
+
+    private void DamageDeal()
+    {
+        DamageData data = new DamageData(_damage);
+
+        _target.Health.TakeDamage(data);
     }
 
     private bool CheckDistanceToTarget()
@@ -92,5 +142,9 @@ public class AttackState : IEntityState, IDisposable
     private void OnTargetDestroyed(IEntity entity)
     {
         _target = null;
+
+        UnsubsrubingEvents();
+
+        Exit();
     }
 }
