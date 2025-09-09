@@ -87,8 +87,6 @@ public class CharacterController : IEntityController, ITickable, IDisposable
 
         _currentCommand = new AttackCommand(_character, _currentTarget, _coroutinePerformer);
 
-        Debug.Log("AddAttackCommand in CharacterController");
-
         ExecuteCommand();
     }
 

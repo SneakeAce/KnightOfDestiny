@@ -23,8 +23,6 @@ public class UIPoolsFactory : IPoolsFactory
 
     public Dictionary<int, IObjectPool> CreatePools()
     {
-        Debug.Log("UIPoolsFactory CreatePools");
-
         _poolType = _poolsConfig.PoolType;
 
         Dictionary<int, IObjectPool> tempDict = new();
@@ -48,11 +46,6 @@ public class UIPoolsFactory : IPoolsFactory
                 continue;
 
             tempDict[currentType] = pool;
-        }
-
-        foreach (var kvp in tempDict) 
-        {
-            Debug.Log($"foreach in UIPoolsFactory. kvp.key = {kvp.Key}, kvp.Value = {kvp.Value}");
         }
 
         return tempDict;

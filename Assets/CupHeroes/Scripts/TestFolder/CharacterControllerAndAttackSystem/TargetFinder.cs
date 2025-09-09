@@ -54,8 +54,6 @@ public class TargetFinder
                 _targetsLayer
                 );
 
-            Debug.Log($"Target in TargetFinder = {target}");
-
             if (target != null && target.TryGetComponent<IEnemy>(out IEnemy enemy))
             {
                 _currentTarget = enemy;

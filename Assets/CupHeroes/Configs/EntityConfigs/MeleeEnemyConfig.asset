@@ -19,7 +19,7 @@ MonoBehaviour:
     <BaseValueHealth>k__BackingField: 100
   <AttackStats>k__BackingField:
     <BaseDamage>k__BackingField: 3
-    <BaseAttackSpeed>k__BackingField: 1.2
+    <BaseAttackSpeedProcent>k__BackingField: 50
     <AttackRange>k__BackingField: 2
     <AttackType>k__BackingField: 1
     <TargetLayer>k__BackingField:
