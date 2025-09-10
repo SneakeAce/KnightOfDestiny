@@ -17,18 +17,18 @@ public class EnemyControllersFactory : IEnemyControllersFactory
 
     public EnemyController CreateEnemyController(IEnemy enemy)
     {
-        EnemyController controller = _container.Instantiate<EnemyController>(new object[] { enemy });
+        EnemyController controller = _container.Instantiate<EnemyController>();
 
         if (controller == null)
         {
             Debug.LogError("Controller in EnemyControllersFactroy is null!");
             return null;
         }
-        controller.Initialize();
+        controller.Initialize(enemy);
 
         if (_enemyControllers.Contains(controller) == false)
             _enemyControllers.Add(controller);
 
-            return controller;
+        return controller;
     }
 }

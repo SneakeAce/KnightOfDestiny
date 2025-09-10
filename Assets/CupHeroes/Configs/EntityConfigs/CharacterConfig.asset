@@ -12,11 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb9e79655bbd1ff44822f6fdabe0065c, type: 3}
   m_Name: CharacterConfig
   m_EditorClassIdentifier: 
-  <EntityType>k__BackingField: 1
   <Prefab>k__BackingField: {fileID: 8946283988408273110, guid: 8324cd9f1411a824f862361bace8dcee, type: 3}
-  <MainStats>k__BackingField:
-    <MoveSpeed>k__BackingField: 2
-    <BaseValueHealth>k__BackingField: 100
-    <BaseDamage>k__BackingField: 10
-    <BaseAttackSpeed>k__BackingField: 1
-    <AttackType>k__BackingField: 2
+  <MoveStats>k__BackingField:
+    <MoveSpeed>k__BackingField: 5
+  <HealthStats>k__BackingField:
+    <BaseValueHealth>k__BackingField: 150
+  <AttackStats>k__BackingField:
+    <BaseDamage>k__BackingField: 16.7
+    <BaseAttackSpeedProcent>k__BackingField: 100
+    <AttackRange>k__BackingField: 10
+    <AttackType>k__BackingField: 1
+    <TargetLayer>k__BackingField:
+      serializedVersion: 2
+      m_Bits: 128
+    <AttackClip>k__BackingField: {fileID: 7400000, guid: a09f00fd9285e1547b2ab03ec1139e85, type: 2}
+  <SpawnPosition>k__BackingField: {x: 0, y: 0, z: 0}
+  <SpawnRotation>k__BackingField: {x: 0, y: 0, z: 0, w: 0}

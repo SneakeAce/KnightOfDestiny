@@ -5,6 +5,9 @@ public class MoveState : IEntityState
     private IEntity _entity;
     private Vector2 _pointToMove;
 
+    private float _moveSpeed;
+    private bool _isMoving;
+
     public MoveState(IEntity entity, Vector2 pointToMove)
     {
         _entity = entity;
@@ -13,7 +16,13 @@ public class MoveState : IEntityState
 
     public void Enter()
     {
-        _entity?.Animator.SetTrigger("Move");
+        _moveSpeed = _entity.Config.MoveStats.MoveSpeed;
+
+        _isMoving = true;
+
+        float animationMultiplierSpeed = _entity.Animator.speed + _moveSpeed;
+        _entity.Animator.SetFloat("WalkMultiplierSpeed", animationMultiplierSpeed);
+        _entity.Animator.SetBool("IsMoving", true);
     }
 
     public void Update()
@@ -21,12 +30,13 @@ public class MoveState : IEntityState
         _entity?.Rigidbody.MovePosition(Vector2.MoveTowards(
             _entity.Rigidbody.position,
             _pointToMove,
-            _entity.Config.MainStats.MoveSpeed * Time.fixedDeltaTime));
+            _entity.Config.MoveStats.MoveSpeed * Time.fixedDeltaTime));
     }
 
     public void Exit()
     {
-        _entity?.Animator.SetTrigger("Move");
+        _isMoving = false;
+        _entity.Animator.SetBool("IsMoving", _isMoving);
     }
 
 }

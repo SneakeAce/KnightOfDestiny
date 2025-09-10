@@ -13,12 +13,19 @@ MonoBehaviour:
   m_Name: RangeEnemyConfig
   m_EditorClassIdentifier: 
   <Prefab>k__BackingField: {fileID: 5419496087572186541, guid: 1c0aed218db09eb4abd9502119d6981d, type: 3}
-  <MainStats>k__BackingField:
-    <MoveSpeed>k__BackingField: 2
-    <BaseValueHealth>k__BackingField: 109.25
-    <BaseDamage>k__BackingField: 3.44
-    <BaseAttackSpeed>k__BackingField: 2.87
+  <MoveStats>k__BackingField:
+    <MoveSpeed>k__BackingField: 8
+  <HealthStats>k__BackingField:
+    <BaseValueHealth>k__BackingField: 55
+  <AttackStats>k__BackingField:
+    <BaseDamage>k__BackingField: 1
+    <BaseAttackSpeedProcent>k__BackingField: 70
+    <AttackRange>k__BackingField: 8
     <AttackType>k__BackingField: 2
+    <TargetLayer>k__BackingField:
+      serializedVersion: 2
+      m_Bits: 64
+    <AttackClip>k__BackingField: {fileID: 7400000, guid: c4b3b5b425dbc2b4c98f18c1111222d2, type: 2}
   <EnemyType>k__BackingField: 2
   <MinAmountCurrencyDropped>k__BackingField: 1
   <MaxAmountCurrencyDropped>k__BackingField: 5

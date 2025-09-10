@@ -1,9 +1,11 @@
+using System;
 using UnityEngine;
 
-public abstract class EntityConfig : SingleConfigBase
+[Serializable]
+public class EntityMainStats
 {
-    [field: SerializeField] public GameObject Prefab { get; private set; }
     [field: SerializeField] public EntityMoveStats MoveStats { get; private set; }
     [field: SerializeField] public EntityHealthStats HealthStats { get; private set; }
     [field: SerializeField] public EntityAttackStats AttackStats { get; private set; }
+
 }

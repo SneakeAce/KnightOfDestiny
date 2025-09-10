@@ -1,5 +1,7 @@
+using System;
 using DG.Tweening;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class DamagePopupView : UIElement
@@ -15,7 +17,7 @@ public class DamagePopupView : UIElement
 
     public void ShowPopup(float currentValue, Transform parent)
     {
-        _popupText.text = "-" + currentValue.ToString();
+        _popupText.text = "-" + currentValue.ConvertTo<Int32>().ToString();
 
         _currentTween?.Kill();
 

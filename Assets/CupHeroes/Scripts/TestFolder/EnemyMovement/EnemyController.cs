@@ -2,10 +2,8 @@ using System;
 using UnityEngine;
 using Zenject;
 
-public class EnemyController : ITickable, IDisposable
+public class EnemyController : IEntityController, ITickable, IDisposable
 {
-    private const float MinDistanceToTarget = 2f;
-
     private IEnemy _enemy;
     private IEnemyHealth _enemyHealth;
     private IEntity _target;
@@ -14,16 +12,19 @@ public class EnemyController : ITickable, IDisposable
     private ICommand _currentCommand;
 
     private CollectingCurrencyHandler _currencyHandler;
+    private CoroutinePerformer _coroutinePerformer;
+
+    private float _minDistanceToTarget;
 
     private bool _enemyNearTarget;
 
-    public EnemyController(IEnemy enemy, ICommandInvoker commandInvoker, 
-        Character target, CollectingCurrencyHandler currencyHandler)
+    public EnemyController(ICommandInvoker commandInvoker, Character target, 
+        CollectingCurrencyHandler currencyHandler, CoroutinePerformer coroutinePerformer)
     {
-        _enemy = enemy;
         _commandInvoker = commandInvoker;
         _target = target;
         _currencyHandler = currencyHandler;
+        _coroutinePerformer = coroutinePerformer;
     }
 
     public void Dispose()
@@ -31,8 +32,12 @@ public class EnemyController : ITickable, IDisposable
         _enemyHealth.OnGiveAwayCurrency -= _currencyHandler.GetCurrency;
     }
 
-    public void Initialize()
+    public void Initialize(IEntity entity)
     {
+        _enemy = (IEnemy)entity;
+
+        _minDistanceToTarget = _enemy.Config.AttackStats.AttackRange;
+
         SubcrubingEvents();
 
         SetMoveCommand();
@@ -40,14 +45,14 @@ public class EnemyController : ITickable, IDisposable
 
     public void Tick()
     {
-        if (Vector2.Distance(_enemy.Transform.position, _target.Transform.position) <= MinDistanceToTarget
+        if (Vector2.Distance(_enemy.Transform.position, _target.Transform.position) <= _minDistanceToTarget
             && _enemyNearTarget == false)
         {
             _enemyNearTarget = true;
             SetAttackCommand();
         }
 
-        if (Vector2.Distance(_enemy.Transform.position, _target.Transform.position) >= MinDistanceToTarget
+        if (Vector2.Distance(_enemy.Transform.position, _target.Transform.position) >= _minDistanceToTarget
             && _enemyNearTarget)
         {
             _enemyNearTarget = false;
@@ -96,7 +101,7 @@ public class EnemyController : ITickable, IDisposable
 
         _currentCommand = null;
 
-        _currentCommand = new AttackCommand(_enemy, _target);
+        _currentCommand = new AttackCommand(_enemy, _target, _coroutinePerformer);
 
         ExecuteCommand();
     }
