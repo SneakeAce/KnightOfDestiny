@@ -7,11 +7,12 @@ public class Character : MonoBehaviour, IEntity
     private Rigidbody2D _rigidbody;
     private Animator _animator;
 
+    private CharacterConfig _config;
+
     private IAnimationEventReceiver _animationEventReceiver;
     private ICharacterHealth _health;
     private IEntityStateMachine _stateMachine;
-    private IEntityController _entityController;
-    private CharacterConfig _config;
+    private ICharacterController _entityController;
 
     [Inject]
     private void Construct(ICharacterHealth health)
@@ -49,7 +50,7 @@ public class Character : MonoBehaviour, IEntity
 
     public void SetController(IEntityController controller)
     {
-        _entityController = controller;
+        _entityController = (ICharacterController)controller;
     }
 
     public void SetConfig(

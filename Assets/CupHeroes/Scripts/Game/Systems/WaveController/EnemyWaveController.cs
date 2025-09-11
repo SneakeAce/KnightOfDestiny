@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyWaveController
+public class EnemyWaveController : IDisposable
 {
     private EnemySpawner _spawner;
     private WaveControllerConfig _config;
@@ -9,12 +11,16 @@ public class EnemyWaveController
     private CoroutinePerformer _coroutinePerformer;
 
     private Coroutine _startWaveCoroutine;
+    private Coroutine _startTrackingWaveCoroutine;
+
+    private List<IEntity> _subsribedEnemies = new();
 
     private int _maxWaves;
     private int _maxEnemyOnWave;
     private int _amountEnemyMultiplier;
 
-    private int _currentCountEnemyOnWave;
+    private int _currentAmountEnemy;
+    private int _amountEnemyOnWave;
     private int _currentWave;
 
     private Quaternion _startRotation;
@@ -26,7 +32,6 @@ public class EnemyWaveController
     private float _minStartPositionOffsetByY;
     private float _maxStartPositionOffsetByY;
 
-
     public EnemyWaveController(EnemySpawner spawner, IConfigsProvider configsProvider,
         CoroutinePerformer coroutinePerformer)
     {
@@ -37,9 +42,26 @@ public class EnemyWaveController
         _coroutinePerformer = coroutinePerformer;
     }
 
+    public event Action IsWaveDone;
+
     public void Initialize()
     {
+        _subsribedEnemies.Clear();
+
         SetParameters();
+    }
+
+    public void Dispose()
+    {
+        for (int i = 0; i < _subsribedEnemies.Count; i++)
+        {
+            IEntity entity = _subsribedEnemies[i];
+
+            if (entity != null)
+                entity.Health.EntityDied -= DecreaseCurrentAmountEnemy;
+        }
+
+        _subsribedEnemies.Clear();
     }
 
     public void StartWave()
@@ -56,28 +78,21 @@ public class EnemyWaveController
             return;
         }
 
-        //_currentCountEnemyOnWave = 0;
+        StartCoroutine(ref _startWaveCoroutine, StartWaveJob());
+    }
 
-        if (_startWaveCoroutine != null)
-        {
-            _coroutinePerformer.StopCoroutine(_startWaveCoroutine);
-            _startWaveCoroutine = null;
-        }
-
-        _startWaveCoroutine = _coroutinePerformer.StartCoroutine(StartWaveJob());
+    public void StopWave()
+    {
+        StartCoroutine(ref _startWaveCoroutine, StartWaveJob(), true);
+        StartCoroutine(ref _startTrackingWaveCoroutine, StartTrackingWaveJob(), true);
     }
 
     private void WaveDone()
     {
         _maxEnemyOnWave = _maxEnemyOnWave + _amountEnemyMultiplier;
 
-        if (_startWaveCoroutine != null)
-        {
-            _coroutinePerformer.StopCoroutine(_startWaveCoroutine);
-            _startWaveCoroutine = null;
-        }
-
-        StartWave();
+        StartCoroutine(ref _startWaveCoroutine, StartWaveJob(), true);
+        StartCoroutine(ref _startTrackingWaveCoroutine, StartTrackingWaveJob(), true);
     }
 
     private void SetParameters()
@@ -97,12 +112,12 @@ public class EnemyWaveController
         _startRotation = _config.StartPositionStats.StartPositionRotation;
 
         _currentWave = 0;
-        _currentCountEnemyOnWave = 0;
+        _amountEnemyOnWave = 0;
     }
 
     private IEnumerator StartWaveJob()
     {
-        while (_currentCountEnemyOnWave < _maxEnemyOnWave)
+        while (_amountEnemyOnWave < _maxEnemyOnWave)
         {
             Vector2 startPosition = GetStartPosition();
 
@@ -114,26 +129,45 @@ public class EnemyWaveController
                 continue;
             }
 
-            _currentCountEnemyOnWave++;
+            enemy.Health.EntityDied += DecreaseCurrentAmountEnemy;
+
+            _amountEnemyOnWave++;
+
+            _subsribedEnemies.Add(enemy);
 
             yield return null;
         }
 
-        yield return new WaitForSeconds(10f);
+        StartCoroutine(ref _startTrackingWaveCoroutine, StartTrackingWaveJob());
+    }
 
-        WaveDone();
+    private IEnumerator StartTrackingWaveJob()
+    {
+        _currentAmountEnemy = _amountEnemyOnWave;
+
+        while (_currentAmountEnemy > 0)
+        {
+            if (_currentAmountEnemy == 0)
+            {
+                WaveDone();
+                IsWaveDone?.Invoke();
+                yield break;
+            }
+
+            yield return null;
+        }
     }
 
     private Vector2 GetStartPosition()
     {
         Vector2 startPosition = Vector2.zero;
 
-        float startPositionByX = _startPositionByX + Random.Range(
+        float startPositionByX = _startPositionByX + UnityEngine.Random.Range(
             _minStartPositionOffsetByX, 
             _maxStartPositionOffsetByX
             );
 
-        float startPositionByY = _startPositionByY + Random.Range(
+        float startPositionByY = _startPositionByY + UnityEngine.Random.Range(
             _minStartPositionOffsetByY, 
             _maxStartPositionOffsetByY
             );
@@ -148,4 +182,30 @@ public class EnemyWaveController
 
         return startPosition;
     }
+
+    private void DecreaseCurrentAmountEnemy(IEntity entity)
+    {
+        _currentAmountEnemy--;
+
+        _subsribedEnemies.Remove(entity);
+
+        entity.Health.EntityDied -= DecreaseCurrentAmountEnemy;
+    }
+
+    private Coroutine StartCoroutine(ref Coroutine routine, IEnumerator enumerator, bool onlyStopRoutine = false)
+    {
+        if (routine != null)
+        {
+            _coroutinePerformer.StopCoroutine(routine);
+            routine = null;
+        }
+
+        if (onlyStopRoutine)
+            return null;
+
+        routine = _coroutinePerformer.StartCoroutine(enumerator);
+
+        return routine;
+    }
+
 }

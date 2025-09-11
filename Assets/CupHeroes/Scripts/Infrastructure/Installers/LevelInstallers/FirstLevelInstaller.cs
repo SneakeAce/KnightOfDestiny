@@ -5,12 +5,20 @@ public class FirstLevelInstaller : MonoInstaller
     public override void InstallBindings()
     {
         BindBootstrap();
+        BindLevelMaanger();
     }
 
     private void BindBootstrap()
     {
-        Container.Bind<FirstLevelBootstrap>()
+        Container.Bind<ILevelBootstrapper>()
+            .To<FirstLevelBootstrap>()
             .AsSingle()
             .NonLazy();
+    }
+
+    private void BindLevelMaanger()
+    {
+        Container.Bind<LevelManager>()
+            .AsSingle();
     }
 }
