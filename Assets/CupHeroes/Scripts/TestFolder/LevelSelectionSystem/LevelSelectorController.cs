@@ -7,10 +7,9 @@ public class LevelSelectorController : IDisposable
     private MainMenuController _mainMenuController;
     private LevelSelectorView _levelSelectorView;
 
-    public LevelSelectorController(MainMenuController mainMenuController, LevelSelectorView levelSelectorView)
+    public LevelSelectorController(MainMenuController mainMenuController)
     {
         _mainMenuController = mainMenuController;
-        _levelSelectorView = levelSelectorView;
     }
 
     public event Action OnLevelSelected;
@@ -20,6 +19,8 @@ public class LevelSelectorController : IDisposable
         _mainMenuController.OnOpenLevelSelectorWindow -= OnOpenLevelSelector;
         _levelSelectorView.OnLevelSelected -= LoadLevel;
     }
+
+    public void SetLevelSelectorView(LevelSelectorView view) => _levelSelectorView = view;
 
     public void Initialize()
     {

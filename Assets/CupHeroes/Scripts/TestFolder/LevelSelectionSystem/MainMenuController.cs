@@ -4,16 +4,16 @@ public class MainMenuController : IDisposable
 {
     private MainMenuView _mainMenuView;
 
-    public MainMenuController(MainMenuView mainMenuView)
-    {
-        _mainMenuView = mainMenuView;
-    }
-
     public event Action OnOpenLevelSelectorWindow;
 
     public void Dispose()
     {
         _mainMenuView.OnStartGameClicked -= OpenLevelSelector;
+    }
+
+    public void SetMainMenuView(MainMenuView mainMenuView)
+    {
+        _mainMenuView = mainMenuView;
     }
 
     public void Initialize()

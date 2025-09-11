@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LevelSelectorView : MonoBehaviour
+public class LevelSelectorView : UIElement
 {
     [SerializeField] private Canvas _canvas;
     [SerializeField] private List<Button> _levelButtons;

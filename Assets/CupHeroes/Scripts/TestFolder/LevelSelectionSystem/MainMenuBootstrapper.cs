@@ -2,19 +2,11 @@ using System;
 
 public class MainMenuBootstrapper : ILevelBootstrapper
 {
-    private MainMenuView _mainMenuView;
-    private MainMenuController _mainMenuController;
+    private MainMenuSceneManager _mainMenuSceneManager;
 
-    private LevelSelectorView _levelSelectorView;
-    private LevelSelectorController _levelSelectorController;
-
-    public MainMenuBootstrapper(MainMenuView mainMenuView, MainMenuController mainMenuController,
-        LevelSelectorView levelSelectorView, LevelSelectorController levelSelectorController)
+    public MainMenuBootstrapper(MainMenuSceneManager mainMenuSceneManager)
     {
-        _mainMenuView = mainMenuView;
-        _mainMenuController = mainMenuController;
-        _levelSelectorView = levelSelectorView;
-        _levelSelectorController = levelSelectorController;
+        _mainMenuSceneManager = mainMenuSceneManager;
 
         Initialize();
     }
@@ -23,10 +15,6 @@ public class MainMenuBootstrapper : ILevelBootstrapper
 
     public void Initialize()
     {
-        _mainMenuView.Initialize();
-        _mainMenuController.Initialize();
-
-        _levelSelectorView.Initialize();
-        _levelSelectorController.Initialize();
+        _mainMenuSceneManager.Initialize();
     }
 }

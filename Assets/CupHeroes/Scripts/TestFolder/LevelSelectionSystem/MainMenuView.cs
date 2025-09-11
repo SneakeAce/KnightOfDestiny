@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MainMenuView : MonoBehaviour
+public class MainMenuView : UIElement
 {
     [SerializeField] private Canvas _canvas;
     [SerializeField] private Button _startGameButton;
