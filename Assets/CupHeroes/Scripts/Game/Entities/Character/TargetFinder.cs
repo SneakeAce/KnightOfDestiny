@@ -30,7 +30,7 @@ public class TargetFinder
     {
         SetParameters();
 
-        RestartCoroutine(ref _searchTargetCoroutine);
+        RestartCoroutine(ref _searchTargetCoroutine, SearchTargetJob());
     }
 
     private void SetParameters()
@@ -71,10 +71,10 @@ public class TargetFinder
 
         _currentTarget = null;
 
-        RestartCoroutine(ref _searchTargetCoroutine);
+        RestartCoroutine(ref _searchTargetCoroutine, SearchTargetJob());
     }
 
-    private Coroutine RestartCoroutine(ref Coroutine routine)
+    private Coroutine RestartCoroutine(ref Coroutine routine, IEnumerator enumerator)
     {
         if (routine != null)
         {
@@ -82,7 +82,7 @@ public class TargetFinder
             routine = null;
         }
 
-        routine = _performer.StartCoroutine(SearchTargetJob());
+        routine = _performer.StartCoroutine(enumerator);
 
         return routine;
     }

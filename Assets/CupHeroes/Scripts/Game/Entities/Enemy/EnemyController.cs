@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using Zenject;
 
-public class EnemyController : IEntityController, ITickable, IDisposable
+public class EnemyController : IEnemyController, ITickable, IDisposable
 {
     private IEnemy _enemy;
     private IEnemyHealth _enemyHealth;

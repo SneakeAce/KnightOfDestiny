@@ -10,7 +10,7 @@ public class Enemy : MonoBehaviour, IEnemy
     private IAnimationEventReceiver _animationEventReceiver;
     private IEnemyHealth _health;
     private IEntityStateMachine _stateMachine;
-    private IEntityController _entityController;
+    private IEnemyController _entityController;
 
     private EnemyConfig _config;
     private EnemyController _controller;
@@ -69,7 +69,7 @@ public class Enemy : MonoBehaviour, IEnemy
 
     public void SetController(IEntityController controller)
     {
-        _entityController = controller;
+        _entityController = (IEnemyController)controller;
     }
 
     private void ReturnInPool(IEntity entity)

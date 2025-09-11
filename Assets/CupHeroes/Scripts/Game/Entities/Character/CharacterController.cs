@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using Zenject;
 
-public class CharacterController : IEntityController, ITickable, IDisposable
+public class CharacterController : ICharacterController, ITickable, IDisposable
 {
     private IEntity _character;
     private IEnemy _currentTarget;
@@ -13,12 +13,16 @@ public class CharacterController : IEntityController, ITickable, IDisposable
     private TargetFinder _targetFinder;
     private CoroutinePerformer _coroutinePerformer;
 
+    private Vector2 _positionToMove;
+
     public CharacterController(ICommandInvoker commandInvoker, 
         CoroutinePerformer coroutinePerformer)
     {
         _commandInvoker = commandInvoker;
         _coroutinePerformer = coroutinePerformer;
     }
+
+    public event Action<Vector2> IsPositionToMove;
 
     public void Initialize(IEntity entity)
     {
@@ -52,6 +56,11 @@ public class CharacterController : IEntityController, ITickable, IDisposable
         AddIdleCommand();
     }
 
+    public void SetPositionToMove(Vector2 position)
+    {
+        _positionToMove = position;
+    }
+
     private void InitializeTargetFinder()
     {
         _targetFinder = new TargetFinder(_character, _coroutinePerformer);
@@ -74,7 +83,7 @@ public class CharacterController : IEntityController, ITickable, IDisposable
 
         _currentCommand = null;
 
-        _currentCommand = new MoveCommand(_character, new Vector2(2f, 0f));
+        _currentCommand = new MoveCommand(_character, _positionToMove);
 
         ExecuteCommand();
     }

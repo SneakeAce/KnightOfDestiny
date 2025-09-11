@@ -1,6 +1,6 @@
-using Unity.VisualScripting;
+using System;
 
-public class FirstLevelBootstrap
+public class FirstLevelBootstrap : ILevelBootstrapper
 {
     private EnemyWaveController _waveController;
     private IPoolsManager _poolsManager;
@@ -13,14 +13,15 @@ public class FirstLevelBootstrap
     private CurrencyDisplayController _currencyDisplayController;
 
     private TickUpdater _tickUpdater;
+    private LevelManager _levelManager;
 
     public FirstLevelBootstrap(IPoolsManager poolsManager, EnemyWaveController waveController,
         CamerasController camerasController, PlayerHUD playerHUD, 
         ICurrencyController currencyController, CurrencyDisplayController currencyDisplayController,
-        CharacterSpawner characterSpawner, TickUpdater tickUpdater)
+        CharacterSpawner characterSpawner, TickUpdater tickUpdater, LevelManager levelManager)
     {
-        _waveController = waveController;
         _poolsManager = poolsManager;
+        _waveController = waveController;
         _camerasController = camerasController;
         _playerHUD = playerHUD;
 
@@ -31,32 +32,61 @@ public class FirstLevelBootstrap
 
         _tickUpdater = tickUpdater;
 
+        _levelManager = levelManager;
+
         Initialize();
     }
 
-    private void Initialize()
-    {
-        _poolsManager.Initialize();
+    public event Action OnInitialized;
 
+    public void Initialize()
+    {
+        InitializePoolsManager();
+
+        Character character = CreateCharacter();
+
+        InitializeCamerasController(character);
+
+        InitializePlayerHUD();
+
+        InitializeCurrencySystem();
+
+        InitializeTickUpdater();
+
+        InitializeLevelManager(character);
+    }
+
+    private void InitializePoolsManager() => _poolsManager.Initialize();
+
+    private void InitializePlayerHUD() => _playerHUD.Initialize();
+
+    private void InitializeTickUpdater() => _tickUpdater.Initialize();
+    
+    private Character CreateCharacter()
+    {
         Character character = _characterSpawner.CreateCharacter();
 
+        return character;
+    }
+
+    private void InitializeCamerasController(Character character)
+    {
         _camerasController.Initialize();
         _camerasController.SetTargetForCamera(character);
+    }
 
-        _playerHUD.Initialize();
+
+    private void InitializeCurrencySystem()
+    {
 
         _currencyController.Initialize();
         _currencyDisplayController.Initialize();
-
-        _tickUpdater.Initialize();
-
-        StartWaveController();
     }
 
-    private void StartWaveController()
+    private void InitializeLevelManager(Character character)
     {
-        _waveController.Initialize();
-        
-        _waveController.StartWave();
+        _levelManager.Construct(character, _waveController);
+
+        _levelManager.Initialize();
     }
 }
