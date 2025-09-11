@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class LevelSelectorController : IDisposable
@@ -10,8 +11,6 @@ public class LevelSelectorController : IDisposable
     {
         _mainMenuController = mainMenuController;
         _levelSelectorView = levelSelectorView;
-
-        Initialize();
     }
 
     public event Action OnLevelSelected;
@@ -22,12 +21,11 @@ public class LevelSelectorController : IDisposable
         _levelSelectorView.OnLevelSelected -= LoadLevel;
     }
 
-    private void Initialize()
+    public void Initialize()
     {
         _mainMenuController.OnOpenLevelSelectorWindow += OnOpenLevelSelector;
         _levelSelectorView.OnLevelSelected += LoadLevel;
     }
-
 
     private void OnOpenLevelSelector()
     {
@@ -36,6 +34,8 @@ public class LevelSelectorController : IDisposable
 
     private void LoadLevel(int index)
     {
+        Debug.Log($"LoadLevel. Level_{index} is Loaded");
+
         SceneManager.LoadScene($"Level_{index}");
 
         OnLevelSelected?.Invoke();

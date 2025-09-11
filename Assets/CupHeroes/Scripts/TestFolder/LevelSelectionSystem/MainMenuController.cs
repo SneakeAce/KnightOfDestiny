@@ -7,8 +7,6 @@ public class MainMenuController : IDisposable
     public MainMenuController(MainMenuView mainMenuView)
     {
         _mainMenuView = mainMenuView;
-
-        Initialize();
     }
 
     public event Action OnOpenLevelSelectorWindow;
@@ -18,7 +16,7 @@ public class MainMenuController : IDisposable
         _mainMenuView.OnStartGameClicked -= OpenLevelSelector;
     }
 
-    private void Initialize()
+    public void Initialize()
     {
         _mainMenuView.OnStartGameClicked += OpenLevelSelector;
     }
