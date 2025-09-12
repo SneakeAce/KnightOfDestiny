@@ -23,6 +23,9 @@ public class EnemyWaveController : IDisposable
     private int _amountEnemyOnWave;
     private int _currentWave;
 
+    private float _delayBeforeSpawn;
+    private float _delayBetweenSpawnEntities;
+
     private Quaternion _startRotation;
     private float _startPositionByX;
     private float _startPositionByY;
@@ -31,6 +34,8 @@ public class EnemyWaveController : IDisposable
     private float _maxStartPositionOffsetByX;
     private float _minStartPositionOffsetByY;
     private float _maxStartPositionOffsetByY;
+
+    private Vector2 _offsetSpawnPositionInNextWave;
 
     public EnemyWaveController(EnemySpawner spawner, IConfigsProvider configsProvider,
         CoroutinePerformer coroutinePerformer)
@@ -87,9 +92,17 @@ public class EnemyWaveController : IDisposable
         StartCoroutine(ref _startTrackingWaveCoroutine, StartTrackingWaveJob(), true);
     }
 
+    public void SetOffset(Vector2 offset)
+    {
+        _offsetSpawnPositionInNextWave += offset;
+    }
+
     private void WaveDone()
     {
+        Debug.Log("WaveController. WaveDone");
+
         _maxEnemyOnWave = _maxEnemyOnWave + _amountEnemyMultiplier;
+        _amountEnemyOnWave = 0;
 
         StartCoroutine(ref _startWaveCoroutine, StartWaveJob(), true);
         StartCoroutine(ref _startTrackingWaveCoroutine, StartTrackingWaveJob(), true);
@@ -100,6 +113,8 @@ public class EnemyWaveController : IDisposable
         _maxEnemyOnWave = _config.WaveControllerStats.StartAmountEnemyOnWave;
         _maxWaves = _config.WaveControllerStats.MaxWaveOnLevel;
         _amountEnemyMultiplier = _config.WaveControllerStats.MultiplierAmounEnemyOnWave;
+        _delayBeforeSpawn = _config.WaveControllerStats.DelayBeforeSpawn;
+        _delayBetweenSpawnEntities = _config.WaveControllerStats.DelayBetweenSpawnEntities;
 
         _startPositionByX = _config.StartPositionStats.StartPositionByX;
         _startPositionByY = _config.StartPositionStats.StartPositionByY;
@@ -117,6 +132,8 @@ public class EnemyWaveController : IDisposable
 
     private IEnumerator StartWaveJob()
     {
+        yield return new WaitForSeconds(_delayBeforeSpawn);
+
         while (_amountEnemyOnWave < _maxEnemyOnWave)
         {
             Vector2 startPosition = GetStartPosition();
@@ -132,10 +149,11 @@ public class EnemyWaveController : IDisposable
             enemy.Health.EntityDied += DecreaseCurrentAmountEnemy;
 
             _amountEnemyOnWave++;
+            _currentAmountEnemy++;
 
             _subsribedEnemies.Add(enemy);
 
-            yield return null;
+            yield return new WaitForSeconds(_delayBetweenSpawnEntities);
         }
 
         StartCoroutine(ref _startTrackingWaveCoroutine, StartTrackingWaveJob());
@@ -143,19 +161,13 @@ public class EnemyWaveController : IDisposable
 
     private IEnumerator StartTrackingWaveJob()
     {
-        _currentAmountEnemy = _amountEnemyOnWave;
-
         while (_currentAmountEnemy > 0)
         {
-            if (_currentAmountEnemy == 0)
-            {
-                WaveDone();
-                IsWaveDone?.Invoke();
-                yield break;
-            }
-
             yield return null;
         }
+
+        WaveDone();
+        IsWaveDone?.Invoke();
     }
 
     private Vector2 GetStartPosition()
@@ -165,7 +177,7 @@ public class EnemyWaveController : IDisposable
         float startPositionByX = _startPositionByX + UnityEngine.Random.Range(
             _minStartPositionOffsetByX, 
             _maxStartPositionOffsetByX
-            );
+            ) + _offsetSpawnPositionInNextWave.x;
 
         float startPositionByY = _startPositionByY + UnityEngine.Random.Range(
             _minStartPositionOffsetByY, 

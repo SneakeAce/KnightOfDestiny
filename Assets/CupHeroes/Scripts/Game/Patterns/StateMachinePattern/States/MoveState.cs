@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class MoveState : IEntityState
 {
+    private const float MinDistanceBetweenEntityAndPoint = 0.2f;
+
     private IEntity _entity;
     private Vector2 _pointToMove;
 
@@ -21,14 +23,18 @@ public class MoveState : IEntityState
         _isMoving = true;
 
         float animationMultiplierSpeed = _entity.Animator.speed + _moveSpeed;
+
         _entity.Animator.SetFloat("WalkMultiplierSpeed", animationMultiplierSpeed);
-        _entity.Animator.SetBool("IsMoving", true);
+        _entity.Animator.SetBool("IsMoving", _isMoving);
     }
 
     public void Update()
     {
-        _entity?.Rigidbody.MovePosition(Vector2.MoveTowards(
-            _entity.Rigidbody.position,
+        if (Vector2.Distance(_entity.Transform.position, _pointToMove) <= MinDistanceBetweenEntityAndPoint)
+            Exit();
+
+        _entity.Rigidbody.MovePosition(Vector2.MoveTowards(
+            _entity.Transform.position,
             _pointToMove,
             _entity.Config.MoveStats.MoveSpeed * Time.fixedDeltaTime));
     }

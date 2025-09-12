@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class EntityBuilder : IEntityBuilder
 {
-    private const float OffsetPositionHealthBarByY = -0.5f;
+    private const float OffsetPositionHealthBarByY = -0.07f;
     private const float MinValueByAxes = 0f;
 
     private const UIElementType HealthBarType = UIElementType.HealthBar; 

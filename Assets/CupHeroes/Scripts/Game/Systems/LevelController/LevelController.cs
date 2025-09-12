@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class LevelManager : IDisposable
+public class LevelController : IDisposable
 {
     private IEntity _character;
     private ICharacterController _characterController;
@@ -10,7 +10,7 @@ public class LevelManager : IDisposable
 
     private Vector2 _nextPosition = new Vector2(10f, 0f);
 
-    public event Action OnStartLevel;
+    public event Action OnStartWave;
     public event Action OnEndLevel;
 
     public void Construct(Character character, EnemyWaveController waveController)
@@ -26,11 +26,14 @@ public class LevelManager : IDisposable
         _waveController.Initialize();
 
         SubscribingEvents();
+
+        StartWave();
     }
 
-    public void StartLevel()
+    public void StartWave()
     {
-        OnStartLevel?.Invoke();
+        Debug.Log("StartWave");
+        OnStartWave?.Invoke();
     }
 
     public void EndLevel()
@@ -45,22 +48,28 @@ public class LevelManager : IDisposable
 
     private void SubscribingEvents()
     {
-        OnStartLevel += _waveController.StartWave;
-
+        OnStartWave += _waveController.StartWave;
+        
         _waveController.IsWaveDone += WavePassed;
     }
 
     private void UnsubscribingEvents()
     {
-        OnStartLevel -= _waveController.StartWave;
+        OnStartWave -= _waveController.StartWave;
+
+        _characterController.IsCharacterOnPosition -= StartWave;
 
         _waveController.IsWaveDone -= WavePassed;
     }
 
     private void WavePassed()
     {
+        _characterController.IsCharacterOnPosition += StartWave;
+
         _characterController.SetPositionToMove(_nextPosition);
-        _character.EntityController.SetMoveCommand();
+        _characterController.SetMoveCommand();
+
+        _waveController.SetOffset(_nextPosition);
     }
 
 }

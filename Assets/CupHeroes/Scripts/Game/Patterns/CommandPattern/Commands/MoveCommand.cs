@@ -11,7 +11,7 @@ public class MoveCommand : ICommand
         _pointToMove = pointToMove;
     }
 
-    public void Execute()
+    public void Execute( )
     {
         _entity.StateMachine.SetState(new MoveState(_entity, _pointToMove));
     }

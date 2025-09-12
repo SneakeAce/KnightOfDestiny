@@ -4,6 +4,8 @@ using Zenject;
 
 public class CharacterController : ICharacterController, ITickable, IDisposable
 {
+    private const float MinDistanceBetweenCharacterAndPoint = 0.2f;
+
     private IEntity _character;
     private IEnemy _currentTarget;
 
@@ -15,6 +17,10 @@ public class CharacterController : ICharacterController, ITickable, IDisposable
 
     private Vector2 _positionToMove;
 
+    private float _distanceBetweenCharacterAndPoint;
+
+    private bool _isMoving;
+
     public CharacterController(ICommandInvoker commandInvoker, 
         CoroutinePerformer coroutinePerformer)
     {
@@ -22,7 +28,7 @@ public class CharacterController : ICharacterController, ITickable, IDisposable
         _coroutinePerformer = coroutinePerformer;
     }
 
-    public event Action<Vector2> IsPositionToMove;
+    public event Action IsCharacterOnPosition;
 
     public void Initialize(IEntity entity)
     {
@@ -38,7 +44,11 @@ public class CharacterController : ICharacterController, ITickable, IDisposable
 
     public void Tick()
     {
-        return;
+        if (_isMoving && Vector2.Distance(_character.Transform.position, _positionToMove) <= MinDistanceBetweenCharacterAndPoint)
+        {
+            _isMoving = false;
+            IsCharacterOnPosition?.Invoke();
+        }
     }
 
     public void SetMoveCommand()
@@ -58,7 +68,7 @@ public class CharacterController : ICharacterController, ITickable, IDisposable
 
     public void SetPositionToMove(Vector2 position)
     {
-        _positionToMove = position;
+        _positionToMove = (Vector2)_character.Transform.position + position;
     }
 
     private void InitializeTargetFinder()
@@ -84,6 +94,8 @@ public class CharacterController : ICharacterController, ITickable, IDisposable
         _currentCommand = null;
 
         _currentCommand = new MoveCommand(_character, _positionToMove);
+
+        _isMoving = true;
 
         ExecuteCommand();
     }

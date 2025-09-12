@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36239fc36971f97449172b4043176a4e, type: 3}
+  m_Name: MainMenuSceneConfig
+  m_EditorClassIdentifier: 
+  <MainMenuPrefab>k__BackingField: {fileID: 6422933918846812038, guid: f47648b92e293ef42be9d4d7eb00ab9b, type: 3}
+  <LevelSelectorPrefab>k__BackingField: {fileID: 741819188202922908, guid: 926d38e224cb16446b52adae92b8fc7c, type: 3}

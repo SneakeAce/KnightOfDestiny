@@ -13,12 +13,12 @@ public class FirstLevelBootstrap : ILevelBootstrapper
     private CurrencyDisplayController _currencyDisplayController;
 
     private TickUpdater _tickUpdater;
-    private LevelManager _levelManager;
+    private LevelController _levelManager;
 
     public FirstLevelBootstrap(IPoolsManager poolsManager, EnemyWaveController waveController,
         CamerasController camerasController, PlayerHUD playerHUD, 
         ICurrencyController currencyController, CurrencyDisplayController currencyDisplayController,
-        CharacterSpawner characterSpawner, TickUpdater tickUpdater, LevelManager levelManager)
+        CharacterSpawner characterSpawner, TickUpdater tickUpdater, LevelController levelManager)
     {
         _poolsManager = poolsManager;
         _waveController = waveController;

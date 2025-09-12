@@ -18,7 +18,7 @@ public class FirstLevelInstaller : MonoInstaller
 
     private void BindLevelMaanger()
     {
-        Container.Bind<LevelManager>()
+        Container.Bind<LevelController>()
             .AsSingle();
     }
 }

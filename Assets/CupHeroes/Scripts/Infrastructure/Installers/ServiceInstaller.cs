@@ -11,6 +11,8 @@ public class ServiceInstaller : MonoInstaller
 
         BindCommandPattern();
 
+        BindUIFactory();
+
         BindEntityBuilder();
     }
 
@@ -34,11 +36,19 @@ public class ServiceInstaller : MonoInstaller
             .AsSingle();
     }
 
+    private void BindUIFactory()
+    {
+        Container.Bind<IUIFactory>()
+            .To<UIFactory>()
+            .AsSingle();
+
+        Container.Bind<IUISpawner>()
+            .To<UISpawner>()
+            .AsSingle();
+    }
+
     private void BindEntityBuilder()
     {
-        Container.Bind<IUIFactory>().To<UIFactory>().AsSingle();
-        Container.Bind<IUISpawner>().To<UISpawner>().AsSingle();
-
         Container.Bind<IEntityBuilder>().To<EntityBuilder>().AsSingle();
     }
 }

@@ -16,10 +16,11 @@ MonoBehaviour:
     <MaxWaveOnLevel>k__BackingField: 3
     <StartAmountEnemyOnWave>k__BackingField: 1
     <MultiplierAmounEnemyOnWave>k__BackingField: 1
+    <DealyBeforeSpawn>k__BackingField: 2.5
   <StartPositionStats>k__BackingField:
-    <StartPositionByX>k__BackingField: 30
-    <MinStartPositionOffsetByX>k__BackingField: -5
-    <MaxStartPositionOffsetByX>k__BackingField: 10
+    <StartPositionByX>k__BackingField: 20
+    <MinStartPositionOffsetByX>k__BackingField: -2
+    <MaxStartPositionOffsetByX>k__BackingField: 4
     <StartPositionByY>k__BackingField: 0
     <MinStartPositionOffsetByY>k__BackingField: -3
     <MaxStartPositionOffsetByY>k__BackingField: 3
