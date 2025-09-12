@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class LevelManager : IDisposable
+public class LevelController : IDisposable
 {
     private IEntity _character;
     private ICharacterController _characterController;
