@@ -9,9 +9,9 @@ public class EnemyHealth : EntityHealth, IEnemyHealth
 
     public void SetConfig(EnemyConfig config) => _enemyConfig = config;
 
-    public override void Initialize(IEntity entity, float initialHealth)
+    public override void Initialize(IEntity entity)
     {
-        base.Initialize(entity, initialHealth);
+        base.Initialize(entity);
 
         EntityDied += GiveAwayCurrency;
     }

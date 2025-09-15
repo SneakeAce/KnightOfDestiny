@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class AttackState : IEntityState, IDisposable
@@ -85,11 +84,10 @@ public class AttackState : IEntityState, IDisposable
 
     private void SetParameters()
     { 
-        _entity.Config.AttackStats.ResetAttackSpeedToBase();
-
         _attackClip = _entity.Config.AttackStats.AttackClip;
         _clipDuration = _attackClip.length;
-        _damage = _entity.Config.AttackStats.BaseDamage;
+
+        _damage = _entity.StatsManager.AttackStats.Damage;
         _attackRange = _entity.Config.AttackStats.AttackRange;
     }
 
@@ -118,7 +116,7 @@ public class AttackState : IEntityState, IDisposable
 
     private void SetAnimationSpeed()
     {
-        _attacksPerSeconds = _entity.Config.AttackStats.CurrentAttacksPerSecond;
+        _attacksPerSeconds = _entity.StatsManager.AttackStats.AttacksPerSecond;
 
         _delayBetweenAttack = BaseAnimationSpeed / _attacksPerSeconds;
 

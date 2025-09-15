@@ -7,7 +7,9 @@ public abstract class EntityHealth : IEntityHealth
     
     protected float _currentHealth;
     protected float _maxHealth;
-    
+
+    private float _baseHealthValue;
+
     protected IEntity _entity;
 
     public float CurrentHealth => _currentHealth;
@@ -17,14 +19,9 @@ public abstract class EntityHealth : IEntityHealth
     public event Action<float> OnTakingDamage;
     public event Action<IEntity> EntityDied;
 
-    public virtual void Initialize(IEntity entity, float initialHealth)
+    public virtual void Initialize(IEntity entity)
     {
         _entity = entity;
-
-        _maxHealth = initialHealth;
-        _currentHealth = _maxHealth;
-
-        CurrentHealthChanged?.Invoke(_currentHealth, _maxHealth);
     }
 
     public void TakeDamage(DamageData damageData)
@@ -44,5 +41,29 @@ public abstract class EntityHealth : IEntityHealth
             EntityDied?.Invoke(_entity);
             Debug.Log($"EnemyHealth. {_entity} died: ");
         }
+    }
+
+    public void InitialHealth(float baseValue)
+    {
+        _baseHealthValue = baseValue;
+
+        _maxHealth = _baseHealthValue;
+        _currentHealth = _maxHealth;
+
+        CurrentHealthChanged?.Invoke(_currentHealth, _maxHealth);
+    }
+
+    public void ModifyHealth(float value)
+    {
+        _currentHealth += value;
+        _maxHealth += value;
+
+        CurrentHealthChanged?.Invoke(_currentHealth, _maxHealth);
+    }
+
+    public void ResetHealthValueToBase()
+    {
+        _maxHealth = _baseHealthValue;
+        _currentHealth = _maxHealth;
     }
 }

@@ -6,7 +6,7 @@ public class CharacterController : ICharacterController, ITickable, IDisposable
 {
     private const float MinDistanceBetweenCharacterAndPoint = 0.2f;
 
-    private IEntity _character;
+    private ICharacter _character;
     private IEnemy _currentTarget;
 
     private ICommandInvoker _commandInvoker;
@@ -16,8 +16,6 @@ public class CharacterController : ICharacterController, ITickable, IDisposable
     private CoroutinePerformer _coroutinePerformer;
 
     private Vector2 _positionToMove;
-
-    private float _distanceBetweenCharacterAndPoint;
 
     private bool _isMoving;
 
@@ -32,7 +30,7 @@ public class CharacterController : ICharacterController, ITickable, IDisposable
 
     public void Initialize(IEntity entity)
     {
-        _character = entity;
+        _character = (ICharacter)entity;
 
         InitializeTargetFinder();
     }
@@ -44,7 +42,8 @@ public class CharacterController : ICharacterController, ITickable, IDisposable
 
     public void Tick()
     {
-        if (_isMoving && Vector2.Distance(_character.Transform.position, _positionToMove) <= MinDistanceBetweenCharacterAndPoint)
+        if (_isMoving && Vector2.Distance(_character.Transform.position, _positionToMove) <= 
+            MinDistanceBetweenCharacterAndPoint)
         {
             _isMoving = false;
             IsCharacterOnPosition?.Invoke();

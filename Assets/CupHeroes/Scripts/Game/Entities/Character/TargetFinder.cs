@@ -8,7 +8,7 @@ public class TargetFinder
     private const float MaxTimeBeforeSearchTarget = 1.2f;
     private const float OffsetSearchingRadius = 2f;
 
-    private IEntity _character;
+    private ICharacter _character;
     private IEnemy _currentTarget;
 
     private CoroutinePerformer _performer;
@@ -18,7 +18,7 @@ public class TargetFinder
 
     private LayerMask _targetsLayer;
 
-    public TargetFinder(IEntity character, CoroutinePerformer performer)
+    public TargetFinder(ICharacter character, CoroutinePerformer performer)
     {
         _character = character;
         _performer = performer;
@@ -35,7 +35,7 @@ public class TargetFinder
 
     private void SetParameters()
     {
-        _searchingRadius = _character.Config.AttackStats.AttackRange + OffsetSearchingRadius;
+        _searchingRadius = _character.StatsManager.AttackStats.AttackRange + OffsetSearchingRadius;
         _targetsLayer = _character.Config.AttackStats.TargetLayer;
     }
 
