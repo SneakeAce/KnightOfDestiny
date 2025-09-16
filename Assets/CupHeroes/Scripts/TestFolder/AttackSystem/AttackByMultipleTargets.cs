@@ -1,19 +1,27 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class AttackByMultipleTargets : BaseAttackStrategy
 {
+    private List<IEntity> _targets = new();
+
+    public AttackByMultipleTargets(List<IEntity> targets)
+    {
+        _targets = targets;
+    }
+
     public override void SubscribingEvents()
     {
         _state.Entity.AnimationEventReceiver.OnFrameAttack += DealDamage;
 
         _state.Entity.Health.EntityDied += OnEntityDestroyed;
 
-        if (_state.Targets.Count > 0)
+        if (_targets.Count > 0)
         {
-            for (int i = 0; i < _state.Targets.Count; i++)
+            for (int i = 0; i < _targets.Count; i++)
             {
-                var target = _state.Targets[i];
+                var target = _targets[i];
 
                 if (target != null)
                     target.Health.EntityDied += OnEntityDestroyed;
@@ -27,11 +35,11 @@ public class AttackByMultipleTargets : BaseAttackStrategy
 
         _state.Entity.Health.EntityDied += OnEntityDestroyed;
 
-        if (_state.Targets.Count > 0)
+        if (_targets.Count > 0)
         {
-            for (int i = 0; i < _state.Targets.Count; i++)
+            for (int i = 0; i < _targets.Count; i++)
             {
-                var target = _state.Targets[i];
+                var target = _targets[i];
 
                 if (target != null)
                     target.Health.EntityDied += OnEntityDestroyed;

@@ -4,15 +4,18 @@ public class AttackStatsController : IAttackStatsController
 
     private IEntity _entity;
 
+    private int _amountTargetsForAttack;
     private float _damage;
     private float _attackSpeedProcent;
     private float _attacksPerSecond;
     private float _attackRange;
 
+    public int AmountTargetsForAttack => _amountTargetsForAttack;
     public float Damage => _damage;
     public float AttackSpeedProcent => _attackSpeedProcent;
     public float AttacksPerSecond => _attacksPerSecond;
     public float AttackRange => _attackRange;
+
 
     public void Initialize(IEntity entity)
     {
@@ -32,6 +35,11 @@ public class AttackStatsController : IAttackStatsController
         _damage += value;
     }
 
+    public void ModifyAmountTargetsForAttack(int value)
+    {
+        _amountTargetsForAttack += value;
+    }
+
     public void ResetValues()
     {
         SetBaseParameters();
@@ -39,11 +47,12 @@ public class AttackStatsController : IAttackStatsController
 
     private void SetBaseParameters()
     {
+        _amountTargetsForAttack = _entity.Config.AttackStats.BaseAmountTargetsForAttack;
         _damage = _entity.Config.AttackStats.BaseDamage;
         _attackSpeedProcent = _entity.Config.AttackStats.BaseAttackSpeedProcent;
 
         _attacksPerSecond = _attackSpeedProcent / DividerForCoversionToProcetage;
 
-        _attackRange = _entity.Config.AttackStats.AttackRange;
+        _attackRange = _entity.Config.AttackStats.BaseAttackRange;
     }
 }

@@ -7,8 +7,6 @@ public class AttackState : IEntityState, IDisposable
     private const float BaseAnimationSpeed = 1f;
 
     private IEntity _entity;
-    private IEntity _target;
-    private List<IEntity> _targets = new List<IEntity>();
 
     private IAttackStrategy _attackStrategy;
 
@@ -27,8 +25,6 @@ public class AttackState : IEntityState, IDisposable
     private bool _canAttack = false;
 
     public IEntity Entity { get => _entity; }
-    public IEntity Target { get => _target; }
-    public List<IEntity> Targets { get => _targets; }
     public float Damage { get => _damage; }
     public float AttacksPerSeconds { get => _attacksPerSeconds; }
     public float DelayBetweenAttack { get => _delayBetweenAttack; }
@@ -37,10 +33,9 @@ public class AttackState : IEntityState, IDisposable
     public float RemainingCooldown { get => _remainingCooldown; }
     public bool CanAttack { get => _canAttack; }
 
-    public AttackState(IEntity entity, IEntity target, CoroutinePerformer performer, IAttackStrategy strategy)
+    public AttackState(IEntity entity, CoroutinePerformer performer, IAttackStrategy strategy)
     {
         _entity = entity;
-        _target = target;
         _performer = performer;
         _attackStrategy = strategy;
     }
@@ -88,7 +83,7 @@ public class AttackState : IEntityState, IDisposable
     public void UpdateData()
     {
         _damage = _entity.StatsManager.AttackStats.Damage;
-        _attackRange = _entity.Config.AttackStats.AttackRange;
+        _attackRange = _entity.Config.AttackStats.BaseAttackRange;
 
         _attacksPerSeconds = _entity.StatsManager.AttackStats.AttacksPerSecond;
         _delayBetweenAttack = BaseAnimationSpeed / _attacksPerSeconds;

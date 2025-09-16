@@ -3,12 +3,19 @@ using UnityEngine;
 
 public class AttackByOnceTarget : BaseAttackStrategy
 {
+    private IEntity _target;
+
+    public AttackByOnceTarget(IEntity target)
+    {
+        _target = target;
+    }
+
     public override void SubscribingEvents()
     {
         _state.Entity.AnimationEventReceiver.OnFrameAttack += DealDamage;
 
         _state.Entity.Health.EntityDied += OnEntityDestroyed;
-        _state.Target.Health.EntityDied += OnEntityDestroyed;
+        _target.Health.EntityDied += OnEntityDestroyed;
     }
 
     public override void UnsubscribingEvents()
@@ -16,16 +23,16 @@ public class AttackByOnceTarget : BaseAttackStrategy
         _state.Entity.AnimationEventReceiver.OnFrameAttack -= DealDamage;
 
         _state.Entity.Health.EntityDied -= OnEntityDestroyed;
-        _state.Target.Health.EntityDied -= OnEntityDestroyed;
+        _target.Health.EntityDied -= OnEntityDestroyed;
     }
 
     public override IEnumerator AttackJob()
     {
-        while (_state.CanAttack && _state.Target != null)
+        while (_state.CanAttack && _target != null)
         {
             _state.UpdateData();
 
-            if (CheckDistanceToTarget() == false)
+            if (CheckDistanceToTarget(_target) == false)
             {
                 yield return null;
                 continue;
@@ -42,7 +49,7 @@ public class AttackByOnceTarget : BaseAttackStrategy
 
     public override void DealDamage()
     {
-        DamageDeal(_state.Target);
+        DamageDeal(_target);
     }
 
 }

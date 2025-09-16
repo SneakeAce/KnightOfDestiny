@@ -1,4 +1,7 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Zenject;
 
@@ -7,12 +10,13 @@ public class CharacterController : ICharacterController, ITickable, IDisposable
     private const float MinDistanceBetweenCharacterAndPoint = 0.2f;
 
     private ICharacter _character;
-    private IEnemy _currentTarget;
 
     private ICommandInvoker _commandInvoker;
     private ICommand _currentCommand;
 
-    private TargetFinder _targetFinder;
+    private IAttackStrategy _currentAttackStrategy;
+
+    private TargetFinderContext _targetFinder;
     private CoroutinePerformer _coroutinePerformer;
 
     private Vector2 _positionToMove;
@@ -37,7 +41,7 @@ public class CharacterController : ICharacterController, ITickable, IDisposable
 
     public void Dispose()
     {
-        _targetFinder.OnTargetFound -= SetTarget;
+        _targetFinder.OnTargetsFound -= SetTarget;
     }
 
     public void Tick()
@@ -72,16 +76,42 @@ public class CharacterController : ICharacterController, ITickable, IDisposable
 
     private void InitializeTargetFinder()
     {
-        _targetFinder = new TargetFinder(_character, _coroutinePerformer);
+        if (_character.Config.AttackStats.CanFindMultipleTargets == false)
+        {
+            var strategy = new FindOnceTarget();
 
-        _targetFinder.OnTargetFound += SetTarget;
+            _targetFinder = new TargetFinderContext(_character, strategy, _coroutinePerformer);
+
+            _targetFinder.OnTargetsFound += SetTarget;
+        }
+        else
+        {
+            var strategy = new FindMultipleTargets();
+
+            _targetFinder = new TargetFinderContext(_character, strategy, _coroutinePerformer);
+
+            _targetFinder.OnTargetsFound += SetTargets;
+        }
 
         _targetFinder.Initialize();
     }
 
-    private void SetTarget(IEnemy enemy)
+    private void SetTarget(IEnumerable<IEnemy> enemies)
     {
-        _currentTarget = enemy;
+        var currentTarget = enemies.FirstOrDefault();
+
+        _currentAttackStrategy = new AttackByOnceTarget(currentTarget);
+
+        SetAttackCommand();
+    }
+
+    private void SetTargets(IEnumerable<IEnemy> enemies)
+    {
+        var targets = enemies
+            .Cast<IEntity>()
+            .ToList();
+
+        _currentAttackStrategy = new AttackByMultipleTargets(targets);
 
         SetAttackCommand();
     }
@@ -105,7 +135,7 @@ public class CharacterController : ICharacterController, ITickable, IDisposable
 
         _currentCommand = null;
 
-        _currentCommand = new AttackCommand(_character, _currentTarget, _coroutinePerformer);
+        _currentCommand = new AttackCommand(_character, _currentAttackStrategy, _coroutinePerformer);
 
         ExecuteCommand();
     }

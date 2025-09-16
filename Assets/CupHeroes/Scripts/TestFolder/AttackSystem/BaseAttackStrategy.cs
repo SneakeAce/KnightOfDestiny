@@ -30,9 +30,9 @@ public abstract class BaseAttackStrategy : IAttackStrategy, IDisposable
         target.Health.TakeDamage(data);
     }
 
-    protected bool CheckDistanceToTarget()
+    protected bool CheckDistanceToTarget(IEntity target)
     {
-        float sqrDistance = (_state.Entity.Transform.position - _state.Target.Transform.position).sqrMagnitude;
+        float sqrDistance = (_state.Entity.Transform.position - target.Transform.position).sqrMagnitude;
 
         float sqrAttackRange = _state.AttackRange * _state.AttackRange;
 

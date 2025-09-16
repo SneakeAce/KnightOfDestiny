@@ -1,5 +1,6 @@
 public interface IAttackStatsController : IStatsController
 {
+    public int AmountTargetsForAttack { get; }
     public float Damage { get; }
     public float AttackSpeedProcent { get; }
     public float AttacksPerSecond { get; }
@@ -7,4 +8,5 @@ public interface IAttackStatsController : IStatsController
 
     void ModifyDamage(float value);
     void ModifyAttackSpeed(float value);
+    void ModifyAmountTargetsForAttack(int value);
 }
