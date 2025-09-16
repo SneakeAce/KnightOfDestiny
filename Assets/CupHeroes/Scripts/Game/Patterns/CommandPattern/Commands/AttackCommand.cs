@@ -14,7 +14,7 @@ public class AttackCommand : ICommand
 
     public void Execute()
     {
-        _entity.StateMachine.SetState(new AttackState(_entity, _target, _performer));
+        _entity.StateMachine.SetState(new AttackState(_entity, _target, _performer, new AttackByOnceTarget()));
     }
 
     public void CancelCommand()
