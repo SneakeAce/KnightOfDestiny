@@ -98,7 +98,13 @@ public class CharacterController : ICharacterController, ITickable, IDisposable
 
     private void SetTarget(IEnumerable<IEnemy> enemies)
     {
+        Debug.Log("SetTarget");
+
         var currentTarget = enemies.FirstOrDefault();
+
+        _currentAttackStrategy?.Dispose();
+
+        _currentAttackStrategy = null;
 
         _currentAttackStrategy = new AttackByOnceTarget(currentTarget);
 
@@ -107,9 +113,14 @@ public class CharacterController : ICharacterController, ITickable, IDisposable
 
     private void SetTargets(IEnumerable<IEnemy> enemies)
     {
+        Debug.Log("SetTargets");
         var targets = enemies
             .Cast<IEntity>()
             .ToList();
+
+        _currentAttackStrategy?.Dispose();
+
+        _currentAttackStrategy = null;
 
         _currentAttackStrategy = new AttackByMultipleTargets(targets);
 

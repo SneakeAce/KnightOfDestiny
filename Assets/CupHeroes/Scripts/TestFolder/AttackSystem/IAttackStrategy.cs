@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-public interface IAttackStrategy
+public interface IAttackStrategy : IDisposable
 {
     event Action OnAllTargetsDestroyed;
 

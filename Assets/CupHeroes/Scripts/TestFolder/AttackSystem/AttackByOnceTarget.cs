@@ -1,9 +1,12 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
 public class AttackByOnceTarget : BaseAttackStrategy
 {
     private IEntity _target;
+
+    public override event Action OnAllTargetsDestroyed;
 
     public AttackByOnceTarget(IEntity target)
     {
@@ -24,6 +27,13 @@ public class AttackByOnceTarget : BaseAttackStrategy
 
         _state.Entity.Health.EntityDied -= OnEntityDestroyed;
         _target.Health.EntityDied -= OnEntityDestroyed;
+    }
+
+    public override void OnEntityDestroyed(IEntity entity)
+    {
+        entity.Health.EntityDied -= OnEntityDestroyed;
+
+        OnAllTargetsDestroyed?.Invoke();
     }
 
     public override IEnumerator AttackJob()

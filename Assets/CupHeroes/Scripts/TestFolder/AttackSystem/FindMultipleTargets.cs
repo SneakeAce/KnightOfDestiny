@@ -9,16 +9,28 @@ public class FindMultipleTargets : BaseTargetFinderStrategy
     {
     }
 
-    public override event Action<IEnumerable<IEnemy>> OnTargetFound;
+    public override event Action<IEnumerable<IEnemy>> OnTargetsFound;
+    public override event Action OnTargetDissapeared;
 
     public override void Dispose()
     {
-        throw new NotImplementedException();
+        if (_enemies.Count > 0)
+        {
+            for (int i = 0; i < _enemies.Count; i++)
+            {
+                var tar = _enemies[i];
+
+                if (tar == null)
+                    continue;
+
+                ResetTarget(tar);
+            }
+        }
     }
 
     public override IEnumerator SearchTargetsJob()
     {
-        while (_context.CanSearching && _context.Character != null)
+        while (_context.Character != null)
         {
             _context.UpdateData();
 
@@ -27,29 +39,32 @@ public class FindMultipleTargets : BaseTargetFinderStrategy
                 MaxTimeBeforeSearchTarget)
                 );
 
-            Collider2D target = Physics2D.OverlapCircle(
+            Collider2D[] targets = Physics2D.OverlapCircleAll(
                 _context.Character.Transform.position,
                 _context.SearchingRadius,
                 _context.TargetsLayer
                 );
 
-            if (target != null && target.TryGetComponent<IEnemy>(out IEnemy enemy))
+            for (int i = 0; i < targets.Length && _enemies.Count < _context.AmountAvailableTargets; i++)
             {
-                enemy.Health.EntityDied += ResetTarget;
-                enemy.Health.EntityDied += _context.RestartSearching;
+                if (targets[i].TryGetComponent<IEnemy>(out var enemy))
+                {
+                    enemy.Health.EntityDied += ResetTarget;
 
-                _enemies.Add(enemy);
+                    if (_enemies.Contains(enemy) == false)
+                        _enemies.Add(enemy);
 
-                OnTargetFound?.Invoke(_enemies);
-
-                yield break;
+                    OnTargetsFound?.Invoke(_enemies);
+                }
             }
         }
     }
 
     public override void ResetTarget(IEntity enemy)
     {
-        throw new NotImplementedException();
+        _enemies.Remove((IEnemy)enemy);
+
+        enemy.Health.EntityDied -= ResetTarget;
     }
 
 }

@@ -5,19 +5,20 @@ using UnityEngine;
 
 public abstract class BaseTargetFinderStrategy : ITargetFinderStrategy, IDisposable
 {
-    protected const float MinTimeBeforeSearchTarget = 0.2f;
-    protected const float MaxTimeBeforeSearchTarget = 1.2f;
+    protected const float MinTimeBeforeSearchTarget = 0.1f;
+    protected const float MaxTimeBeforeSearchTarget = 0.6f;
     protected const float OffsetSearchingRadius = 2f;
 
     protected TargetFinderContext _context;
 
-    protected List<IEnemy> _enemies = new List<IEnemy>();
+    protected List<IEnemy> _enemies;
 
     public BaseTargetFinderStrategy()
     {
     }
 
-    public abstract event Action<IEnumerable<IEnemy>> OnTargetFound;
+    public abstract event Action<IEnumerable<IEnemy>> OnTargetsFound;
+    public abstract event Action OnTargetDissapeared;
 
     public abstract IEnumerator SearchTargetsJob();
     public abstract void ResetTarget(IEntity enemy);
@@ -26,6 +27,10 @@ public abstract class BaseTargetFinderStrategy : ITargetFinderStrategy, IDisposa
     public void Initialize(TargetFinderContext context)
     {
         _context = context;
+
+        _enemies = new List<IEnemy>(_context.AmountAvailableTargets);
+
+        _enemies.Clear();
     }
 
 }

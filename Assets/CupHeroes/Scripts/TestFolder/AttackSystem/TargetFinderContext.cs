@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TargetFinderContext
+public class TargetFinderContext : IDisposable
 {
     private ITargetFinderStrategy _strategy;
     private ICharacter _character;
@@ -15,7 +15,6 @@ public class TargetFinderContext
 
     private int _amountAvailableTargets;
     private float _searchingRadius;
-    private bool _canSearching;
 
     public TargetFinderContext(ICharacter character, ITargetFinderStrategy strategy, CoroutinePerformer performer)
     {
@@ -29,21 +28,32 @@ public class TargetFinderContext
     public LayerMask TargetsLayer { get => _targetsLayer; }
     public int AmountAvailableTargets { get => _amountAvailableTargets; }
     public float SearchingRadius { get => _searchingRadius; }
-    public bool CanSearching { get => _canSearching; }
 
     public event Action<IEnumerable<IEnemy>> OnTargetsFound;
 
+    public void Dispose()
+    {
+        _character.Health.EntityDied -= OnCharacterDead;
+
+        _strategy.OnTargetsFound -= OnTargetFound;
+        _strategy.OnTargetDissapeared -= RestartSearching;
+    }
+
     public void Initialize()
     {
+        _character.Health.EntityDied += OnCharacterDead;
+
         _strategy.Initialize(this);
-        _strategy.OnTargetFound += OnTargetFound;
+
+        _strategy.OnTargetsFound += OnTargetFound;
+        _strategy.OnTargetDissapeared += RestartSearching;
 
         UpdateData();
 
         RestartCoroutine(ref _searchTargetCoroutine, _strategy.SearchTargetsJob());
     }
 
-    public void RestartSearching(IEntity enitity)
+    public void RestartSearching()
     {
         RestartCoroutine(ref _searchTargetCoroutine, _strategy.SearchTargetsJob());
     }
@@ -58,14 +68,10 @@ public class TargetFinderContext
     private void OnTargetFound(IEnumerable<IEnemy> enemies)
     {
         OnTargetsFound?.Invoke(enemies);
-
-        _canSearching = false;
     }
 
     protected Coroutine RestartCoroutine(ref Coroutine routine, IEnumerator enumerator)
     {
-        _canSearching = !_canSearching;
-
         if (routine != null)
         {
             _performer.StopCoroutine(routine);
@@ -76,4 +82,12 @@ public class TargetFinderContext
 
         return routine;
     }
+
+    private void OnCharacterDead(IEntity enitity)
+    {
+        _character.Health.EntityDied -= OnCharacterDead;
+
+        _character = null;
+    }
+
 }

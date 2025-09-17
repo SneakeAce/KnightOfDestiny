@@ -10,7 +10,8 @@ public class FindOnceTarget : BaseTargetFinderStrategy
     {
     }
 
-    public override event Action<IEnumerable<IEnemy>> OnTargetFound;
+    public override event Action<IEnumerable<IEnemy>> OnTargetsFound;
+    public override event Action OnTargetDissapeared;
 
     public override void Dispose()
     {
@@ -20,7 +21,7 @@ public class FindOnceTarget : BaseTargetFinderStrategy
 
     public override IEnumerator SearchTargetsJob()
     {
-        while (_context.CanSearching && _context.Character != null)
+        while (_enemies.Count < 0 && _context.Character != null)
         {
             _context.UpdateData();
 
@@ -29,32 +30,32 @@ public class FindOnceTarget : BaseTargetFinderStrategy
                 MaxTimeBeforeSearchTarget)
                 );
 
-            Collider2D target = Physics2D.OverlapCircle(
+            Collider2D targetCol = Physics2D.OverlapCircle(
                 _context.Character.Transform.position,
                 _context.SearchingRadius + OffsetSearchingRadius,
                 _context.TargetsLayer
                 );
 
-            if (target != null && target.TryGetComponent<IEnemy>(out IEnemy enemy))
+            if (targetCol != null && targetCol.TryGetComponent<IEnemy>(out var target))
             {
-                enemy.Health.EntityDied += ResetTarget;
-                enemy.Health.EntityDied += _context.RestartSearching;
+                target.Health.EntityDied += ResetTarget;
 
-                _enemies.Add(enemy);
+                _enemies.Add(target);
 
-                OnTargetFound?.Invoke(_enemies);
+                OnTargetsFound?.Invoke(_enemies);
 
                 yield break;
             }
         }
     }
 
-    public override void ResetTarget(IEntity enemy)
+    public override void ResetTarget(IEntity target)
     {
         _enemies.Clear();
 
-        enemy.Health.EntityDied -= ResetTarget;
-        enemy.Health.EntityDied -= _context.RestartSearching;
+        target.Health.EntityDied -= ResetTarget;
+
+        OnTargetDissapeared?.Invoke();
     }
 
 }

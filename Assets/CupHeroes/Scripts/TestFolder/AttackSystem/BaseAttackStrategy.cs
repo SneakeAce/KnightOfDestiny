@@ -2,16 +2,17 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public abstract class BaseAttackStrategy : IAttackStrategy, IDisposable
+public abstract class BaseAttackStrategy : IAttackStrategy
 {
     protected AttackState _state;
 
-    public event Action OnAllTargetsDestroyed;
+    public abstract event Action OnAllTargetsDestroyed;
 
     public abstract IEnumerator AttackJob();
     public abstract void DealDamage();
     public abstract void SubscribingEvents();
     public abstract void UnsubscribingEvents();
+    public abstract void OnEntityDestroyed(IEntity entity);
 
     public void Dispose()
     {
@@ -40,12 +41,5 @@ public abstract class BaseAttackStrategy : IAttackStrategy, IDisposable
             return true;
 
         return false;
-    }
-
-    protected void OnEntityDestroyed(IEntity entity)
-    {
-        entity.Health.EntityDied -= OnEntityDestroyed;
-
-        OnAllTargetsDestroyed?.Invoke();
     }
 }

@@ -18,9 +18,11 @@ MonoBehaviour:
   <HealthStats>k__BackingField:
     <BaseValueHealth>k__BackingField: 100
   <AttackStats>k__BackingField:
+    <BaseAmountTargetsForAttack>k__BackingField: 1
+    <CanFindMultipleTargets>k__BackingField: 0
     <BaseDamage>k__BackingField: 3
     <BaseAttackSpeedProcent>k__BackingField: 50
-    <AttackRange>k__BackingField: 1.5
+    <BaseAttackRange>k__BackingField: 2
     <AttackType>k__BackingField: 1
     <TargetLayer>k__BackingField:
       serializedVersion: 2
