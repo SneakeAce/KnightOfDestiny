@@ -1,7 +1,7 @@
 using UnityEngine;
 using Zenject;
 
-public class Character : MonoBehaviour, IEntity
+public class Character : MonoBehaviour, ICharacter
 {
     private Collider2D _collider;
     private Rigidbody2D _rigidbody;
@@ -13,11 +13,13 @@ public class Character : MonoBehaviour, IEntity
     private ICharacterHealth _health;
     private IEntityStateMachine _stateMachine;
     private ICharacterController _entityController;
+    private IEntityStatsManager _statsManager;
 
     [Inject]
-    private void Construct(ICharacterHealth health)
+    private void Construct(ICharacterHealth health, IEntityStatsManager statsManager)
     {
         _health = health;
+        _statsManager = statsManager;
     }
 
     public Transform Transform => transform;
@@ -34,7 +36,7 @@ public class Character : MonoBehaviour, IEntity
     /// </summary>
     public IEntityHealth Health => _health;
     public IEntityController EntityController => _entityController;
-
+    public IEntityStatsManager StatsManager => _statsManager;
 
     public void Initialize()
     {
@@ -45,7 +47,9 @@ public class Character : MonoBehaviour, IEntity
 
         _stateMachine = GetComponent<IEntityStateMachine>();
 
-        _health.Initialize(this, _config.HealthStats.BaseValueHealth);
+        _health.Initialize(this);
+
+        _statsManager.Initialize(this);
     }
 
     public void SetController(IEntityController controller)

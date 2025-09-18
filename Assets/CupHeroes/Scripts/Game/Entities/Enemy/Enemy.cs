@@ -11,15 +11,17 @@ public class Enemy : MonoBehaviour, IEnemy
     private IEnemyHealth _health;
     private IEntityStateMachine _stateMachine;
     private IEnemyController _entityController;
+    private IEntityStatsManager _statsManager;
 
     private EnemyConfig _config;
     private EnemyController _controller;
     private IObjectPool _currentPool;
 
     [Inject]
-    private void Construct(IEnemyHealth health)
+    private void Construct(IEnemyHealth health, IEntityStatsManager statsManager)
     {
         _health = health;
+        _statsManager = statsManager;
     }
 
     public Transform Transform => transform;
@@ -37,11 +39,14 @@ public class Enemy : MonoBehaviour, IEnemy
     /// </summary>
     public IEntityHealth Health => _health;
     public IEntityController EntityController => _entityController;
+    public IEntityStatsManager StatsManager => _statsManager;
 
 
     public void Initialize()
     {
         SetComponents();
+
+        _statsManager.Initialize(this);
 
         InitializeHealth();
     }
@@ -97,7 +102,7 @@ public class Enemy : MonoBehaviour, IEnemy
 
     private void InitializeHealth()
     {
-        _health.Initialize(this, _config.HealthStats.BaseValueHealth);
+        _health.Initialize(this);
 
         _health.EntityDied += ReturnInPool;
     }

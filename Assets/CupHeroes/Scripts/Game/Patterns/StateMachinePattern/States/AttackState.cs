@@ -1,6 +1,5 @@
 using System;
-using System.Collections;
-using System.Runtime.CompilerServices;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class AttackState : IEntityState, IDisposable
@@ -8,7 +7,8 @@ public class AttackState : IEntityState, IDisposable
     private const float BaseAnimationSpeed = 1f;
 
     private IEntity _entity;
-    private IEntity _target;
+
+    private IAttackStrategy _attackStrategy;
 
     private CoroutinePerformer _performer;
     private Coroutine _attackCoroutine;
@@ -20,29 +20,45 @@ public class AttackState : IEntityState, IDisposable
     private float _delayBetweenAttack;
     private float _attackRange;
     private float _clipDuration;
+    private float _remainingCooldown;
 
     private bool _canAttack = false;
 
-    public AttackState(IEntity entity, IEntity target, CoroutinePerformer performer)
+    public IEntity Entity { get => _entity; }
+    public float Damage { get => _damage; }
+    public float AttacksPerSeconds { get => _attacksPerSeconds; }
+    public float DelayBetweenAttack { get => _delayBetweenAttack; }
+    public float AttackRange { get => _attackRange; }
+    public float ClipDuration { get => _clipDuration; }
+    public float RemainingCooldown { get => _remainingCooldown; }
+    public bool CanAttack { get => _canAttack; }
+
+    public AttackState(IEntity entity, CoroutinePerformer performer, IAttackStrategy strategy)
     {
         _entity = entity;
-        _target = target;
         _performer = performer;
+        _attackStrategy = strategy;
     }
 
     public void Dispose()
     {
-        UnsubsrubingEvents();
+        if (_attackStrategy != null)
+            _attackStrategy.OnAllTargetsDestroyed -= Exit;
     }
 
     public void Enter()
     {
-        SetParameters();
+        _attackStrategy.Initialize(this);
 
-        SubsrubingEvents();
+        SetClipDuration();
+
+        UpdateData();
+
+        _attackStrategy.OnAllTargetsDestroyed += Exit;
+        _attackStrategy.SubscribingEvents();
 
         _canAttack = true;
-        _attackCoroutine = _performer.StartCoroutine(AttackJob());
+        _attackCoroutine = _performer.StartCoroutine(_attackStrategy.AttackJob());
     }
 
     public void Exit()
@@ -53,7 +69,8 @@ public class AttackState : IEntityState, IDisposable
             _attackCoroutine = null;
         }
 
-        UnsubsrubingEvents();
+        _attackStrategy.OnAllTargetsDestroyed -= Exit;
+        _attackStrategy.UnsubscribingEvents();
 
         _canAttack = false;
     }
@@ -63,65 +80,21 @@ public class AttackState : IEntityState, IDisposable
         return;
     }
 
-    private void SubsrubingEvents()
+    public void UpdateData()
     {
-        _entity.AnimationEventReceiver.OnFrameAttack += DamageDeal;
+        _damage = _entity.StatsManager.AttackStats.Damage;
+        _attackRange = _entity.Config.AttackStats.BaseAttackRange;
 
-        _entity.Health.EntityDied += OnTargetDestroyed;
-        _target.Health.EntityDied += OnTargetDestroyed;
-    }    
-    
-    private void UnsubsrubingEvents()
-    {
-        if (_entity != null)
-        {
-            _entity.AnimationEventReceiver.OnFrameAttack -= DamageDeal;
-            _entity.Health.EntityDied -= OnTargetDestroyed;
-        }
+        _attacksPerSeconds = _entity.StatsManager.AttackStats.AttacksPerSecond;
+        _delayBetweenAttack = BaseAnimationSpeed / _attacksPerSeconds;
 
-        if (_target != null)
-            _target.Health.EntityDied -= OnTargetDestroyed;
-    }
+        _remainingCooldown = Mathf.Max(0, _delayBetweenAttack - _clipDuration);
 
-    private void SetParameters()
-    { 
-        _entity.Config.AttackStats.ResetAttackSpeedToBase();
-
-        _attackClip = _entity.Config.AttackStats.AttackClip;
-        _clipDuration = _attackClip.length;
-        _damage = _entity.Config.AttackStats.BaseDamage;
-        _attackRange = _entity.Config.AttackStats.AttackRange;
-    }
-
-    private IEnumerator AttackJob()
-    {
-        while (_canAttack && _target != null)
-        {
-            SetAnimationSpeed();
-
-            if (CheckDistanceToTarget() == false)
-            {
-                yield return null;
-                continue;
-            }
-
-            _entity.Animator.SetTrigger("Attack");
-
-            yield return new WaitForSeconds(_clipDuration);
-
-            float remainingCooldown = _delayBetweenAttack - _attackClip.length;
-            if (remainingCooldown > 0f)
-                yield return new WaitForSeconds(remainingCooldown);
-
-        }
+        SetAnimationSpeed();
     }
 
     private void SetAnimationSpeed()
     {
-        _attacksPerSeconds = _entity.Config.AttackStats.CurrentAttacksPerSecond;
-
-        _delayBetweenAttack = BaseAnimationSpeed / _attacksPerSeconds;
-
         if (_delayBetweenAttack < _clipDuration)
         {
             float animationSpeed = _clipDuration / _delayBetweenAttack;
@@ -133,33 +106,10 @@ public class AttackState : IEntityState, IDisposable
         }
     }
 
-    private void DamageDeal()
-    {
-        DamageData data = new DamageData(_damage);
-
-        _target.Health.TakeDamage(data);
+    private void SetClipDuration()
+    { 
+        _attackClip = _entity.Config.AttackStats.AttackClip;
+        _clipDuration = _attackClip.length;
     }
 
-    private bool CheckDistanceToTarget()
-    {
-        float sqrDistance = (_entity.Transform.position - _target.Transform.position).sqrMagnitude;
-
-        float sqrAttackRange = _attackRange * _attackRange;
-
-        if (sqrDistance <= sqrAttackRange)
-            return true;
-
-        return false;
-    }
-
-    private void OnTargetDestroyed(IEntity entity)
-    {
-        _target.Health.EntityDied -= OnTargetDestroyed;
-
-        UnsubsrubingEvents();
-
-        Exit();
-
-        _target = null;
-    }
 }

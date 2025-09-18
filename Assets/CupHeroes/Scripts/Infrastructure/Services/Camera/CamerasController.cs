@@ -34,7 +34,7 @@ public class CamerasController
         SpawnCamera();
     }
 
-    public void SetTargetForCamera(IEntity entity) => _cinemachineCamera.Follow = entity.Transform;
+    public void SetTargetForCamera(ICharacter character) => _cinemachineCamera.Follow = character.Transform;
 
     private void SetParameters()
     {

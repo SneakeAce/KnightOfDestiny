@@ -11,6 +11,7 @@ public interface IEntity
     IEntityStateMachine StateMachine { get; }
     IEntityHealth Health { get; }
     IEntityController EntityController { get; }
+    IEntityStatsManager StatsManager { get; }
 
     void Initialize();
     void SetConfig(EntityConfig config);

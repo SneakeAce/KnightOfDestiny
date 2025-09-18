@@ -36,7 +36,7 @@ public class EnemyController : IEnemyController, ITickable, IDisposable
     {
         _enemy = (IEnemy)entity;
 
-        _minDistanceToTarget = _enemy.Config.AttackStats.AttackRange;
+        _minDistanceToTarget = _enemy.Config.AttackStats.BaseAttackRange;
 
         SubcrubingEvents();
 
@@ -97,11 +97,13 @@ public class EnemyController : IEnemyController, ITickable, IDisposable
 
     private void AddAttackCommand()
     {
+        var strategy = new AttackByOnceTarget(_target);
+
         _currentCommand?.CancelCommand();
 
         _currentCommand = null;
 
-        _currentCommand = new AttackCommand(_enemy, _target, _coroutinePerformer);
+        _currentCommand = new AttackCommand(_enemy, strategy, _coroutinePerformer);
 
         ExecuteCommand();
     }

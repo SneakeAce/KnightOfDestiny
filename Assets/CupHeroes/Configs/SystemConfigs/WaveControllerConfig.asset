@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: WaveControllerConfig
   m_EditorClassIdentifier: 
   <WaveControllerStats>k__BackingField:
-    <MaxWaveOnLevel>k__BackingField: 3
-    <StartAmountEnemyOnWave>k__BackingField: 1
-    <MultiplierAmounEnemyOnWave>k__BackingField: 1
-    <DealyBeforeSpawn>k__BackingField: 2.5
+    <MaxWaveOnLevel>k__BackingField: 5
+    <StartAmountEnemyOnWave>k__BackingField: 2
+    <MultiplierAmounEnemyOnWave>k__BackingField: 2
+    <DelayBeforeSpawn>k__BackingField: 1.7
+    <DelayBetweenSpawnEntities>k__BackingField: 0.3
   <StartPositionStats>k__BackingField:
     <StartPositionByX>k__BackingField: 20
     <MinStartPositionOffsetByX>k__BackingField: -2
