@@ -14,20 +14,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Prefab>k__BackingField: {fileID: 5419496087572186541, guid: 1c0aed218db09eb4abd9502119d6981d, type: 3}
   <MoveStats>k__BackingField:
-    <MoveSpeed>k__BackingField: 8
+    <MoveSpeed>k__BackingField: 2
   <HealthStats>k__BackingField:
     <BaseValueHealth>k__BackingField: 55
   <AttackStats>k__BackingField:
     <BaseAmountTargetsForAttack>k__BackingField: 1
     <CanFindMultipleTargets>k__BackingField: 0
-    <BaseDamage>k__BackingField: 1
+    <BaseDamage>k__BackingField: 3
     <BaseAttackSpeedProcent>k__BackingField: 70
-    <BaseAttackRange>k__BackingField: 3.5
-    <AttackType>k__BackingField: 2
+    <BaseMeleeAttackRange>k__BackingField: 0
+    <BaseRangeAttackRange>k__BackingField: 5
+    <BaseAttackType>k__BackingField: 0
+    <AvailableAttackTypes>k__BackingField: 0
     <TargetLayer>k__BackingField:
       serializedVersion: 2
       m_Bits: 64
     <AttackClip>k__BackingField: {fileID: 7400000, guid: c4b3b5b425dbc2b4c98f18c1111222d2, type: 2}
+    <ProjectileStats>k__BackingField:
+      <Prefab>k__BackingField: {fileID: 976043013431883348, guid: 6d8764e1e093a784f8eb5b25345a361e, type: 3}
+      <IsSplashAttack>k__BackingField: 0
+      <SplashRadius>k__BackingField: 0
+      <Speed>k__BackingField: 20
   <EnemyType>k__BackingField: 2
   <MinAmountCurrencyDropped>k__BackingField: 1
   <MaxAmountCurrencyDropped>k__BackingField: 5

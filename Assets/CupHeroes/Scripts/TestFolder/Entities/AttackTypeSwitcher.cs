@@ -1,33 +1,73 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class AttackTypeSwitcher
 {
-    private IEntity _character;
+    private ICharacter _character;
 
     private EntityAttackType _currentAttackType;
-    private List<EntityAttackType> _availableAttackType;
+    private List<EntityAttackType> _availableTypes = new List<EntityAttackType>();
 
-    public EntityAttackType CurrentAttackType { get => _currentAttackType; }
+    public AttackTypeSwitcher(ICharacter character)
+    {
+        _character = character;
+    }
+
+    public event Action OnAttackTypeChanged;
+
+    public EntityAttackType CurrentAttackType { get => GetAttackType(); }
 
     public void Initialize()
     {
+        _availableTypes = GetAvailableTypes();
 
+        _currentAttackType = GetBaseType();
     }
 
-    public EntityAttackType SwitchAttackType()
+    public void CheckDistanceToTargetAndSwitch(float distance, float range)
     {
-        return EntityAttackType.None;
+        EntityAttackType newAttackType;
+
+        newAttackType = distance <= range ?
+            EntityAttackType.Melee :
+            EntityAttackType.Range;
+
+        if (newAttackType != _currentAttackType)
+        {
+            _currentAttackType = newAttackType;
+            OnAttackTypeChanged?.Invoke();
+        }
     }
 
-    public EntityAttackType GetAttackType()
+    private EntityAttackType GetAttackType()
     {
         return _currentAttackType;
     }
 
-    private List<EntityAttackType> GetAvailableAttackTypes()
+    private EntityAttackType GetBaseType()
     {
-        return new List<EntityAttackType>();
+        foreach (var type in _availableTypes)
+        {
+            if (type == _character.Config.AttackStats.BaseAttackType)
+                return type;
+        }
+
+        return EntityAttackType.None;
     }
 
+    private List<EntityAttackType> GetAvailableTypes()
+    {
+        var list = Enum.GetValues(typeof(EntityAttackType))
+            .Cast<EntityAttackType>()
+            .Where(type => type != EntityAttackType.None &&
+            (_character.Config.AttackStats.AvailableAttackTypes & type) != 0)
+            .ToList();
+
+        if (list.Count <= 0)
+            return new List<EntityAttackType>();
+
+        return list;
+    }
 }

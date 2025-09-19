@@ -3,13 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AttackByMultipleTargets : BaseAttackStrategy
+public class MeleeAttackByMultipleTargets : BaseAttackStrategy
 {
     private List<IEntity> _targets = new();
 
     public override event Action OnAllTargetsDestroyed;
 
-    public AttackByMultipleTargets(List<IEntity> targets)
+    public MeleeAttackByMultipleTargets(List<IEntity> targets)
     {
         _targets = targets;
     }

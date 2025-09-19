@@ -16,6 +16,9 @@ public class CharacterInstaller : MonoInstaller
 
     private void BindCharacterController()
     {
+        Container.BindInterfacesAndSelfTo<CharacterAttackController>()
+            .AsSingle();
+
         Container.BindInterfacesAndSelfTo<CharacterController>()
             .AsSingle();
     }

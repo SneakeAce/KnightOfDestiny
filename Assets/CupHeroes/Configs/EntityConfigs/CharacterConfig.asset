@@ -21,12 +21,19 @@ MonoBehaviour:
     <BaseAmountTargetsForAttack>k__BackingField: 3
     <CanFindMultipleTargets>k__BackingField: 1
     <BaseDamage>k__BackingField: 16.7
-    <BaseAttackSpeedProcent>k__BackingField: 100
-    <BaseAttackRange>k__BackingField: 4
-    <AttackType>k__BackingField: 1
+    <BaseAttackSpeedProcent>k__BackingField: 150
+    <BaseMeleeAttackRange>k__BackingField: 4
+    <BaseRangeAttackRange>k__BackingField: 8
+    <BaseAttackType>k__BackingField: 2
+    <AvailableAttackTypes>k__BackingField: -1
     <TargetLayer>k__BackingField:
       serializedVersion: 2
       m_Bits: 128
     <AttackClip>k__BackingField: {fileID: 7400000, guid: a09f00fd9285e1547b2ab03ec1139e85, type: 2}
+    <ProjectileStats>k__BackingField:
+      <Prefab>k__BackingField: {fileID: 2512955200346959493, guid: 7981dd9ca5c535f4d9392cf3ab8c4d8b, type: 3}
+      <IsSplashAttack>k__BackingField: 1
+      <SplashRadius>k__BackingField: 4
+      <Speed>k__BackingField: 20
   <SpawnPosition>k__BackingField: {x: 0, y: 0, z: 0}
   <SpawnRotation>k__BackingField: {x: 0, y: 0, z: 0, w: 0}

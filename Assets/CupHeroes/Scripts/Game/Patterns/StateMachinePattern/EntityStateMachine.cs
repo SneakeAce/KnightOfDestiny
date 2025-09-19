@@ -27,4 +27,9 @@ public class EntityStateMachine : MonoBehaviour, IEntityStateMachine
 
         _currentState.Update();
     }
+
+    public IEntityState GetCurrentState()
+    {
+        return _currentState = _currentState != null ? _currentState : null;
+    }
 }

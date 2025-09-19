@@ -2,13 +2,13 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class AttackByOnceTarget : BaseAttackStrategy
+public class MeleeAttackByOnceTarget : BaseAttackStrategy
 {
     private IEntity _target;
 
     public override event Action OnAllTargetsDestroyed;
 
-    public AttackByOnceTarget(IEntity target)
+    public MeleeAttackByOnceTarget(IEntity target)
     {
         _target = target;
     }

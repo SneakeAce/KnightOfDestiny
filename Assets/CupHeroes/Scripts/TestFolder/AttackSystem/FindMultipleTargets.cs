@@ -41,7 +41,7 @@ public class FindMultipleTargets : BaseTargetFinderStrategy
 
             Collider2D[] targets = Physics2D.OverlapCircleAll(
                 _context.Character.Transform.position,
-                _context.SearchingRadius,
+                _context.SearchingRadius + OffsetSearchingRadius,
                 _context.TargetsLayer
                 );
 

@@ -8,14 +8,15 @@ public class AttackStatsController : IAttackStatsController
     private float _damage;
     private float _attackSpeedProcent;
     private float _attacksPerSecond;
-    private float _attackRange;
+    private float _meleeAttackRange;
+    private float _rangeAttackRange;
 
     public int AmountTargetsForAttack => _amountTargetsForAttack;
     public float Damage => _damage;
     public float AttackSpeedProcent => _attackSpeedProcent;
     public float AttacksPerSecond => _attacksPerSecond;
-    public float AttackRange => _attackRange;
-
+    public float MeleeAttackRange => _meleeAttackRange;
+    public float RangeAttackRange => _rangeAttackRange;
 
     public void Initialize(IEntity entity)
     {
@@ -53,6 +54,6 @@ public class AttackStatsController : IAttackStatsController
 
         _attacksPerSecond = _attackSpeedProcent / DividerForCoversionToProcetage;
 
-        _attackRange = _entity.Config.AttackStats.BaseAttackRange;
+        _meleeAttackRange = _entity.Config.AttackStats.BaseMeleeAttackRange;
     }
 }

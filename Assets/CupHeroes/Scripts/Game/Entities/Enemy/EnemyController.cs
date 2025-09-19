@@ -14,6 +14,8 @@ public class EnemyController : IEnemyController, ITickable, IDisposable
     private CollectingCurrencyHandler _currencyHandler;
     private CoroutinePerformer _coroutinePerformer;
 
+    private IAttackStrategy _attackStrategy;
+
     private float _minDistanceToTarget;
 
     private bool _enemyNearTarget;
@@ -36,9 +38,11 @@ public class EnemyController : IEnemyController, ITickable, IDisposable
     {
         _enemy = (IEnemy)entity;
 
-        _minDistanceToTarget = _enemy.Config.AttackStats.BaseAttackRange;
+        _minDistanceToTarget = _enemy.Config.AttackStats.BaseMeleeAttackRange;
 
         SubcrubingEvents();
+
+        SetAttackStrategy();
 
         SetMoveCommand();
     }
@@ -49,7 +53,7 @@ public class EnemyController : IEnemyController, ITickable, IDisposable
             && _enemyNearTarget == false)
         {
             _enemyNearTarget = true;
-            SetAttackCommand();
+            SetAttackCommand(_attackStrategy);
         }
 
         if (Vector2.Distance(_enemy.Transform.position, _target.Transform.position) >= _minDistanceToTarget
@@ -67,7 +71,7 @@ public class EnemyController : IEnemyController, ITickable, IDisposable
         AddMoveCommand();
     }
 
-    public void SetAttackCommand()
+    public void SetAttackCommand(IAttackStrategy strategy)
     {
         AddAttackCommand();
     }
@@ -84,6 +88,11 @@ public class EnemyController : IEnemyController, ITickable, IDisposable
         _enemyHealth.OnGiveAwayCurrency += _currencyHandler.GetCurrency;
     }
 
+    private void SetAttackStrategy()
+    {
+        _attackStrategy = new MeleeAttackByOnceTarget(_target);
+    }
+
     private void AddMoveCommand()
     {
         _currentCommand?.CancelCommand();
@@ -97,13 +106,11 @@ public class EnemyController : IEnemyController, ITickable, IDisposable
 
     private void AddAttackCommand()
     {
-        var strategy = new AttackByOnceTarget(_target);
-
         _currentCommand?.CancelCommand();
 
         _currentCommand = null;
 
-        _currentCommand = new AttackCommand(_enemy, strategy, _coroutinePerformer);
+        _currentCommand = new AttackCommand(_enemy, _attackStrategy, _coroutinePerformer);
 
         ExecuteCommand();
     }
@@ -123,5 +130,10 @@ public class EnemyController : IEnemyController, ITickable, IDisposable
     {
         _commandInvoker.AddCommand(_currentCommand);
         _currentCommand.Execute();
+    }
+
+    public ICommand GetCurrentCommand()
+    {
+        return _currentCommand = _currentCommand != null ? _currentCommand : null;
     }
 }

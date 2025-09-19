@@ -7,7 +7,7 @@ public abstract class BaseTargetFinderStrategy : ITargetFinderStrategy, IDisposa
 {
     protected const float MinTimeBeforeSearchTarget = 0.1f;
     protected const float MaxTimeBeforeSearchTarget = 0.6f;
-    protected const float OffsetSearchingRadius = 2f;
+    protected const float OffsetSearchingRadius = 12f;
 
     protected TargetFinderContext _context;
 

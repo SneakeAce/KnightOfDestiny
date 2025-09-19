@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class AttackState : IEntityState, IDisposable
@@ -83,7 +82,7 @@ public class AttackState : IEntityState, IDisposable
     public void UpdateData()
     {
         _damage = _entity.StatsManager.AttackStats.Damage;
-        _attackRange = _entity.Config.AttackStats.BaseAttackRange;
+        _attackRange = _entity.Config.AttackStats.BaseMeleeAttackRange;
 
         _attacksPerSeconds = _entity.StatsManager.AttackStats.AttacksPerSecond;
         _delayBetweenAttack = BaseAnimationSpeed / _attacksPerSeconds;
@@ -91,6 +90,24 @@ public class AttackState : IEntityState, IDisposable
         _remainingCooldown = Mathf.Max(0, _delayBetweenAttack - _clipDuration);
 
         SetAnimationSpeed();
+    }
+
+    public void UpdateStrategy(IAttackStrategy strategy)
+    {
+        if (_attackCoroutine != null)
+        {
+            _performer.StopCoroutine(_attackCoroutine);
+            _attackCoroutine = null;
+        }
+
+        _attackStrategy.OnAllTargetsDestroyed -= Exit;
+        _attackStrategy.UnsubscribingEvents();
+
+        _canAttack = false;
+
+        _attackStrategy = strategy;
+
+        Enter();
     }
 
     private void SetAnimationSpeed()
