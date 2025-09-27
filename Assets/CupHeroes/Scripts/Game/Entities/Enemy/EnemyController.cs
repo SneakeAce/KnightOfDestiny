@@ -14,7 +14,7 @@ public class EnemyController : IEnemyController, ITickable, IDisposable
     private CollectingCurrencyHandler _currencyHandler;
     private CoroutinePerformer _coroutinePerformer;
 
-    private IAttackStrategy _attackStrategy;
+    private IEntityAttackStrategy _attackStrategy;
 
     private float _minDistanceToTarget;
 
@@ -71,7 +71,7 @@ public class EnemyController : IEnemyController, ITickable, IDisposable
         AddMoveCommand();
     }
 
-    public void SetAttackCommand(IAttackStrategy strategy)
+    public void SetAttackCommand(IEntityAttackStrategy strategy)
     {
         AddAttackCommand();
     }

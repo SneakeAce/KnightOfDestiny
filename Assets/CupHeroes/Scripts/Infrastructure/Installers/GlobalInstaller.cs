@@ -32,6 +32,10 @@ public class GlobalInstaller : MonoInstaller
             .To<UIPoolsFactory>()
             .AsSingle();
 
+        Container.Bind<IPoolsFactory>()
+            .To<ProjectilePoolsFactory>()
+            .AsSingle();
+
         Container.Bind<IPoolsManager>()
             .To<PoolsManager>()
             .AsSingle();

@@ -54,7 +54,7 @@ public class CharacterController : ICharacterController, ITickable, IDisposable
         AddMoveCommand();
     }
 
-    public void SetAttackCommand(IAttackStrategy strategy)
+    public void SetAttackCommand(IEntityAttackStrategy strategy)
     {
         AddAttackCommand(strategy);
     }
@@ -87,7 +87,7 @@ public class CharacterController : ICharacterController, ITickable, IDisposable
         ExecuteCommand();
     }
 
-    private void AddAttackCommand(IAttackStrategy strategy)
+    private void AddAttackCommand(IEntityAttackStrategy strategy)
     {
         _currentCommand?.CancelCommand();
 

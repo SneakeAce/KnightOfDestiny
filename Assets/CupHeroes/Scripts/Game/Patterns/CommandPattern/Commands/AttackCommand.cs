@@ -2,13 +2,13 @@ public class AttackCommand : IAttackCommand
 {
     private IEntity _entity;
 
-    private IAttackStrategy _strategy;
+    private IEntityAttackStrategy _strategy;
 
     private CoroutinePerformer _performer;
 
     private AttackState _currentState;
 
-    public AttackCommand(IEntity entity, IAttackStrategy strategy, CoroutinePerformer performer)
+    public AttackCommand(IEntity entity, IEntityAttackStrategy strategy, CoroutinePerformer performer)
     {
         _entity = entity;
         _strategy = strategy;
@@ -22,7 +22,7 @@ public class AttackCommand : IAttackCommand
         _currentState = (AttackState)_entity.StateMachine.GetCurrentState();
     }
 
-    public void SwitchState(IAttackStrategy strategy)
+    public void SwitchState(IEntityAttackStrategy strategy)
     {
         _currentState?.UpdateStrategy(strategy);
     }

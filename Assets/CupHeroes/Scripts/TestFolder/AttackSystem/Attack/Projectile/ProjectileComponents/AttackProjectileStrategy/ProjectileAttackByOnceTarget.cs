@@ -1,0 +1,57 @@
+using System;
+using System.Collections;
+using UnityEngine;
+
+public class ProjectileAttackByOnceTarget : ProjectileAttackBase
+{
+    private IEntity _target;
+
+    public ProjectileAttackByOnceTarget(IEntity target)
+    {
+        _target = target;
+    }
+
+    public override event Action OnAllTargetsDestroyed;
+
+    public override void OnEntityDestroyed(IEntity entity)
+    {
+        entity.Health.EntityDied -= OnEntityDestroyed;
+
+        OnAllTargetsDestroyed?.Invoke();
+    }
+
+    public override void SubscribingEvents()
+    {
+        _controller.Parent.Health.EntityDied += OnEntityDestroyed;
+        _target.Health.EntityDied += OnEntityDestroyed;
+
+    }
+
+    public override void UnsubscribingEvents()
+    {
+        _controller.Parent.Health.EntityDied -= OnEntityDestroyed;
+        _target.Health.EntityDied -= OnEntityDestroyed;
+
+    }
+
+    public override IEnumerator AttackJob()
+    {
+        while (_wasCollision && _controller.Projectile != null)
+        {
+            if (_controller.Projectile.Collider.IsTouching(_target.Collider))
+            {
+                DealDamage();
+
+                _wasCollision = true;
+            }
+
+            yield return null;
+        }
+    }
+
+    public override void DealDamage()
+    {
+        DamageDeal(_target);
+    }
+
+}

@@ -7,7 +7,7 @@ public class AttackState : IEntityState, IDisposable
 
     private IEntity _entity;
 
-    private IAttackStrategy _attackStrategy;
+    private IEntityAttackStrategy _attackStrategy;
 
     private CoroutinePerformer _performer;
     private Coroutine _attackCoroutine;
@@ -32,7 +32,7 @@ public class AttackState : IEntityState, IDisposable
     public float RemainingCooldown { get => _remainingCooldown; }
     public bool CanAttack { get => _canAttack; }
 
-    public AttackState(IEntity entity, CoroutinePerformer performer, IAttackStrategy strategy)
+    public AttackState(IEntity entity, CoroutinePerformer performer, IEntityAttackStrategy strategy)
     {
         _entity = entity;
         _performer = performer;
@@ -92,7 +92,7 @@ public class AttackState : IEntityState, IDisposable
         SetAnimationSpeed();
     }
 
-    public void UpdateStrategy(IAttackStrategy strategy)
+    public void UpdateStrategy(IEntityAttackStrategy strategy)
     {
         if (_attackCoroutine != null)
         {

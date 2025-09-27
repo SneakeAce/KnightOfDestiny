@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 
-public abstract class BaseAttackStrategy : IAttackStrategy
+public abstract class BaseAttackStrategy : IEntityAttackStrategy
 {
     protected AttackState _state;
 

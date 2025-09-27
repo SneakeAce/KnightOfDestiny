@@ -114,9 +114,9 @@ public class CharacterAttackController : ITickable, IDisposable
         return strategy;
     }
 
-    private IAttackStrategy GetAttackStrategy()
+    private IEntityAttackStrategy GetAttackStrategy()
     {
-        IAttackStrategy strategy = null;
+        IEntityAttackStrategy strategy = null;
 
         if (_currentAttackType == EntityAttackType.Melee)
         {
@@ -172,7 +172,7 @@ public class CharacterAttackController : ITickable, IDisposable
 
     private void ExecuteAttackCommand()
     {
-        IAttackStrategy strategy = GetAttackStrategy();
+        IEntityAttackStrategy strategy = GetAttackStrategy();
 
         _character.EntityController.SetAttackCommand(strategy);
 
