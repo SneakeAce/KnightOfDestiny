@@ -7,7 +7,7 @@ public interface IProjectile
     Rigidbody2D Rigidbody { get; }
     Animator Animator { get; }
     ProjectileConfig ProjectileConfig { get; }
-    ProjectileMoveComponent MoveComponent { get; }
+    ProjectileMoveController MoveComponent { get; }
     ProjectileController Controller { get; }
     IEntity Parent { get; }
 

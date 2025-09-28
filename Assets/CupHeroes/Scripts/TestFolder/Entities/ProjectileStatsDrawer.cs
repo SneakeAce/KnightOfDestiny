@@ -12,6 +12,7 @@ public class ProjectileStatsDrawer : PropertyDrawer
         var isSplashAttack = property.FindPropertyRelative("<IsSplashAttack>k__BackingField");
         var splashRadius = property.FindPropertyRelative("<SplashRadius>k__BackingField");
         var speed = property.FindPropertyRelative("<Speed>k__BackingField");
+        var distanceFlying = property.FindPropertyRelative("<DistanceFlying>k__BackingField");
 
         EditorGUILayout.PropertyField(prefab);
         EditorGUILayout.PropertyField(isSplashAttack);
@@ -22,6 +23,7 @@ public class ProjectileStatsDrawer : PropertyDrawer
         }
 
         EditorGUILayout.PropertyField(speed);
+        EditorGUILayout.PropertyField(distanceFlying);
 
 
         EditorGUI.EndProperty();

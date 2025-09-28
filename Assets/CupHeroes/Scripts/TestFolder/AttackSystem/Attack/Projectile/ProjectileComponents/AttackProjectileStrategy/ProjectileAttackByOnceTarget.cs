@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using UnityEngine;
 
 public class ProjectileAttackByOnceTarget : ProjectileAttackBase
 {
@@ -24,25 +23,25 @@ public class ProjectileAttackByOnceTarget : ProjectileAttackBase
     {
         _controller.Parent.Health.EntityDied += OnEntityDestroyed;
         _target.Health.EntityDied += OnEntityDestroyed;
-
     }
 
     public override void UnsubscribingEvents()
     {
         _controller.Parent.Health.EntityDied -= OnEntityDestroyed;
         _target.Health.EntityDied -= OnEntityDestroyed;
-
     }
 
     public override IEnumerator AttackJob()
     {
-        while (_wasCollision && _controller.Projectile != null)
+        while (_controller.Projectile != null && _wasCollision == false)
         {
             if (_controller.Projectile.Collider.IsTouching(_target.Collider))
             {
                 DealDamage();
 
                 _wasCollision = true;
+
+                ProjectileDestroyed();
             }
 
             yield return null;

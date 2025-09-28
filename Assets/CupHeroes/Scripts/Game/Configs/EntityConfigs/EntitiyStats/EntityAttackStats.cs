@@ -17,5 +17,5 @@ public class EntityAttackStats
     [field: SerializeField] public LayerMask TargetLayer { get; private set; }
     [field: SerializeField] public AnimationClip AttackClip { get; private set; }
 
-    [field: SerializeField] public ProjectileStats ProjectileStats { get; private set; }
+    [field: SerializeField] public ProjectileType AvailableProjectileType { get; private set; }
 }

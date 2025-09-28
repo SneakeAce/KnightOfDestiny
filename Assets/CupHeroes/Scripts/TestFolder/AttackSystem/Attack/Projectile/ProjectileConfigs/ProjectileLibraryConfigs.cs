@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+[CreateAssetMenu(menuName = "Configs/ProjectileConfig/ProjectileLibraryConfigs", fileName = "ProjectileLibraryConfigs")]
 public class ProjectileLibraryConfigs : LibraryConfigsBase
 {
     [field: SerializeField] public List<ProjectileConfig> ProjectileConfigs { get; private set; }

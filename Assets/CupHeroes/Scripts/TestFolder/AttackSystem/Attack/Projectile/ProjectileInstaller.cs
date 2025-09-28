@@ -1,16 +1,29 @@
-using UnityEngine;
+using Zenject;
 
-public class ProjectileInstaller : MonoBehaviour
+public class ProjectileInstaller : MonoInstaller
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public override void InstallBindings()
     {
-        
+        BindProjectileFactories();
+
+        BindProjectileSpawner();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void BindProjectileFactories()
     {
-        
+        Container.Bind<IProjectileControllersFactory>()
+            .To<ProjectileControllersFactory>()
+            .AsSingle();
+
+        Container.Bind<IProjectileFactory>()
+            .To<ProjectileFactory>()
+            .AsSingle();
     }
+
+    private void BindProjectileSpawner()
+    {
+        Container.Bind<ProjectileSpawner>()
+            .AsSingle();
+    }
+
 }

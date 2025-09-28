@@ -24,6 +24,8 @@ public class CharacterAttackController : ITickable, IDisposable
     private ITargetFinderStrategy _targetFinderStrategy;
 
     private CoroutinePerformer _performer;
+    private ProjectileSpawner _projectileSpawner;
+
     private TargetFinderContext _targetFinderContext;
     private AttackTypeSwitcher _attackTypeSwitcher;
 
@@ -32,9 +34,10 @@ public class CharacterAttackController : ITickable, IDisposable
 
     private bool _isAttackCommandInitialized;
 
-    public CharacterAttackController(CoroutinePerformer performer)
+    public CharacterAttackController(CoroutinePerformer performer, ProjectileSpawner projectileSpawner)
     {
         _performer = performer;
+        _projectileSpawner = projectileSpawner;
     }
 
     public void Dispose()
@@ -52,9 +55,9 @@ public class CharacterAttackController : ITickable, IDisposable
             return;
 
         var distance = Vector2.Distance(_enemy.Transform.position, _character.Transform.position);
-        var meleeRange = _character.StatsManager.AttackStats.MeleeAttackRange;
+        var rangeAttack = _character.StatsManager.AttackStats.RangeAttackRange;
 
-        _attackTypeSwitcher.CheckDistanceToTargetAndSwitch(distance, meleeRange);
+        _attackTypeSwitcher.CheckDistanceToTargetAndSwitch(distance, rangeAttack);
     }
 
     public void Initialize(ICharacter character)
@@ -135,18 +138,9 @@ public class CharacterAttackController : ITickable, IDisposable
         }
         else if (_currentAttackType == EntityAttackType.Range)
         {
-            if (_character.Config.AttackStats.CanFindMultipleTargets)
-            {
-                var listTargets = _targets.ToList();
+            var soloTarget = _targets.FirstOrDefault();
 
-                strategy = new MeleeAttackByMultipleTargets(listTargets);
-            }
-            else
-            {
-                var soloTarget = _targets.FirstOrDefault();
-
-                strategy = new MeleeAttackByOnceTarget(soloTarget);
-            }
+            strategy = new RangeAttackByOnceTarget(soloTarget, _projectileSpawner);
         }
 
         return strategy;

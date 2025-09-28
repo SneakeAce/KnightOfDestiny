@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class ProjectileAttackController : IDisposable
 {
+    private ProjectileController _controller;
+
     private IProjectile _projectile;
 
     private IEntity _target;
@@ -14,8 +16,9 @@ public class ProjectileAttackController : IDisposable
     private IProjectileAttackStrategy _strategy;
     private ProjectileAttackData _data;
 
-    public ProjectileAttackController(IProjectile projectile, IEntity parent, CoroutinePerformer performer)
+    public ProjectileAttackController(ProjectileController controller, IProjectile projectile, IEntity parent, CoroutinePerformer performer)
     {
+        _controller = controller;
         _projectile = projectile;
         _parent = parent;
         _performer = performer;
@@ -24,11 +27,14 @@ public class ProjectileAttackController : IDisposable
     public IEntity Parent => _parent;
     public IProjectile Projectile => _projectile;
 
-    public event Action<IProjectile> OnProjectileDestroyed;
+    public event Action<IProjectile> OnAttackProjectileDestroyed;
 
     public void Dispose()
     {
         StopAttackCoroutine();
+
+        _strategy.ProjectileCollided -= ProjectileDestroyed;
+        _strategy.Dispose();
     }
 
     public void Initialize()
@@ -41,9 +47,21 @@ public class ProjectileAttackController : IDisposable
         _target = target;
     }
 
+    public void ProjectileDestroyed()
+    {
+        OnAttackProjectileDestroyed?.Invoke(_projectile);
+    }
+
     private void StartAttackStrategy()
     {
+        Debug.Log($"{nameof(_parent)} is {_parent}!");
+        Debug.Log($"{nameof(_target)} is {_target}!");
+        Debug.Log($"{nameof(_projectile)} is {_projectile}!");
+
+
         _strategy = GetAttackStrategy();
+
+        _strategy.ProjectileCollided += ProjectileDestroyed;
 
         _strategy.Initialize(_data);
 
@@ -54,15 +72,16 @@ public class ProjectileAttackController : IDisposable
     {
         IProjectileAttackStrategy strategy = null;
 
-        if (_parent.Config.AttackStats.ProjectileStats.IsSplashAttack)
+        if (_projectile.ProjectileConfig.MainStats.IsSplashAttack)
         {
             strategy = new ProjectileAttackByOnceTarget(_target);
 
             _data = new ProjectileAttackData(
+                this,
                 _parent.StatsManager.AttackStats.Damage,
-                _parent.Config.AttackStats.ProjectileStats.Speed,
-                _parent.Config.AttackStats.ProjectileStats.IsSplashAttack,
-                _parent.Config.AttackStats.ProjectileStats.SplashRadius
+                _projectile.ProjectileConfig.MainStats.Speed,
+                _projectile.ProjectileConfig.MainStats.IsSplashAttack,
+                _projectile.ProjectileConfig.MainStats.SplashRadius
                 );
         }
         else
@@ -70,22 +89,16 @@ public class ProjectileAttackController : IDisposable
             strategy = new ProjectileAttackByOnceTarget(_target);
 
             _data = new ProjectileAttackData(
+                this,
                 _parent.StatsManager.AttackStats.Damage,
-                _parent.Config.AttackStats.ProjectileStats.Speed,
-                _parent.Config.AttackStats.ProjectileStats.IsSplashAttack,
-                _parent.Config.AttackStats.ProjectileStats.SplashRadius
+                _projectile.ProjectileConfig.MainStats.Speed,
+                _projectile.ProjectileConfig.MainStats.IsSplashAttack,
+                _projectile.ProjectileConfig.MainStats.SplashRadius
                 );
         }
 
         return strategy;
-    }
-
-    private void ProjectileDestroyed(IProjectile projectile)
-    {
-        StopAttackCoroutine();
-
-        _strategy.Dispose();
-    }
+    } 
 
     private void StopAttackCoroutine()
     {

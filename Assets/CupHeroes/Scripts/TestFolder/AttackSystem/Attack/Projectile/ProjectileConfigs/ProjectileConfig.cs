@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Configs/ProjectileConfigs/Projectile", fileName = "ProjectileConfig")]
+[CreateAssetMenu(menuName = "Configs/ProjectileConfig/Projectile", fileName = "ProjectileConfig")]
 public class ProjectileConfig : SingleConfigBase
 {
     [field: SerializeField] public ProjectileType ProjectileType { get; private set; }

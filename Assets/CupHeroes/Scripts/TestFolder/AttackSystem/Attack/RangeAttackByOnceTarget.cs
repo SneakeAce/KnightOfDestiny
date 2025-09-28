@@ -5,28 +5,38 @@ using UnityEngine;
 public class RangeAttackByOnceTarget : BaseAttackStrategy
 {
     private IEntity _target;
+    private ProjectileSpawner _projectileSpawner;
 
-    public RangeAttackByOnceTarget(IEntity target)
+    public RangeAttackByOnceTarget(IEntity target, ProjectileSpawner projectileSpawner)
     {
         _target = target;
+        _projectileSpawner = projectileSpawner;
     }
 
     public override event Action OnAllTargetsDestroyed;
 
     public override void SubscribingEvents()
     {
-        _state.Entity.AnimationEventReceiver.OnFrameAttack += DealDamage;
+        if (_state.Entity != null)
+        {
+            _state.Entity.AnimationEventReceiver.OnFrameAttack += DealDamage;
+            _state.Entity.Health.EntityDied += OnEntityDestroyed;
+        }
 
-        _state.Entity.Health.EntityDied += OnEntityDestroyed;
-        _target.Health.EntityDied += OnEntityDestroyed;
+        if (_target != null)
+            _target.Health.EntityDied += OnEntityDestroyed;
     }
 
     public override void UnsubscribingEvents()
     {
-        _state.Entity.AnimationEventReceiver.OnFrameAttack -= DealDamage;
+        if (_state.Entity != null)
+        {
+            _state.Entity.AnimationEventReceiver.OnFrameAttack -= DealDamage;
+            _state.Entity.Health.EntityDied -= OnEntityDestroyed;
+        }
 
-        _state.Entity.Health.EntityDied -= OnEntityDestroyed;
-        _target.Health.EntityDied -= OnEntityDestroyed;
+        if (_target != null)
+            _target.Health.EntityDied -= OnEntityDestroyed;
     }
 
     public override void OnEntityDestroyed(IEntity entity)
@@ -38,7 +48,7 @@ public class RangeAttackByOnceTarget : BaseAttackStrategy
 
     public override IEnumerator AttackJob()
     {
-        while (_state.CanAttack && _target != null)
+        while (_target != null && _state.CanAttack)
         {
             _state.UpdateData();
 
@@ -47,6 +57,9 @@ public class RangeAttackByOnceTarget : BaseAttackStrategy
                 yield return null;
                 continue;
             }
+
+            if (_target == null)
+                yield break;
 
             _state.Entity.Animator.SetTrigger("Attack");
 
@@ -59,7 +72,18 @@ public class RangeAttackByOnceTarget : BaseAttackStrategy
 
     public override void DealDamage()
     {
-        throw new NotImplementedException();
+        if (_state.Entity is not ICharacter character)
+            throw new InvalidCastException($"{nameof(_state.Entity)} is not ICharacter!");
+
+        ProjectileSpawnData data = new ProjectileSpawnData(
+            character.ProjectileSpawnPosition.position,
+            Quaternion.identity,
+            character, 
+            _target, 
+            character.Config.AttackStats.AvailableProjectileType
+            );
+
+        IProjectile projectile = _projectileSpawner.SpawnProjectile(data);
     }
 
 

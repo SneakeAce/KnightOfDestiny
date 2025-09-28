@@ -3,14 +3,17 @@ using System.Collections;
 
 public struct ProjectileAttackData
 {
-    public ProjectileAttackData(float damage, float speed, bool isSplashAttack, float splashRadius)
+    public ProjectileAttackData(ProjectileAttackController controller, float damage, 
+        float speed, bool isSplashAttack, float splashRadius)
     {
+        Controller = controller;
         Damage = damage;
         Speed = speed;
         IsSplashAttack = isSplashAttack;
         SplashRadius = splashRadius;
     }
 
+    public ProjectileAttackController Controller { get; }
     public float Damage { get; }
     public float Speed { get; }
     public bool IsSplashAttack { get; }
@@ -25,6 +28,7 @@ public abstract class ProjectileAttackBase : IProjectileAttackStrategy
     protected bool _wasCollision;
 
     public abstract event Action OnAllTargetsDestroyed;
+    public event Action ProjectileCollided;
 
     public abstract void SubscribingEvents();
     public abstract void UnsubscribingEvents();
@@ -41,11 +45,11 @@ public abstract class ProjectileAttackBase : IProjectileAttackStrategy
 
     public void Initialize(ProjectileAttackData data)
     {
+        _controller = data.Controller;
+
         _wasCollision = false;
 
         _attackData = data;
-
-        _controller.OnProjectileDestroyed += ProjectileDestroyed;
     }
 
     protected void DamageDeal(IEntity target)
@@ -55,11 +59,8 @@ public abstract class ProjectileAttackBase : IProjectileAttackStrategy
         target.Health.TakeDamage(damageData);
     }
 
-    private void ProjectileDestroyed(IProjectile projectile)
+    protected void ProjectileDestroyed()
     {
-        _controller.OnProjectileDestroyed -= ProjectileDestroyed;
-
-        // Ќе уверен, что нужно тут писать, потом изменить!
-        Dispose();
+        ProjectileCollided?.Invoke();
     }
 }

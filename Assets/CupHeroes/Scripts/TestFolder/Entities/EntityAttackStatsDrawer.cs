@@ -21,7 +21,7 @@ public class EntityAttackStatsDrawer : PropertyDrawer
         var availableAttackTypes = property.FindPropertyRelative("<AvailableAttackTypes>k__BackingField");
         var targetLayer = property.FindPropertyRelative("<TargetLayer>k__BackingField");
         var attackClip = property.FindPropertyRelative("<AttackClip>k__BackingField");
-        var projectileStats = property.FindPropertyRelative("<ProjectileStats>k__BackingField");
+        var projectileType = property.FindPropertyRelative("<AvailableProjectileType>k__BackingField");
 
         // –исуем простые пол€
         EditorGUILayout.PropertyField(canFindMultiple);
@@ -73,7 +73,7 @@ public class EntityAttackStatsDrawer : PropertyDrawer
         // ProjectileStats показываем если Range или Everything
         if (isRange || isEverything)
         {
-            EditorGUILayout.PropertyField(projectileStats, true);
+            EditorGUILayout.PropertyField(projectileType);
         }
 
         // ѕримен€ем все изменени€ и завершаем

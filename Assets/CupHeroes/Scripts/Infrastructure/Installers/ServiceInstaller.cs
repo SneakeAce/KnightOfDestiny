@@ -49,6 +49,8 @@ public class ServiceInstaller : MonoInstaller
 
     private void BindEntityBuilder()
     {
-        Container.Bind<IEntityBuilder>().To<EntityBuilder>().AsSingle();
+        Container.Bind<IEntityBuilder>()
+            .To<EntityBuilder>()
+            .AsSingle();
     }
 }

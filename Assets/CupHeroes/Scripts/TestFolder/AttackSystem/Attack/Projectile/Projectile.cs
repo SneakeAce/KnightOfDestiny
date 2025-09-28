@@ -2,12 +2,13 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour, IProjectile
 {
+    private ProjectileMoveController _moveComponent; 
+
     private Collider2D _collider;
     private Rigidbody2D _rigidbody;
     private Animator _animator;
 
     private ProjectileConfig _projectileConfig;
-    private ProjectileMoveComponent _moveComponent;
     private ProjectileController _controller;
 
     private IObjectPool _currentPool;
@@ -18,27 +19,30 @@ public class Projectile : MonoBehaviour, IProjectile
     public Rigidbody2D Rigidbody => _rigidbody;
     public Animator Animator => _animator;
     public ProjectileConfig ProjectileConfig => _projectileConfig;
-    public ProjectileMoveComponent MoveComponent => _moveComponent;
+    public ProjectileMoveController MoveComponent => _moveComponent;
     public ProjectileController Controller => _controller;
     public IEntity Parent => _parent;
 
     public void Initialize()
     {
         SetComponents();
-
-        InitializeComponents();
     }
 
     public void SetParent(IEntity parent) => _parent = parent;
-   
-    public void SetController(ProjectileController controller) => _controller = controller;
-   
+
     public void SetConfig(ProjectileConfig config) => _projectileConfig = config;
     
     public void SetPool(IObjectPool currentPool) => _currentPool = currentPool;
 
     private void ReturnInPool(IProjectile projectile) => _currentPool.ReturnPoolObject(projectile as Projectile);
-    
+
+    public void SetController(ProjectileController controller)
+    {
+        _controller = controller;
+
+        _controller.ProjectileDestroyed += ReturnInPool;
+    }
+       
     private void SetComponents()
     {
         if (_collider == null)
@@ -51,18 +55,14 @@ public class Projectile : MonoBehaviour, IProjectile
             _animator = GetComponent<Animator>();
     }
 
-    private void InitializeComponents()
+    private void UnsubcribingEvents()
     {
-        if (_moveComponent == null)
-        {
-            _moveComponent = new ProjectileMoveComponent();
-
-        }
-
+        if (_controller != null)
+            _controller.ProjectileDestroyed -= ReturnInPool;
     }
 
     private void OnDisable()
     {
-        
+        UnsubcribingEvents();
     }
 }

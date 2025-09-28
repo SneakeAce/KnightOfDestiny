@@ -9,6 +9,8 @@ public class Character : MonoBehaviour, ICharacter
 
     private CharacterConfig _config;
 
+    private Transform _projectileSpawnPosition;
+
     private IAnimationEventReceiver _animationEventReceiver;
     private ICharacterHealth _health;
     private IEntityStateMachine _stateMachine;
@@ -23,6 +25,7 @@ public class Character : MonoBehaviour, ICharacter
     }
 
     public Transform Transform => transform;
+    public Transform ProjectileSpawnPosition => _projectileSpawnPosition;
     public Collider2D Collider => _collider;
     public Rigidbody2D Rigidbody => _rigidbody;
     public Animator Animator => _animator;
@@ -40,12 +43,7 @@ public class Character : MonoBehaviour, ICharacter
 
     public void Initialize()
     {
-        _collider = GetComponent<Collider2D>();
-        _rigidbody = GetComponent<Rigidbody2D>();
-        _animator = GetComponent<Animator>();
-        _animationEventReceiver = GetComponent<AnimationEventReceiver>();
-
-        _stateMachine = GetComponent<IEntityStateMachine>();
+        SetComponents();
 
         _health.Initialize(this);
 
@@ -57,12 +55,32 @@ public class Character : MonoBehaviour, ICharacter
         _entityController = (ICharacterController)controller;
     }
 
-    public void SetConfig(
-        EntityConfig config)
+    public void SetConfig(EntityConfig config)
     {
         if (config is CharacterConfig characterConfig)
             _config = characterConfig;
         else
             Debug.LogError("Invalid config type for Character");
+    }
+
+    private void SetComponents()
+    {
+        if (_collider == null)
+            _collider = GetComponent<Collider2D>();
+
+        if (_rigidbody == null)
+            _rigidbody = GetComponent<Rigidbody2D>();
+
+        if (_animator == null)
+            _animator = GetComponent<Animator>();
+
+        if (_animationEventReceiver == null)
+            _animationEventReceiver = GetComponent<AnimationEventReceiver>();
+
+        if (_stateMachine == null)
+            _stateMachine = GetComponent<IEntityStateMachine>();
+
+        if (_projectileSpawnPosition == null)
+            _projectileSpawnPosition = GetComponentInChildren<ProjectileSpawnPoint>().transform;
     }
 }

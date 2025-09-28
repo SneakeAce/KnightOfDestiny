@@ -40,18 +40,22 @@ public class EnemyFactory : IEnemyFactory
                 currentConfig = config;
                 break;
             }
-            else
-            {
-                continue;
-            }
         }
 
         var pool = _poolsManager.GetPool<EnemyType>(PoolType.EnemyEntityPool, currentEnemyType);
 
+        if (pool == null)
+            throw new ArgumentNullException($"{nameof(pool)} in {this.ToString()} is null!");
+
         Enemy enemy = (Enemy)pool.GetObjectFromPool();
 
         if (enemy == null)
+        {
+            UnityEngine.Debug.Log($"{this.ToString()} enemy is null." +
+                $" Most likely, there were not enough objects in the spawn pool");
+
             return null;
+        }
 
         _container.Inject(enemy);
 

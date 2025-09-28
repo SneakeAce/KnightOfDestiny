@@ -60,7 +60,7 @@ public class TargetFinderContext : IDisposable
 
     public void UpdateData()
     {
-        _searchingRadius = _character.StatsManager.AttackStats.MeleeAttackRange;
+        _searchingRadius = _character.StatsManager.AttackStats.RangeAttackRange;
         _amountAvailableTargets = _character.StatsManager.AttackStats.AmountTargetsForAttack;
         _targetsLayer = _character.Config.AttackStats.TargetLayer;
     }
