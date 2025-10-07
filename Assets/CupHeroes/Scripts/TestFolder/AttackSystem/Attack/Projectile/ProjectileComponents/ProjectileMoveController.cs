@@ -5,6 +5,7 @@ using UnityEngine;
 public class ProjectileMoveController : IDisposable
 {
     private IProjectile _projectile;
+    private IEntity _target;
 
     private CoroutinePerformer _performer;
     private Coroutine _moveCoroutine;
@@ -13,9 +14,10 @@ public class ProjectileMoveController : IDisposable
 
     private float _distanceFlying;
 
-    public ProjectileMoveController(IProjectile projectile, CoroutinePerformer performer)
+    public ProjectileMoveController(IProjectile projectile, IEntity target, CoroutinePerformer performer)
     {
         _projectile = projectile;
+        _target = target;
         _performer = performer;
     }
 
@@ -45,7 +47,8 @@ public class ProjectileMoveController : IDisposable
 
     private IEnumerator MoveJob()
     {
-        Vector2 direction = GetDirection();
+        //Vector2 rotation = GetRotation();
+        Vector2 direction = (_target.Transform.position - _projectile.Transform.position).normalized;
 
         _projectile.Rigidbody.linearVelocity = direction * _projectile.ProjectileConfig.MainStats.Speed;
 
@@ -55,7 +58,7 @@ public class ProjectileMoveController : IDisposable
         OnEndPoint?.Invoke(_projectile);
     }
 
-    private Vector2 GetDirection()
+    private Vector2 GetRotation()
     {
         float yRot = _projectile.Transform.eulerAngles.y % 360f;
 

@@ -18,6 +18,7 @@ public class CharacterController : ICharacterController, ITickable, IDisposable
 
     private bool _isMoving;
 
+
     public CharacterController(ICommandInvoker commandInvoker, CharacterAttackController attackController, 
         CoroutinePerformer coroutinePerformer)
     {
@@ -26,13 +27,15 @@ public class CharacterController : ICharacterController, ITickable, IDisposable
         _coroutinePerformer = coroutinePerformer;
     }
 
+    public ICharacter Character => _character;
+
     public event Action IsCharacterOnPosition;
 
     public void Initialize(IEntity entity)
     {
         _character = (ICharacter)entity;
 
-        _attackController.Initialize(_character);
+        _attackController.Initialize(this);
     }
 
     public void Dispose()

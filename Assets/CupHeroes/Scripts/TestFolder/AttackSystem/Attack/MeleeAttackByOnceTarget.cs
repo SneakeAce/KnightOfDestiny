@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class MeleeAttackByOnceTarget : BaseAttackStrategy
@@ -8,6 +10,10 @@ public class MeleeAttackByOnceTarget : BaseAttackStrategy
 
     public override event Action OnAllTargetsDestroyed;
 
+    public MeleeAttackByOnceTarget()
+    {
+    }
+
     public MeleeAttackByOnceTarget(IEntity target)
     {
         _target = target;
@@ -15,18 +21,23 @@ public class MeleeAttackByOnceTarget : BaseAttackStrategy
 
     public override void SubscribingEvents()
     {
-        _state.Entity.AnimationEventReceiver.OnFrameAttack += DealDamage;
-
-        _state.Entity.Health.EntityDied += OnEntityDestroyed;
-        _target.Health.EntityDied += OnEntityDestroyed;
+        if (_state.Entity != null)
+        {
+            _state.Entity.AnimationEventReceiver.OnFrameAttack += DealDamage;
+            _state.Entity.Health.EntityDied += OnEntityDestroyed;
+        }
     }
 
     public override void UnsubscribingEvents()
     {
-        _state.Entity.AnimationEventReceiver.OnFrameAttack -= DealDamage;
+        if (_state.Entity != null)
+        {
+            _state.Entity.AnimationEventReceiver.OnFrameAttack -= DealDamage;
+            _state.Entity.Health.EntityDied -= OnEntityDestroyed;
+        }
 
-        _state.Entity.Health.EntityDied -= OnEntityDestroyed;
-        _target.Health.EntityDied -= OnEntityDestroyed;
+        if (_target != null)
+            _target.Health.EntityDied -= OnEntityDestroyed;
     }
 
     public override void OnEntityDestroyed(IEntity entity)
@@ -36,13 +47,36 @@ public class MeleeAttackByOnceTarget : BaseAttackStrategy
         OnAllTargetsDestroyed?.Invoke();
     }
 
+    public override void SwitchTarget(IEntity newTarget)
+    {
+        if (_target != null)
+            _target.Health.EntityDied -= OnEntityDestroyed;
+
+        _target = newTarget;
+
+        if (_target != null)
+            _target.Health.EntityDied += OnEntityDestroyed;
+
+        Debug.Log($"{_state.Entity} - {this.ToString()} - SwitchTarget - _target = {_target}");
+    }
+
+    public override void GetTargets(List<IEntity> targets)
+    {
+        _target = targets.FirstOrDefault();
+
+        Debug.Log($"{_state.Entity} - {this.ToString()} - GetTargets - _target = {_target}");
+        
+        if (_target != null)
+            _target.Health.EntityDied += OnEntityDestroyed; 
+    }
+
     public override IEnumerator AttackJob()
     {
-        while (_state.CanAttack && _target != null)
+        while (_state.CanAttack)
         {
             _state.UpdateData();
 
-            if (CheckDistanceToTarget(_target) == false)
+            if (_target == null || CheckDistanceToTarget(_target) == false)
             {
                 yield return null;
                 continue;

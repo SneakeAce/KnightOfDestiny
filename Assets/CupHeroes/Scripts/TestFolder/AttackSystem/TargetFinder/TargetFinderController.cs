@@ -3,10 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TargetFinderContext : IDisposable
+public class TargetFinderController : IDisposable
 {
-    private ITargetFinderStrategy _strategy;
     private ICharacter _character;
+
+    private FindTargets _findTargets;
 
     private CoroutinePerformer _performer;
     private Coroutine _searchTargetCoroutine;
@@ -16,46 +17,37 @@ public class TargetFinderContext : IDisposable
     private int _amountAvailableTargets;
     private float _searchingRadius;
 
-    public TargetFinderContext(ICharacter character, ITargetFinderStrategy strategy, CoroutinePerformer performer)
+    public TargetFinderController(ICharacter character, CoroutinePerformer performer)
     {
         _character = character;
-        _strategy = strategy;
         _performer = performer;
     }
 
     public ICharacter Character { get => _character; }
-    public CoroutinePerformer Performer { get => _performer; }
     public LayerMask TargetsLayer { get => _targetsLayer; }
     public int AmountAvailableTargets { get => _amountAvailableTargets; }
     public float SearchingRadius { get => _searchingRadius; }
 
-    public event Action<IEnumerable<IEnemy>> OnTargetsFound;
+    public event Action<IEnumerable<IEntity>> TargetsFounded;
+    public event Action<IEntity> ClosestTargetFounded;
 
     public void Dispose()
     {
         _character.Health.EntityDied -= OnCharacterDead;
 
-        _strategy.OnTargetsFound -= OnTargetFound;
-        _strategy.OnTargetDissapeared -= RestartSearching;
+        _findTargets.TargetsFounded -= OnTargetsFound;
+        _findTargets.ClosestTargetFounded -= OnClosestTargetFound;
     }
 
     public void Initialize()
     {
-        _character.Health.EntityDied += OnCharacterDead;
-
-        _strategy.Initialize(this);
-
-        _strategy.OnTargetsFound += OnTargetFound;
-        _strategy.OnTargetDissapeared += RestartSearching;
-
         UpdateData();
 
-        RestartCoroutine(ref _searchTargetCoroutine, _strategy.SearchTargetsJob());
-    }
+        InitializeFindTargets();
 
-    public void RestartSearching()
-    {
-        RestartCoroutine(ref _searchTargetCoroutine, _strategy.SearchTargetsJob());
+        SubscribingEvents();
+
+        RestartCoroutine(ref _searchTargetCoroutine, _findTargets.SearchTargetsJob());
     }
 
     public void UpdateData()
@@ -65,12 +57,32 @@ public class TargetFinderContext : IDisposable
         _targetsLayer = _character.Config.AttackStats.TargetLayer;
     }
 
-    private void OnTargetFound(IEnumerable<IEnemy> enemies)
+    private void InitializeFindTargets()
     {
-        OnTargetsFound?.Invoke(enemies);
+        _findTargets = new FindTargets(this);
+
+        _findTargets.Initialize();
     }
 
-    protected Coroutine RestartCoroutine(ref Coroutine routine, IEnumerator enumerator)
+    private void SubscribingEvents()
+    {
+        _character.Health.EntityDied += OnCharacterDead;
+
+        _findTargets.TargetsFounded += OnTargetsFound;
+        _findTargets.ClosestTargetFounded += OnClosestTargetFound;
+    }
+
+    private void OnTargetsFound(IEnumerable<IEntity> enemies)
+    {
+        TargetsFounded?.Invoke(enemies);
+    }
+
+    private void OnClosestTargetFound(IEntity closestTarget)
+    {
+        ClosestTargetFounded?.Invoke(closestTarget);
+    }
+
+    private Coroutine RestartCoroutine(ref Coroutine routine, IEnumerator enumerator)
     {
         if (routine != null)
         {

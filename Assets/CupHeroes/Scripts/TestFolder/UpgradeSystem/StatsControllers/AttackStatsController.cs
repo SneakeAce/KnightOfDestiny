@@ -55,5 +55,6 @@ public class AttackStatsController : IAttackStatsController
         _attacksPerSecond = _attackSpeedProcent / DividerForCoversionToProcetage;
 
         _meleeAttackRange = _entity.Config.AttackStats.BaseMeleeAttackRange;
+        _rangeAttackRange = _entity.Config.AttackStats.BaseRangeAttackRange;
     }
 }

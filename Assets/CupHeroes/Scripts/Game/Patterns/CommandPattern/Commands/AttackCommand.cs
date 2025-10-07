@@ -22,9 +22,14 @@ public class AttackCommand : IAttackCommand
         _currentState = (AttackState)_entity.StateMachine.GetCurrentState();
     }
 
-    public void SwitchState(IEntityAttackStrategy strategy)
+    public void SwitchStrategy(IEntityAttackStrategy strategy)
     {
-        _currentState?.UpdateStrategy(strategy);
+        _currentState?.SwitchStrategy(strategy);
+    }
+
+    public void RestartStrategy()
+    {
+        _currentState?.RestartStrategy();
     }
 
     public void CancelCommand()

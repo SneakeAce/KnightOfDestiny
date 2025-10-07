@@ -1,4 +1,5 @@
 public interface IAttackCommand : ICommand
 {
-    void SwitchState(IEntityAttackStrategy strategy);
+    void SwitchStrategy(IEntityAttackStrategy strategy);
+    void RestartStrategy();
 }

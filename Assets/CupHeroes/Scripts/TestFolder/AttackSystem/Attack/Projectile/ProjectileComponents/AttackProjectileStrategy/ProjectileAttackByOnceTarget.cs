@@ -35,6 +35,12 @@ public class ProjectileAttackByOnceTarget : ProjectileAttackBase
     {
         while (_controller.Projectile != null && _wasCollision == false)
         {
+            if (_target == null)
+            {
+                yield return null;
+                continue;
+            }
+
             if (_controller.Projectile.Collider.IsTouching(_target.Collider))
             {
                 DealDamage();

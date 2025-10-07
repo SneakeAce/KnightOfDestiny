@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using Zenject;
 
@@ -17,22 +18,20 @@ public class CharacterAttackController : ITickable, IDisposable
     private ICharacter _character;
     private ICharacterController _characterController;
 
-    private IEntity _enemy;
+    private IEntity _soloTarget;
 
     private IAttackCommand _currentCommand;
 
-    private ITargetFinderStrategy _targetFinderStrategy;
+    private IEntityAttackStrategy _currentAttackStrategy;
 
     private CoroutinePerformer _performer;
     private ProjectileSpawner _projectileSpawner;
 
-    private TargetFinderContext _targetFinderContext;
+    private TargetFinderController _targetFinderController;
     private AttackTypeSwitcher _attackTypeSwitcher;
 
     private EntityAttackType _currentAttackType;
-    private IEnumerable<IEntity> _targets = new List<IEntity>();
-
-    private bool _isAttackCommandInitialized;
+    private List<IEntity> _targets;
 
     public CharacterAttackController(CoroutinePerformer performer, ProjectileSpawner projectileSpawner)
     {
@@ -40,42 +39,51 @@ public class CharacterAttackController : ITickable, IDisposable
         _projectileSpawner = projectileSpawner;
     }
 
+    public event Action<IEntity> TargetSwitched; // or ClosestTargetReceived
+    public event Action<List<IEntity>> SendTargets;
+
     public void Dispose()
     {
         _characterController.IsCharacterOnPosition -= ExecuteAttackCommand;
 
         _attackTypeSwitcher.OnAttackTypeChanged -= SwitchAttackStrategy;
 
-        _targetFinderContext.OnTargetsFound -= GetTargets;
+        _targetFinderController.TargetsFounded -= OnGetTargets;
+        _targetFinderController.ClosestTargetFounded -= OnTargetSwitched;
+
+        if (_currentAttackStrategy != null)
+            TargetSwitched -= _currentAttackStrategy.SwitchTarget;
     }
 
     public void Tick()
     {
-        if (_enemy == null)
+        if (_soloTarget == null)
             return;
 
-        var distance = Vector2.Distance(_enemy.Transform.position, _character.Transform.position);
+        var distance = Vector2.Distance(_soloTarget.Transform.position, _character.Transform.position);
         var rangeAttack = _character.StatsManager.AttackStats.RangeAttackRange;
 
         _attackTypeSwitcher.CheckDistanceToTargetAndSwitch(distance, rangeAttack);
     }
 
-    public void Initialize(ICharacter character)
+    public void Initialize(ICharacterController controller)
     {
-        _character = character;
+        _characterController = controller;
+        _character = _characterController.Character;
 
-        _characterController = (ICharacterController)_character.EntityController;
-
-        _isAttackCommandInitialized = false;
-
-        _attackTypeSwitcher = new AttackTypeSwitcher(_character);
-
-        _attackTypeSwitcher.Initialize();
-        _currentAttackType = _attackTypeSwitcher.CurrentAttackType;
+        InitializeAttackTypeSwitcher();
 
         InitializeTargetFinder();
 
         SubscribingEvents();
+    }
+
+    private void InitializeAttackTypeSwitcher()
+    {
+        _attackTypeSwitcher = new AttackTypeSwitcher(_character);
+
+        _attackTypeSwitcher.Initialize();
+        _currentAttackType = _attackTypeSwitcher.CurrentAttackType;
     }
 
     private void SubscribingEvents()
@@ -84,37 +92,24 @@ public class CharacterAttackController : ITickable, IDisposable
 
         _attackTypeSwitcher.OnAttackTypeChanged += SwitchAttackStrategy;
 
-        _targetFinderContext.OnTargetsFound += GetTargets;
+        _targetFinderController.TargetsFounded += OnGetTargets; 
+        _targetFinderController.ClosestTargetFounded += OnTargetSwitched;
     }
 
     private void SwitchAttackStrategy()
     {
-        _currentCommand.SwitchState(GetAttackStrategy());
+        TargetSwitched -= _currentAttackStrategy.SwitchTarget;
+
+        _currentAttackType = _attackTypeSwitcher.CurrentAttackType;
+
+        _currentCommand.SwitchStrategy(GetAttackStrategy());
     }
 
     private void InitializeTargetFinder()
     {
-        _targetFinderStrategy = GetTargetFinderStrategy();
+        _targetFinderController = new TargetFinderController(_character, _performer);
 
-        _targetFinderContext = new TargetFinderContext((ICharacter)_character, _targetFinderStrategy, _performer);
-
-        _targetFinderContext.Initialize();
-    }
-
-    private ITargetFinderStrategy GetTargetFinderStrategy()
-    {
-        ITargetFinderStrategy strategy = null;
-
-        if (_character.Config.AttackStats.CanFindMultipleTargets)
-        {
-            strategy = new FindMultipleTargets();
-        }
-        else
-        {
-            strategy = new FindOnceTarget();
-        }
-
-        return strategy;
+        _targetFinderController.Initialize();
     }
 
     private IEntityAttackStrategy GetAttackStrategy()
@@ -125,43 +120,50 @@ public class CharacterAttackController : ITickable, IDisposable
         {
             if (_character.Config.AttackStats.CanFindMultipleTargets)
             {
-                var listTargets = _targets.ToList();
-
-                strategy = new MeleeAttackByMultipleTargets(listTargets);
+                strategy = new MeleeAttackByMultipleTargets();
             }
             else
             {
-                var soloTarget = _targets.FirstOrDefault();
-
-                strategy = new MeleeAttackByOnceTarget(soloTarget);
+                strategy = new MeleeAttackByOnceTarget();
             }
         }
         else if (_currentAttackType == EntityAttackType.Range)
         {
-            var soloTarget = _targets.FirstOrDefault();
-
-            strategy = new RangeAttackByOnceTarget(soloTarget, _projectileSpawner);
+            strategy = new RangeAttackByOnceTarget(_projectileSpawner);
         }
+
+        _currentAttackStrategy = strategy;
+
+        TargetSwitched += _currentAttackStrategy.SwitchTarget;
+        SendTargets += _currentAttackStrategy.GetTargets;
 
         return strategy;
     }
 
-    private void GetTargets(IEnumerable<IEntity> enemies)
+    private void OnGetTargets(IEnumerable<IEntity> enemies)
     {
         if (enemies.Count() == 0)
             return;
 
-        _targets = enemies;
-        _enemy = enemies.FirstOrDefault();
+        _targets = enemies.ToList();
+        _soloTarget = enemies.FirstOrDefault();
 
-        if (_isAttackCommandInitialized)
-        {
-            return;
-        }
-        else
-        {
+        SendTargets?.Invoke(_targets);
+
+        if (_currentCommand == null)
             ExecuteAttackCommand();
-        }
+    }
+
+    private void OnTargetSwitched(IEntity newTarget)
+    {
+        _soloTarget = newTarget;
+
+        Debug.Log($"{this.ToString()} - OnTargetSwitched - _soloTarget = {_soloTarget}");
+
+        TargetSwitched?.Invoke(newTarget);
+
+        if (_currentCommand != null)
+            _currentCommand.RestartStrategy();
     }
 
     private void ExecuteAttackCommand()

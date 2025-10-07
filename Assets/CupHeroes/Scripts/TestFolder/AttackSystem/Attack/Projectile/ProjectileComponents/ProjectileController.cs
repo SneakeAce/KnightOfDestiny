@@ -58,7 +58,7 @@ public class ProjectileController : ITickable, IDisposable
     {
         if (_moveController == null)
         {
-            _moveController = new ProjectileMoveController(_projectile, _performer);
+            _moveController = new ProjectileMoveController(_projectile, _target, _performer);
             _moveController.OnEndPoint += OnProjectileDestroyed;
         }
 

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class AttackState : IEntityState, IDisposable
@@ -57,16 +58,14 @@ public class AttackState : IEntityState, IDisposable
         _attackStrategy.SubscribingEvents();
 
         _canAttack = true;
-        _attackCoroutine = _performer.StartCoroutine(_attackStrategy.AttackJob());
+
+        RestartCoroutine(ref _attackCoroutine, _attackStrategy.AttackJob());
     }
 
     public void Exit()
     {
-        if (_attackCoroutine != null && _performer != null)
-        {
-            _performer.StopCoroutine(_attackCoroutine);
-            _attackCoroutine = null;
-        }
+        if (_performer != null)
+            RestartCoroutine(ref _attackCoroutine, _attackStrategy.AttackJob());
 
         _attackStrategy.OnAllTargetsDestroyed -= Exit;
         _attackStrategy.UnsubscribingEvents();
@@ -82,7 +81,7 @@ public class AttackState : IEntityState, IDisposable
     public void UpdateData()
     {
         _damage = _entity.StatsManager.AttackStats.Damage;
-        _attackRange = _entity.Config.AttackStats.BaseMeleeAttackRange;
+        _attackRange = _entity.StatsManager.AttackStats.RangeAttackRange;
 
         _attacksPerSeconds = _entity.StatsManager.AttackStats.AttacksPerSecond;
         _delayBetweenAttack = BaseAnimationSpeed / _attacksPerSeconds;
@@ -92,13 +91,9 @@ public class AttackState : IEntityState, IDisposable
         SetAnimationSpeed();
     }
 
-    public void UpdateStrategy(IEntityAttackStrategy strategy)
+    public void SwitchStrategy(IEntityAttackStrategy strategy)
     {
-        if (_attackCoroutine != null)
-        {
-            _performer.StopCoroutine(_attackCoroutine);
-            _attackCoroutine = null;
-        }
+        RestartCoroutine(ref _attackCoroutine, _attackStrategy.AttackJob());
 
         _attackStrategy.OnAllTargetsDestroyed -= Exit;
         _attackStrategy.UnsubscribingEvents();
@@ -108,6 +103,11 @@ public class AttackState : IEntityState, IDisposable
         _attackStrategy = strategy;
 
         Enter();
+    }
+
+    public void RestartStrategy()
+    {
+        RestartCoroutine(ref _attackCoroutine, _attackStrategy.AttackJob());
     }
 
     private void SetAnimationSpeed()
@@ -127,6 +127,19 @@ public class AttackState : IEntityState, IDisposable
     { 
         _attackClip = _entity.Config.AttackStats.AttackClip;
         _clipDuration = _attackClip.length;
+    }
+
+    private Coroutine RestartCoroutine(ref Coroutine routine, IEnumerator enumerator)
+    {
+        if (routine != null)
+        {
+            _performer.StopCoroutine(routine);
+            routine = null;
+        }
+
+        routine = _performer.StartCoroutine(enumerator);
+
+        return routine;
     }
 
 }

@@ -9,7 +9,7 @@ public abstract class BaseTargetFinderStrategy : ITargetFinderStrategy, IDisposa
     protected const float MaxTimeBeforeSearchTarget = 0.6f;
     protected const float OffsetSearchingRadius = 12f;
 
-    protected TargetFinderContext _context;
+    protected TargetFinderController _context;
 
     protected List<IEnemy> _enemies;
 
@@ -24,7 +24,7 @@ public abstract class BaseTargetFinderStrategy : ITargetFinderStrategy, IDisposa
     public abstract void ResetTarget(IEntity enemy);
     public abstract void Dispose();
 
-    public void Initialize(TargetFinderContext context)
+    public void Initialize(TargetFinderController context)
     {
         _context = context;
 

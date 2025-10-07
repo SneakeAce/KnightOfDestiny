@@ -54,11 +54,6 @@ public class ProjectileAttackController : IDisposable
 
     private void StartAttackStrategy()
     {
-        Debug.Log($"{nameof(_parent)} is {_parent}!");
-        Debug.Log($"{nameof(_target)} is {_target}!");
-        Debug.Log($"{nameof(_projectile)} is {_projectile}!");
-
-
         _strategy = GetAttackStrategy();
 
         _strategy.ProjectileCollided += ProjectileDestroyed;
