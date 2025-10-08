@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class RangeAttackByOnceTarget : BaseAttackStrategy
 {
+    private List<IEntity> _targets = new();
+
     private IEntity _target;
     private ProjectileSpawner _projectileSpawner;
 
@@ -41,11 +43,24 @@ public class RangeAttackByOnceTarget : BaseAttackStrategy
     {
         entity.Health.EntityDied -= OnEntityDestroyed;
 
-        OnAllTargetsDestroyed?.Invoke();
+        if (_target == entity)
+            _target = null;
+
+        _state.Entity.Animator.Play("Idle", 0, 0);
+
+        _targets.Remove(entity);
+
+        if (_targets.Count == 0)
+        {
+            Debug.Log($"{this.ToString()} OnEntityDestroyed - if all enemy died called Action");
+            OnAllTargetsDestroyed?.Invoke();
+        }
     }
 
     public override void SwitchTarget(IEntity newTarget)
     {
+        Debug.Log($"{this.ToString()} SwitchTarget - newTarget = {newTarget}");
+
         if (_target != null)
             _target.Health.EntityDied -= OnEntityDestroyed;
 
@@ -57,6 +72,12 @@ public class RangeAttackByOnceTarget : BaseAttackStrategy
 
     public override void GetTargets(List<IEntity> targets)
     {
+        _targets.Clear();
+
+        _targets.AddRange(targets);
+
+        Debug.Log($"{this.ToString()} GetTargets - _targets = {_targets.Count}");
+
         _target = targets.FirstOrDefault();
 
         if (_target != null)
@@ -75,7 +96,8 @@ public class RangeAttackByOnceTarget : BaseAttackStrategy
                 continue;
             }
 
-            _state.Entity.Animator.SetTrigger("Attack");
+            if (_target != null)
+                _state.Entity.Animator.SetTrigger("Attack");
 
             yield return new WaitForSeconds(_state.ClipDuration);
 

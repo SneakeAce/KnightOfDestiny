@@ -39,7 +39,7 @@ public abstract class EntityHealth : IEntityHealth
         if (_currentHealth <= MinHealthValue)
         {
             EntityDied?.Invoke(_entity);
-            Debug.Log($"EnemyHealth. {_entity} died: ");
+            //Debug.Log($"EnemyHealth. {_entity} died: ");
         }
     }
 

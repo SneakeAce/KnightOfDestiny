@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TMPro;
 using UnityEngine;
 using Zenject;
 
@@ -61,7 +60,7 @@ public class CharacterAttackController : ITickable, IDisposable
             return;
 
         var distance = Vector2.Distance(_soloTarget.Transform.position, _character.Transform.position);
-        var rangeAttack = _character.StatsManager.AttackStats.RangeAttackRange;
+        var rangeAttack = _character.StatsManager.AttackStats.MeleeAttackRange;
 
         _attackTypeSwitcher.CheckDistanceToTargetAndSwitch(distance, rangeAttack);
     }
@@ -83,7 +82,15 @@ public class CharacterAttackController : ITickable, IDisposable
         _attackTypeSwitcher = new AttackTypeSwitcher(_character);
 
         _attackTypeSwitcher.Initialize();
-        _currentAttackType = _attackTypeSwitcher.CurrentAttackType;
+
+        _currentAttackType = _character.StatsManager.AttackStats.CurrentAttackType;
+    }
+
+    private void InitializeTargetFinder()
+    {
+        _targetFinderController = new TargetFinderController(_character, _performer);
+
+        _targetFinderController.Initialize();
     }
 
     private void SubscribingEvents()
@@ -100,16 +107,14 @@ public class CharacterAttackController : ITickable, IDisposable
     {
         TargetSwitched -= _currentAttackStrategy.SwitchTarget;
 
-        _currentAttackType = _attackTypeSwitcher.CurrentAttackType;
+        _character.StatsManager.AttackStats.SwitchAttackType(_attackTypeSwitcher.CurrentAttackType);
+
+        _currentAttackType = _character.StatsManager.AttackStats.CurrentAttackType;
 
         _currentCommand.SwitchStrategy(GetAttackStrategy());
-    }
 
-    private void InitializeTargetFinder()
-    {
-        _targetFinderController = new TargetFinderController(_character, _performer);
-
-        _targetFinderController.Initialize();
+        SendTargets?.Invoke(_targets);
+        TargetSwitched?.Invoke(_soloTarget);
     }
 
     private IEntityAttackStrategy GetAttackStrategy()
@@ -156,9 +161,9 @@ public class CharacterAttackController : ITickable, IDisposable
 
     private void OnTargetSwitched(IEntity newTarget)
     {
-        _soloTarget = newTarget;
+        Debug.Log($"OnTargetSwitched in {this.ToString()} where newTarget = {newTarget}");
 
-        Debug.Log($"{this.ToString()} - OnTargetSwitched - _soloTarget = {_soloTarget}");
+        _soloTarget = newTarget;
 
         TargetSwitched?.Invoke(newTarget);
 

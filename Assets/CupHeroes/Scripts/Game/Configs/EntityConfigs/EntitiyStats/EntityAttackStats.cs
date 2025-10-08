@@ -8,7 +8,7 @@ public class EntityAttackStats
     [field: SerializeField] public bool CanFindMultipleTargets { get; private set; }
 
     [field: SerializeField] public float BaseDamage { get; private set; }
-    [field: SerializeField, Range(0.1f, 200f)] public float BaseAttackSpeedProcent { get; private set; }
+    [field: SerializeField, Range(0.1f, 1000f)] public float BaseAttackSpeedProcent { get; private set; }
     [field: SerializeField] public float BaseMeleeAttackRange { get; private set; }
     [field: SerializeField] public float BaseRangeAttackRange { get; private set; }
 

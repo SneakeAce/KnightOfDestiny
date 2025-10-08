@@ -60,7 +60,6 @@ public class FindTargets : IDisposable
     {
         while (_character != null)
         {
-            Debug.Log($"FindTarget - SearchTargetsJob - _searchingRadius = {_searchingRadius}");
             CheckValidateData();
 
             yield return new WaitForSeconds(
@@ -78,10 +77,12 @@ public class FindTargets : IDisposable
             {
                 if (targets[i].TryGetComponent<IEnemy>(out var enemy))
                 {
+                    if (_targets.Contains(enemy))
+                        continue;
+
                     enemy.Health.EntityDied += ResetTarget;
 
-                    if (_targets.Contains(enemy) == false)
-                        _targets.Add(enemy);
+                    _targets.Add(enemy);
 
                     TargetsFounded?.Invoke(_targets);
                 }
@@ -115,40 +116,48 @@ public class FindTargets : IDisposable
 
     private void FindClosestTarget()
     {
-        if (_character == null)
+        if (_character == null || _targets.Count == 0)
             return;
 
         float minSqr = float.MaxValue;
+        IEntity newClosest = null;
 
         for (int i = 0; i < _targets.Count; i++)
         {
             var target = _targets[i];
 
             if (target == null || target == _character)
-                return;
+                continue;
 
             var sqrDistanceToTarget = (target.Transform.position - _characterTransofrm.position).sqrMagnitude;
 
             if (sqrDistanceToTarget < minSqr)
             {
                 minSqr = sqrDistanceToTarget;
-                _closestTarget = target;
+                newClosest = target;
             }
+        }
 
-            if (_closestTarget != null && _previousTarget != _closestTarget)
-            {
-                Debug.Log($"{this.ToString()} - FindClosestTarget - {_previousTarget} != {_closestTarget}");
+        if (newClosest != null && newClosest != _previousTarget)
+        {
+            _previousTarget = newClosest;
 
-                ClosestTargetFounded?.Invoke(_closestTarget);
-
-                _previousTarget = _closestTarget;
-            }
+            ClosestTargetFounded?.Invoke(newClosest);
         }
     }
 
     private void ResetTarget(IEntity enemy)
     {
         _targets.Remove(enemy);
+
+        _previousTarget = null;
+
+        if (_targets.Count == 0)
+        {
+            Debug.Log($"{this.ToString()} - ResetTarget - if (_target.Count == 0) called Actions");
+            ClosestTargetFounded?.Invoke(null);
+            TargetsFounded?.Invoke(new List<IEntity>());
+        }
 
         enemy.Health.EntityDied -= ResetTarget;
     }

@@ -29,6 +29,8 @@ public class AttackCommand : IAttackCommand
 
     public void RestartStrategy()
     {
+        UnityEngine.Debug.Log($"RestartStrategy in {this.ToString()}");
+
         _currentState?.RestartStrategy();
     }
 

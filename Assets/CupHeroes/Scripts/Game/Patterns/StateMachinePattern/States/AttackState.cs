@@ -81,7 +81,7 @@ public class AttackState : IEntityState, IDisposable
     public void UpdateData()
     {
         _damage = _entity.StatsManager.AttackStats.Damage;
-        _attackRange = _entity.StatsManager.AttackStats.RangeAttackRange;
+        _attackRange = _entity.StatsManager.AttackStats.CurrentAttackRange;
 
         _attacksPerSeconds = _entity.StatsManager.AttackStats.AttacksPerSecond;
         _delayBetweenAttack = BaseAnimationSpeed / _attacksPerSeconds;
@@ -107,6 +107,8 @@ public class AttackState : IEntityState, IDisposable
 
     public void RestartStrategy()
     {
+        UnityEngine.Debug.Log($"RestartStrategy in {this.ToString()}");
+
         RestartCoroutine(ref _attackCoroutine, _attackStrategy.AttackJob());
     }
 

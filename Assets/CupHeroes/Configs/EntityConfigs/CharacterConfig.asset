@@ -16,11 +16,11 @@ MonoBehaviour:
   <MoveStats>k__BackingField:
     <MoveSpeed>k__BackingField: 5
   <HealthStats>k__BackingField:
-    <BaseValueHealth>k__BackingField: 150
+    <BaseValueHealth>k__BackingField: 10000
   <AttackStats>k__BackingField:
     <BaseAmountTargetsForAttack>k__BackingField: 3
-    <CanFindMultipleTargets>k__BackingField: 1
-    <BaseDamage>k__BackingField: 16.7
+    <CanFindMultipleTargets>k__BackingField: 0
+    <BaseDamage>k__BackingField: 10
     <BaseAttackSpeedProcent>k__BackingField: 150
     <BaseMeleeAttackRange>k__BackingField: 4
     <BaseRangeAttackRange>k__BackingField: 10
