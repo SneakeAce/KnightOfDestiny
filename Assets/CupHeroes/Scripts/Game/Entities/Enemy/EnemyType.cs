@@ -4,7 +4,9 @@ using System;
 public enum EnemyType
 {
     None = 0, 
-    BaseEnemy = 1 << 0,
-    StrengthEnemy = 1 << 1,
+    BaseMeleeEnemy = 1 << 0,
+    BaseRangeEnemy = 1 << 1,
+    StrenghtMeleeEnemy = 1 << 2,
+    StrenghtRangeEnemy = 1 << 3,
 
 }

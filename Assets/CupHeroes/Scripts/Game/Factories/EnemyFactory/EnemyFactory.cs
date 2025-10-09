@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Zenject;
 
@@ -40,18 +41,25 @@ public class EnemyFactory : IEnemyFactory
                 currentConfig = config;
                 break;
             }
-            else
-            {
-                continue;
-            }
         }
 
         var pool = _poolsManager.GetPool<EnemyType>(PoolType.EnemyEntityPool, currentEnemyType);
 
+        if (pool == null)
+        {
+            UnityEngine.Debug.Log($"{nameof(pool)} in {this.ToString()} is null!");
+            return null;
+        }
+
         Enemy enemy = (Enemy)pool.GetObjectFromPool();
 
         if (enemy == null)
+        {
+            UnityEngine.Debug.Log($"{this.ToString()} enemy is null." +
+                $" Most likely, there were not enough objects in the spawn pool");
+
             return null;
+        }
 
         _container.Inject(enemy);
 

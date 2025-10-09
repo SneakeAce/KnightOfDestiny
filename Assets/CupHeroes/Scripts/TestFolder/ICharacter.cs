@@ -1,5 +1,0 @@
-public interface ICharacter : IEntity
-{
-
-
-}

@@ -1,12 +1,14 @@
-public class AttackCommand : ICommand
+public class AttackCommand : IAttackCommand
 {
     private IEntity _entity;
 
-    private IAttackStrategy _strategy;
+    private IEntityAttackStrategy _strategy;
 
     private CoroutinePerformer _performer;
 
-    public AttackCommand(IEntity entity, IAttackStrategy strategy, CoroutinePerformer performer)
+    private AttackState _currentState;
+
+    public AttackCommand(IEntity entity, IEntityAttackStrategy strategy, CoroutinePerformer performer)
     {
         _entity = entity;
         _strategy = strategy;
@@ -16,6 +18,18 @@ public class AttackCommand : ICommand
     public void Execute()
     {
         _entity.StateMachine.SetState(new AttackState(_entity, _performer, _strategy));
+
+        _currentState = (AttackState)_entity.StateMachine.GetCurrentState();
+    }
+
+    public void UpdateState(IEntityAttackStrategy strategy)
+    {
+        _currentState?.SwitchStrategy(strategy);
+    }
+
+    public void RestartStrategyAtState()
+    {
+        _currentState?.RestartStrategy();
     }
 
     public void CancelCommand()

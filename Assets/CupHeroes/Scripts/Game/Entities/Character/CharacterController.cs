@@ -1,7 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using Zenject;
 
@@ -14,21 +11,23 @@ public class CharacterController : ICharacterController, ITickable, IDisposable
     private ICommandInvoker _commandInvoker;
     private ICommand _currentCommand;
 
-    private IAttackStrategy _currentAttackStrategy;
-
-    private TargetFinderContext _targetFinder;
+    private CharacterAttackController _attackController;
     private CoroutinePerformer _coroutinePerformer;
 
     private Vector2 _positionToMove;
 
     private bool _isMoving;
 
-    public CharacterController(ICommandInvoker commandInvoker, 
+
+    public CharacterController(ICommandInvoker commandInvoker, CharacterAttackController attackController, 
         CoroutinePerformer coroutinePerformer)
     {
         _commandInvoker = commandInvoker;
+        _attackController = attackController;
         _coroutinePerformer = coroutinePerformer;
     }
+
+    public ICharacter Character => _character;
 
     public event Action IsCharacterOnPosition;
 
@@ -36,12 +35,11 @@ public class CharacterController : ICharacterController, ITickable, IDisposable
     {
         _character = (ICharacter)entity;
 
-        InitializeTargetFinder();
+        _attackController.Initialize(this);
     }
 
     public void Dispose()
     {
-        _targetFinder.OnTargetsFound -= SetTarget;
     }
 
     public void Tick()
@@ -59,9 +57,9 @@ public class CharacterController : ICharacterController, ITickable, IDisposable
         AddMoveCommand();
     }
 
-    public void SetAttackCommand()
+    public void SetAttackCommand(IEntityAttackStrategy strategy)
     {
-        AddAttackCommand();
+        AddAttackCommand(strategy);
     }
 
     public void SetIdleCommand()
@@ -74,57 +72,9 @@ public class CharacterController : ICharacterController, ITickable, IDisposable
         _positionToMove = (Vector2)_character.Transform.position + position;
     }
 
-    private void InitializeTargetFinder()
+    public ICommand GetCurrentCommand()
     {
-        if (_character.Config.AttackStats.CanFindMultipleTargets == false)
-        {
-            var strategy = new FindOnceTarget();
-
-            _targetFinder = new TargetFinderContext(_character, strategy, _coroutinePerformer);
-
-            _targetFinder.OnTargetsFound += SetTarget;
-        }
-        else
-        {
-            var strategy = new FindMultipleTargets();
-
-            _targetFinder = new TargetFinderContext(_character, strategy, _coroutinePerformer);
-
-            _targetFinder.OnTargetsFound += SetTargets;
-        }
-
-        _targetFinder.Initialize();
-    }
-
-    private void SetTarget(IEnumerable<IEnemy> enemies)
-    {
-        Debug.Log("SetTarget");
-
-        var currentTarget = enemies.FirstOrDefault();
-
-        _currentAttackStrategy?.Dispose();
-
-        _currentAttackStrategy = null;
-
-        _currentAttackStrategy = new AttackByOnceTarget(currentTarget);
-
-        SetAttackCommand();
-    }
-
-    private void SetTargets(IEnumerable<IEnemy> enemies)
-    {
-        Debug.Log("SetTargets");
-        var targets = enemies
-            .Cast<IEntity>()
-            .ToList();
-
-        _currentAttackStrategy?.Dispose();
-
-        _currentAttackStrategy = null;
-
-        _currentAttackStrategy = new AttackByMultipleTargets(targets);
-
-        SetAttackCommand();
+        return _currentCommand = _currentCommand != null ? _currentCommand : null;
     }
 
     private void AddMoveCommand()
@@ -140,13 +90,13 @@ public class CharacterController : ICharacterController, ITickable, IDisposable
         ExecuteCommand();
     }
 
-    private void AddAttackCommand()
+    private void AddAttackCommand(IEntityAttackStrategy strategy)
     {
         _currentCommand?.CancelCommand();
 
         _currentCommand = null;
 
-        _currentCommand = new AttackCommand(_character, _currentAttackStrategy, _coroutinePerformer);
+        _currentCommand = new AttackCommand(_character, strategy, _coroutinePerformer);
 
         ExecuteCommand();
     }

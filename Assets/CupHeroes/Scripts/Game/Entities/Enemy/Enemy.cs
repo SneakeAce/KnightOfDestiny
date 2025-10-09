@@ -7,6 +7,8 @@ public class Enemy : MonoBehaviour, IEnemy
     private Rigidbody2D _rigidbody;
     private Animator _animator;
 
+    private Transform _projectileSpawnPosition;
+
     private IAnimationEventReceiver _animationEventReceiver;
     private IEnemyHealth _health;
     private IEntityStateMachine _stateMachine;
@@ -25,6 +27,7 @@ public class Enemy : MonoBehaviour, IEnemy
     }
 
     public Transform Transform => transform;
+    public Transform ProjectileSpawnPosition => _projectileSpawnPosition;
     public Collider2D Collider => _collider;
     public Rigidbody2D Rigidbody => _rigidbody;
     public Animator Animator => _animator;
@@ -40,7 +43,6 @@ public class Enemy : MonoBehaviour, IEnemy
     public IEntityHealth Health => _health;
     public IEntityController EntityController => _entityController;
     public IEntityStatsManager StatsManager => _statsManager;
-
 
     public void Initialize()
     {
@@ -98,6 +100,9 @@ public class Enemy : MonoBehaviour, IEnemy
 
         if (_stateMachine == null)
             _stateMachine = GetComponent<IEntityStateMachine>();
+
+        if (_projectileSpawnPosition == null)
+            _projectileSpawnPosition = GetComponentInChildren<ProjectileSpawnPoint>().transform;
     }
 
     private void InitializeHealth()

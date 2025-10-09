@@ -13,17 +13,22 @@ public class EnemyController : IEnemyController, ITickable, IDisposable
 
     private CollectingCurrencyHandler _currencyHandler;
     private CoroutinePerformer _coroutinePerformer;
+    private ProjectileSpawner _projectileSpawner;
+
+    private IEntityAttackStrategy _attackStrategy;
 
     private float _minDistanceToTarget;
 
     private bool _enemyNearTarget;
 
     public EnemyController(ICommandInvoker commandInvoker, Character target, 
-        CollectingCurrencyHandler currencyHandler, CoroutinePerformer coroutinePerformer)
+        CollectingCurrencyHandler currencyHandler, ProjectileSpawner projectileSpawner,
+        CoroutinePerformer coroutinePerformer)
     {
         _commandInvoker = commandInvoker;
         _target = target;
         _currencyHandler = currencyHandler;
+        _projectileSpawner = projectileSpawner;
         _coroutinePerformer = coroutinePerformer;
     }
 
@@ -36,9 +41,11 @@ public class EnemyController : IEnemyController, ITickable, IDisposable
     {
         _enemy = (IEnemy)entity;
 
-        _minDistanceToTarget = _enemy.Config.AttackStats.BaseAttackRange;
+        _minDistanceToTarget = _enemy.StatsManager.AttackStats.CurrentAttackRange;
 
         SubcrubingEvents();
+
+        SetAttackStrategy();
 
         SetMoveCommand();
     }
@@ -49,7 +56,7 @@ public class EnemyController : IEnemyController, ITickable, IDisposable
             && _enemyNearTarget == false)
         {
             _enemyNearTarget = true;
-            SetAttackCommand();
+            SetAttackCommand(_attackStrategy);
         }
 
         if (Vector2.Distance(_enemy.Transform.position, _target.Transform.position) >= _minDistanceToTarget
@@ -67,7 +74,7 @@ public class EnemyController : IEnemyController, ITickable, IDisposable
         AddMoveCommand();
     }
 
-    public void SetAttackCommand()
+    public void SetAttackCommand(IEntityAttackStrategy strategy)
     {
         AddAttackCommand();
     }
@@ -77,11 +84,24 @@ public class EnemyController : IEnemyController, ITickable, IDisposable
         AddIdleCommand();
     }
 
+    public ICommand GetCurrentCommand()
+    {
+        return _currentCommand = _currentCommand != null ? _currentCommand : null;
+    }
+
     private void SubcrubingEvents()
     {
         _enemyHealth = _enemy.Health as IEnemyHealth;
 
         _enemyHealth.OnGiveAwayCurrency += _currencyHandler.GetCurrency;
+    }
+
+    private void SetAttackStrategy()
+    {
+        if (_enemy.StatsManager.AttackStats.CurrentAttackType == EntityAttackType.Melee)
+            _attackStrategy = new MeleeAttackByOnceTarget(_target);
+        else if (_enemy.StatsManager.AttackStats.CurrentAttackType == EntityAttackType.Range)
+            _attackStrategy = new RangeAttackByOnceTarget(_target, _projectileSpawner);
     }
 
     private void AddMoveCommand()
@@ -97,13 +117,11 @@ public class EnemyController : IEnemyController, ITickable, IDisposable
 
     private void AddAttackCommand()
     {
-        var strategy = new AttackByOnceTarget(_target);
-
         _currentCommand?.CancelCommand();
 
         _currentCommand = null;
 
-        _currentCommand = new AttackCommand(_enemy, strategy, _coroutinePerformer);
+        _currentCommand = new AttackCommand(_enemy, _attackStrategy, _coroutinePerformer);
 
         ExecuteCommand();
     }
@@ -124,4 +142,5 @@ public class EnemyController : IEnemyController, ITickable, IDisposable
         _commandInvoker.AddCommand(_currentCommand);
         _currentCommand.Execute();
     }
+
 }
