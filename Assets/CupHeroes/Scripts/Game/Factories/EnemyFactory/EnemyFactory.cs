@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Zenject;
 
@@ -45,7 +46,10 @@ public class EnemyFactory : IEnemyFactory
         var pool = _poolsManager.GetPool<EnemyType>(PoolType.EnemyEntityPool, currentEnemyType);
 
         if (pool == null)
-            throw new ArgumentNullException($"{nameof(pool)} in {this.ToString()} is null!");
+        {
+            UnityEngine.Debug.Log($"{nameof(pool)} in {this.ToString()} is null!");
+            return null;
+        }
 
         Enemy enemy = (Enemy)pool.GetObjectFromPool();
 

@@ -107,8 +107,6 @@ public class AttackState : IEntityState, IDisposable
 
     public void RestartStrategy()
     {
-        UnityEngine.Debug.Log($"RestartStrategy in {this.ToString()}");
-
         RestartCoroutine(ref _attackCoroutine, _attackStrategy.AttackJob());
     }
 

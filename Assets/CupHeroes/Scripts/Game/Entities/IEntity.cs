@@ -3,6 +3,7 @@ using UnityEngine;
 public interface IEntity
 {
     Transform Transform { get; }
+    Transform ProjectileSpawnPosition { get; }
     Collider2D Collider { get; }
     Rigidbody2D Rigidbody { get; }
     Animator Animator { get; }

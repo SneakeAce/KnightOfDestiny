@@ -1,8 +1,7 @@
-using System.Diagnostics;
-
 public class AttackStatsController : IAttackStatsController
 {
     private const float DividerForCoversionToProcetage = 100f;
+    private const int BaseAmountTargetsForAttack = 1;
 
     private IEntity _entity;
 
@@ -79,7 +78,11 @@ public class AttackStatsController : IAttackStatsController
 
     private void SetBaseParameters()
     {
-        _amountTargetsForAttack = _entity.Config.AttackStats.BaseAmountTargetsForAttack;
+        if (_entity.Config.AttackStats.CanAttackMultipleTargets)
+            _amountTargetsForAttack = _entity.Config.AttackStats.BaseAmountTargetsForAttack;
+        else
+            _amountTargetsForAttack = BaseAmountTargetsForAttack;
+
         _damage = _entity.Config.AttackStats.BaseDamage;
         _attackSpeedProcent = _entity.Config.AttackStats.BaseAttackSpeedProcent;
 

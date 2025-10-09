@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb9e79655bbd1ff44822f6fdabe0065c, type: 3}
+  m_Name: CharacterConfig
+  m_EditorClassIdentifier: 
+  <Prefab>k__BackingField: {fileID: 8946283988408273110, guid: 8324cd9f1411a824f862361bace8dcee, type: 3}
+  <MoveStats>k__BackingField:
+    <MoveSpeed>k__BackingField: 5
+  <HealthStats>k__BackingField:
+    <BaseValueHealth>k__BackingField: 10000
+  <AttackStats>k__BackingField:
+    <BaseAmountTargetsForAttack>k__BackingField: 3
+    <CanAttackMultipleTargets>k__BackingField: 1
+    <BaseDamage>k__BackingField: 2
+    <BaseAttackSpeedProcent>k__BackingField: 50
+    <BaseMeleeAttackRange>k__BackingField: 4
+    <BaseRangeAttackRange>k__BackingField: 10
+    <BaseAttackType>k__BackingField: 2
+    <AvailableAttackTypes>k__BackingField: -1
+    <TargetLayer>k__BackingField:
+      serializedVersion: 2
+      m_Bits: 128
+    <AttackClip>k__BackingField: {fileID: 7400000, guid: a09f00fd9285e1547b2ab03ec1139e85, type: 2}
+    <AvailableProjectileType>k__BackingField: 1
+  <SpawnPosition>k__BackingField: {x: 0, y: 0, z: 0}
+  <SpawnRotation>k__BackingField: {x: 0, y: 0, z: 0, w: 0}

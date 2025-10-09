@@ -22,15 +22,13 @@ public class AttackCommand : IAttackCommand
         _currentState = (AttackState)_entity.StateMachine.GetCurrentState();
     }
 
-    public void SwitchStrategy(IEntityAttackStrategy strategy)
+    public void UpdateState(IEntityAttackStrategy strategy)
     {
         _currentState?.SwitchStrategy(strategy);
     }
 
-    public void RestartStrategy()
+    public void RestartStrategyAtState()
     {
-        UnityEngine.Debug.Log($"RestartStrategy in {this.ToString()}");
-
         _currentState?.RestartStrategy();
     }
 
