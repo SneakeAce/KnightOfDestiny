@@ -20,8 +20,8 @@ MonoBehaviour:
   <AttackStats>k__BackingField:
     <BaseAmountTargetsForAttack>k__BackingField: 3
     <CanAttackMultipleTargets>k__BackingField: 1
-    <BaseDamage>k__BackingField: 2
-    <BaseAttackSpeedProcent>k__BackingField: 50
+    <BaseDamage>k__BackingField: 20
+    <BaseAttackSpeedProcent>k__BackingField: 230
     <BaseMeleeAttackRange>k__BackingField: 4
     <BaseRangeAttackRange>k__BackingField: 10
     <BaseAttackType>k__BackingField: 2

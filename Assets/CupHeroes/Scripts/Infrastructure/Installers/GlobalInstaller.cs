@@ -36,6 +36,10 @@ public class GlobalInstaller : MonoInstaller
             .To<ProjectilePoolsFactory>()
             .AsSingle();
 
+        Container.Bind<IPoolsFactory>()
+            .To<UpgradeCardPoolsFactory>()
+            .AsSingle();
+
         Container.Bind<IPoolsManager>()
             .To<PoolsManager>()
             .AsSingle();

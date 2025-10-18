@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 public class AttackStatsController : IAttackStatsController
 {
     private const float DividerForCoversionToProcetage = 100f;
@@ -35,16 +37,19 @@ public class AttackStatsController : IAttackStatsController
     {
         _attackSpeedProcent += value;
         _attacksPerSecond = _attackSpeedProcent / DividerForCoversionToProcetage;
+        UnityEngine.Debug.Log($"{this.ToString()} - ModifyDamage - _attackSpeedProcent = {_attackSpeedProcent}");
     }
 
     public void ModifyDamage(float value)
     {
         _damage += value;
+        UnityEngine.Debug.Log($"{this.ToString()} - ModifyDamage - damage = {_damage}");
     }
 
     public void ModifyAmountTargetsForAttack(int value)
     {
         _amountTargetsForAttack += value;
+        UnityEngine.Debug.Log($"{this.ToString()} - ModifyDamage - _amountTargetsForAttack = {_amountTargetsForAttack}");
     }
 
     public void ModifyMeleeAttackRange(float value)
@@ -52,6 +57,8 @@ public class AttackStatsController : IAttackStatsController
         _meleeAttackRange += value;
 
         _currentAttackRange = _meleeAttackRange;
+
+        UnityEngine.Debug.Log($"{this.ToString()} - ModifyDamage - _meleeAttackRange = {_meleeAttackRange}");
     }
 
     public void ModifyRangeAttackRange(float value)
@@ -59,6 +66,7 @@ public class AttackStatsController : IAttackStatsController
         _rangeAttackRange += value;
 
         _currentAttackRange = _rangeAttackRange;
+        UnityEngine.Debug.Log($"{this.ToString()} - ModifyDamage - _rangeAttackRange = {_rangeAttackRange}");
     }
 
     public void SwitchAttackType(EntityAttackType newType)

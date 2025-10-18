@@ -21,7 +21,6 @@ public class EnemyHealth : EntityHealth, IEnemyHealth
         int currencyToGive = UnityEngine.Random.Range(_enemyConfig.MinAmountCurrencyDropped,
             _enemyConfig.MaxAmountCurrencyDropped);
 
-        Debug.Log($"EnemyHealth. currencyToGive = {currencyToGive}");
         OnGiveAwayCurrency?.Invoke(currencyToGive);
     }
 }

@@ -10,7 +10,7 @@ public class LevelSelectorView : UIElement
 
     public event Action<int> OnLevelSelected;
 
-    public void Initialize()
+    public override void Initialize()
     {
         _canvas.worldCamera = Camera.main;
 

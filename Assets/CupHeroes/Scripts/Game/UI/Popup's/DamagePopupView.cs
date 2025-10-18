@@ -15,6 +15,14 @@ public class DamagePopupView : UIElement
 
     private Tween _currentTween;
 
+    public override void Initialize()
+    {
+        _canvas.worldCamera = Camera.main;
+
+        if (_popupText == null)
+            _popupText = GetComponent<TextMeshProUGUI>();
+    }
+
     public void ShowPopup(float currentValue, Transform parent)
     {
         _popupText.text = "-" + currentValue.ConvertTo<Int32>().ToString();
@@ -29,14 +37,6 @@ public class DamagePopupView : UIElement
 
             transform.SetParent(parent);
         });
-    }
-
-    private void OnEnable()
-    {
-        _canvas.worldCamera = Camera.main;
-
-        if (_popupText == null)
-            _popupText = GetComponent<TextMeshProUGUI>();
     }
 
 }

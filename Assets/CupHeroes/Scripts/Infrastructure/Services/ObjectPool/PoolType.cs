@@ -7,5 +7,5 @@ public enum PoolType
     EnemyEntityPool = 1 << 0,
     UIObjectPool = 1 << 1,
     ProjectilePool = 1 << 2,
-
+    UpgradeCardPool = 1 << 3,
 }

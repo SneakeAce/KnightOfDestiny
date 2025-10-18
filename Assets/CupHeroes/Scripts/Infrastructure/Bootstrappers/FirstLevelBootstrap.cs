@@ -15,10 +15,16 @@ public class FirstLevelBootstrap : ILevelBootstrapper
     private TickUpdater _tickUpdater;
     private LevelController _levelManager;
 
+    private UpgradeSystemController _upgradeSystemController;
+    private UpgradeCardsView _cardsView;
+    private UpgradeCardsViewController _cardsViewController;
+
     public FirstLevelBootstrap(IPoolsManager poolsManager, EnemyWaveController waveController,
-        CamerasController camerasController, PlayerHUD playerHUD, 
+        CamerasController camerasController, PlayerHUD playerHUD,
         ICurrencyController currencyController, CurrencyDisplayController currencyDisplayController,
-        CharacterSpawner characterSpawner, TickUpdater tickUpdater, LevelController levelManager)
+        CharacterSpawner characterSpawner, TickUpdater tickUpdater, LevelController levelManager,
+        UpgradeSystemController upgradeSystemController, UpgradeCardsView cardsView, 
+        UpgradeCardsViewController cardsViewController)
     {
         _poolsManager = poolsManager;
         _waveController = waveController;
@@ -33,6 +39,10 @@ public class FirstLevelBootstrap : ILevelBootstrapper
         _tickUpdater = tickUpdater;
 
         _levelManager = levelManager;
+
+        _upgradeSystemController = upgradeSystemController;
+        _cardsView = cardsView;
+        _cardsViewController = cardsViewController;
 
         Initialize();
     }
@@ -54,6 +64,8 @@ public class FirstLevelBootstrap : ILevelBootstrapper
         InitializeTickUpdater();
 
         InitializeLevelManager(character);
+
+        InitializeUpgradeSystem(character);
     }
 
     private void InitializePoolsManager() => _poolsManager.Initialize();
@@ -88,5 +100,15 @@ public class FirstLevelBootstrap : ILevelBootstrapper
         _levelManager.Construct(character, _waveController);
 
         _levelManager.Initialize();
+    }
+
+    private void InitializeUpgradeSystem(Character character)
+    {
+        _cardsView.Initialize();
+
+        _cardsViewController.Initialize();
+
+        _upgradeSystemController.SetCharacterStatsManager(character.StatsManager);
+        _upgradeSystemController.Initialize();
     }
 }
