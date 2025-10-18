@@ -10,8 +10,9 @@ public class LevelController : IDisposable
 
     private Vector2 _nextPosition = new Vector2(10f, 0f);
 
-    public event Action OnStartWave;
-    public event Action OnEndLevel;
+    public event Action StartWave;
+    public event Action WaveDone;
+    public event Action EndLevel;
 
     public void Construct(Character character, EnemyWaveController waveController)
     {
@@ -27,16 +28,16 @@ public class LevelController : IDisposable
 
         SubscribingEvents();
 
-        StartWave();
+        OnStartWave();
     }
 
-    public void StartWave()
+    public void OnStartWave()
     {
         Debug.Log("StartWave");
-        OnStartWave?.Invoke();
+        StartWave?.Invoke();
     }
 
-    public void EndLevel()
+    public void OnEndLevel()
     {
         _waveController.StopWave();
     }
@@ -48,28 +49,30 @@ public class LevelController : IDisposable
 
     private void SubscribingEvents()
     {
-        OnStartWave += _waveController.StartWave;
+        StartWave += _waveController.StartWave;
         
         _waveController.IsWaveDone += WavePassed;
     }
 
     private void UnsubscribingEvents()
     {
-        OnStartWave -= _waveController.StartWave;
+        StartWave -= _waveController.StartWave;
 
-        _characterController.IsCharacterOnPosition -= StartWave;
+        _characterController.IsCharacterOnPosition -= OnStartWave;
 
         _waveController.IsWaveDone -= WavePassed;
     }
 
     private void WavePassed()
     {
-        _characterController.IsCharacterOnPosition += StartWave;
+        _characterController.IsCharacterOnPosition += OnStartWave;
 
         _characterController.SetPositionToMove(_nextPosition);
         _characterController.SetMoveCommand();
 
         _waveController.SetOffset(_nextPosition);
+
+        WaveDone?.Invoke();
     }
 
 }

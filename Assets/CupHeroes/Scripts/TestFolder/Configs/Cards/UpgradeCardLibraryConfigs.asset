@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e5d9efdcedb6e54da9ea3214f8747f9, type: 3}
+  m_Name: UpgradeCardLibraryConfigs
+  m_EditorClassIdentifier: 
+  <UpgradeCardConfigs>k__BackingField:
+  - {fileID: 11400000, guid: 411a761007181154ab5d1d7c271342d4, type: 2}
+  - {fileID: 11400000, guid: f465caf3f9f79fb41a34c86fccc6a46a, type: 2}
+  - {fileID: 11400000, guid: 2d9bdc8253a4e144790c2c39d38e9ea9, type: 2}

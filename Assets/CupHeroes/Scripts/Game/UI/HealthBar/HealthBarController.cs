@@ -25,6 +25,8 @@ public class HealthBarController : IDisposable
         _entity.Health.CurrentHealthChanged += _healthBarView.SetHealth;
         _entity.Health.EntityDied += ReturnHealthBarToPool;
 
+        _healthBarView.Initialize();
+
         _healthBarView.SetHealth(_entity.Health.CurrentHealth, _entity.Health.MaxHealth);
 
         _parent = _healthBarView.transform.parent;
