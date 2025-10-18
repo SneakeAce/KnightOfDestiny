@@ -46,6 +46,8 @@ public class PopupController : IDisposable
             return;
         }
 
+        damagePopupViewIntstance.Initialize();
+
         Transform parent = damagePopupViewIntstance.transform.parent;
 
         damagePopupViewIntstance.transform.SetParent(_spawnPosition);

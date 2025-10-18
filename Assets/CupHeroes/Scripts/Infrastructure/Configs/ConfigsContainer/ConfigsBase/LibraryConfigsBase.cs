@@ -3,5 +3,5 @@ using UnityEngine;
 
 public abstract class LibraryConfigsBase : ScriptableObject
 {
-    abstract public List<T> GetConfigs<T>() where T : ScriptableObject;
+    abstract public List<T> GetConfigs<T>() where T : class;
 }

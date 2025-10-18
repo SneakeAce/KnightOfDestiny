@@ -13,6 +13,11 @@ public class HealthBarView : UIElement
 
     private Tween _currentTween;
 
+    public override void Initialize()
+    {
+        _canvas.worldCamera = Camera.main;
+    }
+
     public void SetHealth(float receivedCurrentHealth, float receivedMaxHealth)
     {
         float currentHealth = (float)receivedCurrentHealth / receivedMaxHealth;
@@ -22,10 +27,5 @@ public class HealthBarView : UIElement
         _currentTween?.Kill();
 
         _currentTween = _filledImage.DOFillAmount(currentHealth, 0.5f).SetEase(Ease.OutQuint);
-    }
-
-    private void OnEnable()
-    {
-        _canvas.worldCamera = Camera.main;
     }
 }

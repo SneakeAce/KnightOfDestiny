@@ -9,7 +9,7 @@ public class MainMenuView : UIElement
 
     public event Action OnStartGameClicked;
 
-    public void Initialize()
+    public override void Initialize()
     {
         _canvas.worldCamera = Camera.main;
 
